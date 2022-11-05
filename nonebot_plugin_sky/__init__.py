@@ -10,7 +10,7 @@ import json
 
 import nonebot
 from nonebot import on_command, logger
-from nonebot.adapters.onebot.v11 import MessageSegment, Bot
+from nonebot.adapters.onebot.v11 import MessageSegment, Bot, GroupMessageEvent
 from nonebot.adapters.onebot.v11 import NetworkError as networkError
 
 daily_yoli = on_command("daily_yoli", aliases={"光遇今日攻略"})
@@ -99,11 +99,13 @@ async def chain_reply(
         msg: MessageSegment
 ):
     chain = []
-
+    nick = ''
+    for name in BotName:
+        nick = name
     data = {
         "type": "node",
         "data": {
-            "name": BotName,
+            "name": nick,
             "uin": f"{bot.self_id}",
             "content": msg
         },
@@ -113,11 +115,15 @@ async def chain_reply(
 
 
 @daily_yoli.handle()
-async def _():
+async def _(bot: Bot, event: GroupMessageEvent):
     try:
         sky = SkyDaily()
         results = await sky.get_data()
-        await daily_yoli.send(results)
+        chain = await chain_reply(bot, results)
+        await bot.send_group_forward_msg(
+            group_id=event.group_id,
+            messages=chain
+        )
 
     except networkError:
         logger.error('NetworkError: 网络环境较差，调用发送信息接口超时')
