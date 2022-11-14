@@ -12,6 +12,10 @@ nonebot2的光遇每日任务及活动查询插件
 
 # 开始使用
 
+使用pip包管理器安装：
+
+`pip install nonebot-plugin-sky`
+
 克隆本项目到本地，在bot.py中导入插件：
 
 `nonebot.load_plugin(r"包路径\nonebot_plugin_sky")`

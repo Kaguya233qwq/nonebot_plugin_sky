@@ -39,7 +39,7 @@ class SkyDaily:
                           'AppleWebKit/537.36 (KHTML, like Gecko) Chrome'
                           '/62.0.3202.9 Safari/537.36',
             'cookie': 'SUB=_2AkMUd3SHf8NxqwFRmP8Ty2Pna4VwywzEieKiK4VcJRMxHRl'
-                      '-yT9jqnAOtRB6P_daaLXfdvYkPfvZhXy3bTeuLdBjWXF9;'
+                      '-yT9jqnAOtRB6P_daaLXfdvYkPfvZhXy3bTeuLdBjWXF9;'  # 未登录时的cookie直接写死
         }
         self.copyright_ = ('------------'
                            '\r【数据来源：微博@今天游离翻车了吗】\n'
