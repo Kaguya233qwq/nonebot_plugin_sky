@@ -15,9 +15,15 @@ from nonebot.adapters.onebot.v11 import NetworkError as networkError
 
 daily_yoli = on_command("daily_yoli", aliases={"光遇今日攻略"})
 
+# 加载bot昵称
 try:
-    BotName = nonebot.get_driver().config.nickname
+    bot_name = nonebot.get_driver().config.nickname
+    if not list(bot_name) or list(bot_name) == ['']:
+        Nick = '未命名'
+    else:
+        Nick = list(bot_name)[0]
 except Exception as e:
+    Nick = '未命名'
     logger.error(e)
     logger.warning('您还没有配置bot的昵称，请先进入env文件配置')
 
@@ -102,13 +108,12 @@ async def chain_reply(
         msg: MessageSegment
 ):
     chain = []
-    nick = ''
-    for name in BotName:
-        nick = name
+    global Nick
+
     data = {
         "type": "node",
         "data": {
-            "name": nick,
+            "name": Nick,
             "uin": f"{bot.self_id}",
             "content": msg
         },
