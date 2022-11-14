@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Author  : 子龙君
 # @Email   :  1435608435@qq.com
-# @Github    : Kaguya
+# @Github    : neet姬辉夜大人
 # @Software: PyCharm
 
 import httpx
@@ -49,16 +49,19 @@ class SkyDaily:
         print('今天是：{}'.format(today))
         return today_format
 
-    async def get_mblog_id(self):
-        """获取微博 @今天游离翻车了吗 顶置文章详情"""
+    async def get_mblog_id(self, today):
+        """获取微博 @今天游离翻车了吗 今日攻略详情"""
 
         async with httpx.AsyncClient() as client:
             response = await client.get(
                 url=self.url,
                 headers=self.headers)
             content = json.loads(response.text)
-            overhead = content['data']['list'][0]
-            return overhead
+            overhead = content['data']['list']
+            for log in overhead:
+                if today in log['text_raw']:
+                    return log
+            return None
 
     async def get_longtext(self, mblog_id: str):
         """获取微博 @今天游离翻车了吗 顶置文章长文本"""
@@ -75,10 +78,10 @@ class SkyDaily:
         """获取今日攻略数据"""
         results = MessageSegment.text('')
         today = self.get_today()
-        overhead = await self.get_mblog_id()
-        mblog_id = overhead['mblogid']
-        longtext = await self.get_longtext(mblog_id)
-        if today in longtext:
+        overhead = await self.get_mblog_id(today)
+        if overhead:
+            mblog_id = overhead['mblogid']
+            longtext = await self.get_longtext(mblog_id)
             results += MessageSegment.text(longtext)
             pic_infos = overhead['pic_infos']
             for pic in pic_infos:
