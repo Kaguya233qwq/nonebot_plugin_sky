@@ -64,7 +64,7 @@ class SkyDaily:
             return None
 
     async def get_longtext(self, mblog_id: str):
-        """获取微博 @今天游离翻车了吗 顶置文章长文本"""
+        """获取微博 @今天游离翻车了吗 今日攻略长文本"""
 
         async with httpx.AsyncClient() as client:
             response = await client.get(
