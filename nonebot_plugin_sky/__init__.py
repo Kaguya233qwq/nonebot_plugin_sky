@@ -13,11 +13,13 @@ from nonebot_plugin_sky.sky.international import SkyDaily as IN
 from nonebot_plugin_sky.utils_.chain_reply import chain_reply
 from nonebot_plugin_sky.tools.queue import get_state
 from nonebot_plugin_sky.tools.menu import get_menu
+from nonebot_plugin_sky.tools.public_notice import get_notice
 
 Menu = on_command("sky", aliases={"光遇"})
 DailyYoli = on_command("sky -cn", aliases={"今日国服"})
 DailyHaru = on_command("sky -in", aliases={"今日国际服"})
 Queue = on_command("queue", aliases={"排队"})
+Notice = on_command("notice", aliases={"公告"})
 
 
 @DailyYoli.handle()
@@ -67,7 +69,7 @@ async def queue(bot: Bot, event: GroupMessageEvent):
 
     except networkError:
         logger.error('NetworkError: 网络环境较差，调用发送信息接口超时')
-        await DailyHaru.send(
+        await Queue.send(
             message='网络环境较差，调用发送信息接口超时'
         )
 
@@ -83,6 +85,23 @@ async def queue(bot: Bot, event: GroupMessageEvent):
 
     except networkError:
         logger.error('NetworkError: 网络环境较差，调用发送信息接口超时')
-        await DailyHaru.send(
+        await Menu.send(
+            message='网络环境较差，调用发送信息接口超时'
+        )
+
+
+@Notice.handle()
+async def notice(bot: Bot, event: GroupMessageEvent):
+    try:
+        notice_ = await get_notice()
+        chain = await chain_reply(bot, notice_)
+        await bot.send_group_forward_msg(
+            group_id=event.group_id,
+            messages=chain
+        )
+
+    except networkError:
+        logger.error('NetworkError: 网络环境较差，调用发送信息接口超时')
+        await Notice.send(
             message='网络环境较差，调用发送信息接口超时'
         )
