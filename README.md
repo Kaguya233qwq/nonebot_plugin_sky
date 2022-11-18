@@ -24,7 +24,9 @@ _✨ 基于 [NoneBot2](https://v2.nonebot.dev/) 的光遇每日攻略插件 ✨_
 
 `pip install nonebot-plugin-sky`
 
-克隆本项目到本地，在bot.py中导入插件：
+或
+
+2.克隆本项目到本地，在bot.py中导入插件：
 
 `nonebot.load_plugin(r"nonebot_plugin_sky")`
 
