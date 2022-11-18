@@ -17,7 +17,7 @@ from nonebot_plugin_sky.tools.menu import get_menu
 Menu = on_command("sky", aliases={"光遇"})
 DailyYoli = on_command("sky -cn", aliases={"今日国服"})
 DailyHaru = on_command("sky -in", aliases={"今日国际服"})
-Queue = on_command("queue",aliases={"排队"})
+Queue = on_command("queue", aliases={"排队"})
 
 
 @DailyYoli.handle()
@@ -37,6 +37,7 @@ async def yoli(bot: Bot, event: GroupMessageEvent):
             message='网络环境较差，调用发送信息接口超时'
         )
 
+
 @DailyHaru.handle()
 async def haru(bot: Bot, event: GroupMessageEvent):
     try:
@@ -54,12 +55,13 @@ async def haru(bot: Bot, event: GroupMessageEvent):
             message='网络环境较差，调用发送信息接口超时'
         )
 
+
 @Queue.handle()
 async def queue(bot: Bot, event: GroupMessageEvent):
     try:
         state = await get_state()
         await bot.send(
-            event = event,
+            event=event,
             message=state
         )
 
@@ -69,12 +71,13 @@ async def queue(bot: Bot, event: GroupMessageEvent):
             message='网络环境较差，调用发送信息接口超时'
         )
 
+
 @Menu.handle()
 async def queue(bot: Bot, event: GroupMessageEvent):
     try:
         menu = await get_menu()
         await bot.send(
-            event = event,
+            event=event,
             message=menu
         )
 
