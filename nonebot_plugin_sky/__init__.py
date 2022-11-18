@@ -6,7 +6,7 @@
 
 from nonebot import on_command, logger
 from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent
-from nonebot.adapters.onebot.v11 import NetworkError as networkError
+from nonebot.adapters.onebot.v11 import NetworkError,ActionFailed
 
 from nonebot_plugin_sky.sky.national import SkyDaily as CN
 from nonebot_plugin_sky.sky.international import SkyDaily as IN
@@ -33,8 +33,8 @@ async def yoli(bot: Bot, event: GroupMessageEvent):
             messages=chain
         )
 
-    except networkError:
-        logger.error('NetworkError: 网络环境较差，调用发送信息接口超时')
+    except (NetworkError,ActionFailed):
+        logger.error('网络环境较差，调用发送信息接口超时')
         await DailyYoli.send(
             message='网络环境较差，调用发送信息接口超时'
         )
@@ -51,8 +51,8 @@ async def haru(bot: Bot, event: GroupMessageEvent):
             messages=chain
         )
 
-    except networkError:
-        logger.error('NetworkError: 网络环境较差，调用发送信息接口超时')
+    except (NetworkError,ActionFailed):
+        logger.error('网络环境较差，调用发送信息接口超时')
         await DailyHaru.send(
             message='网络环境较差，调用发送信息接口超时'
         )
@@ -66,7 +66,7 @@ async def queue():
             message=state
         )
 
-    except networkError:
+    except NetworkError:
         logger.error('NetworkError: 网络环境较差，调用发送信息接口超时')
         await Queue.send(
             message='网络环境较差，调用发送信息接口超时'
@@ -81,7 +81,7 @@ async def menu():
             message=menu_
         )
 
-    except networkError:
+    except NetworkError:
         logger.error('NetworkError: 网络环境较差，调用发送信息接口超时')
         await Menu.send(
             message='网络环境较差，调用发送信息接口超时'
@@ -98,7 +98,7 @@ async def notice(bot: Bot, event: GroupMessageEvent):
             messages=chain
         )
 
-    except networkError:
+    except NetworkError:
         logger.error('NetworkError: 网络环境较差，调用发送信息接口超时')
         await Notice.send(
             message='网络环境较差，调用发送信息接口超时'

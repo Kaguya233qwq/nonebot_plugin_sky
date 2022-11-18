@@ -25,7 +25,7 @@ class SkyDaily:
                            '--本插件仅做数据展示之用，著作权归原文作者所有。'
                            '转载或转发请附文章作者微博--')
 
-    async def get_mblog_id(self, today):
+    async def get_mblog(self, today):
         """获取微博 @旧日与春 今日攻略详情"""
 
         async with httpx.AsyncClient() as client:
@@ -39,25 +39,13 @@ class SkyDaily:
                     return log
             return None
 
-    async def get_longtext(self, mblog_id: str):
-        """获取微博 @旧日与春 今日攻略长文本"""
-
-        async with httpx.AsyncClient() as client:
-            response = await client.get(
-                url=self.longtext + mblog_id,
-                headers=self.headers)
-            content = json.loads(response.text)
-            longtext = content['data']['longTextContent']
-            return longtext
-
     async def get_data(self):
         """获取今日攻略数据"""
         results = MessageSegment.text('')
         today = await get_today()
-        overhead = await self.get_mblog_id(today)
+        overhead = await self.get_mblog(today)
         if overhead:
-            mblog_id = overhead['mblogid']
-            longtext = await self.get_longtext(mblog_id)
+            longtext = overhead['text_raw']
             results += MessageSegment.text(longtext)
             pic_infos = overhead['pic_infos']
             for pic in pic_infos:
