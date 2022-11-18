@@ -9,13 +9,15 @@
 _✨ 基于 [NoneBot2](https://v2.nonebot.dev/) 的光遇每日攻略插件 ✨_
 
 <p align="center">
-  <img src="https://img.shields.io/github/license/EtherLeaF/nonebot-plugin-colab-novelai" alt="license">
   <img src="https://img.shields.io/badge/python-3.8+-blue.svg" alt="Python">
   <img src="https://img.shields.io/badge/nonebot-2.0.0b4+-red.svg" alt="NoneBot">
   <a href="https://pypi.org/project/nonebot-plugin-sky/">
     <img src="https://badgen.net/pypi/v/nonebot-plugin-sky" alt="pypi">
   </a>
 </p>
+
+_“因光而遇”_
+
 </div>
 
 # 开始使用
