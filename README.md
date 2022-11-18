@@ -58,7 +58,16 @@ _当前版本包含的命令_：
 
 ![](.README_images/test.jpg)
 
-## **联系我**
+# 遇到问题
+
+## **联系他 （本插件的真寻移植版开发者）**
+##**QQ：1179514075**
+
+
+## **或者联系我本人（优先找他）**
+
+
+
 
 <p align="center">
   <a href="https://github.com/"><img src="https://github.com/Kaguya233qwq/nonebot_plugin_alicdk_get/blob/main/.README_images/17623ac4.png?raw=true" width="300" height="350" alt="QRCode"></a>

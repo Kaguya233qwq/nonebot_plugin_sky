@@ -59,11 +59,10 @@ async def haru(bot: Bot, event: GroupMessageEvent):
 
 
 @Queue.handle()
-async def queue(bot: Bot, event: GroupMessageEvent):
+async def queue():
     try:
         state = await get_state()
-        await bot.send(
-            event=event,
+        await Queue.send(
             message=state
         )
 
@@ -75,12 +74,11 @@ async def queue(bot: Bot, event: GroupMessageEvent):
 
 
 @Menu.handle()
-async def queue(bot: Bot, event: GroupMessageEvent):
+async def menu():
     try:
-        menu = await get_menu()
-        await bot.send(
-            event=event,
-            message=menu
+        menu_ = await get_menu()
+        await Menu.send(
+            message=menu_
         )
 
     except networkError:
