@@ -27,11 +27,12 @@ async def yoli(bot: Bot, event: GroupMessageEvent):
     try:
         sky = CN()
         results = await sky.get_data()
-        chain = await chain_reply(bot, results)
-        await bot.send_group_forward_msg(
-            group_id=event.group_id,
-            messages=chain
-        )
+        # chain = await chain_reply(bot, results)
+        # await bot.send_group_forward_msg(
+        #     group_id=event.group_id,
+        #     messages=chain
+        # )
+        await DailyYoli.send(results)
 
     except (NetworkError,ActionFailed):
         logger.error('网络环境较差，调用发送信息接口超时')
@@ -45,11 +46,12 @@ async def haru(bot: Bot, event: GroupMessageEvent):
     try:
         sky = IN()
         results = await sky.get_data()
-        chain = await chain_reply(bot, results)
-        await bot.send_group_forward_msg(
-            group_id=event.group_id,
-            messages=chain
-        )
+        # chain = await chain_reply(bot, results)
+        # await bot.send_group_forward_msg(
+        #     group_id=event.group_id,
+        #     messages=chain
+        # )
+        await DailyHaru.send(results)
 
     except (NetworkError,ActionFailed):
         logger.error('网络环境较差，调用发送信息接口超时')
@@ -93,10 +95,11 @@ async def notice(bot: Bot, event: GroupMessageEvent):
     try:
         notice_ = await get_notice()
         chain = await chain_reply(bot, notice_)
-        await bot.send_group_forward_msg(
-            group_id=event.group_id,
-            messages=chain
-        )
+        # await bot.send_group_forward_msg(
+        #     group_id=event.group_id,
+        #     messages=chain
+        # )
+        await Notice.send(notice_)
 
     except NetworkError:
         logger.error('NetworkError: 网络环境较差，调用发送信息接口超时')
