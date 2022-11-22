@@ -1,9 +1,10 @@
-from nonebot.adapters.onebot.v11 import Message
+from nonebot.adapters.onebot.v11 import Message,MessageSegment
 from nonebot.internal.matcher import Matcher
 from nonebot.params import CommandArg
 from nonebot import require, on_command, logger
 
 import random
+import os
 
 require("nonebot_plugin_apscheduler")
 from nonebot_plugin_apscheduler import scheduler
@@ -39,7 +40,7 @@ async def scheduler_handler(matcher: Matcher, args: Message = CommandArg()):
 
     if is_on:
         # 设定提前五分钟提醒
-        @scheduler.scheduled_job("cron", hour="7,9,11,15,17,19", minute="55", id="job_0")
+        @scheduler.scheduled_job("cron", hour="7,9,11,15,16,17,19", minute="32,55", id="job_0")
         async def auto_run():
             texts = [
                 '干饭人干饭魂,冲鸭！',
@@ -50,19 +51,14 @@ async def scheduler_handler(matcher: Matcher, args: Message = CommandArg()):
                 '快到饭点了崽崽们，准备准备出发吧~',
                 '我是要励志把小陈吃破产的人！'
             ]
-            url = 'https://raw.githubusercontent.com/Kaguya233qwq/nonebot_plugin_sky/main/image/'
-            images = [
-                url+'eating.jpg',
-                url+'go.jpg',
-                url+'face_braid.gif',
-                url+'face_bun.gif',
-                url+'face_cat.gif',
-                url+'face_fox.gif',
-                url+'face_white_cat.gif'
-            ]
-            image = random.sample(images,1)[0]
             text = random.sample(texts, 1)[0]
-            await matcher.send(text+image)
+            abspath_ = os.path.abspath(__file__).strip('scheduler.py')
+            path = abspath_ + 'image\\'
+            image_list = os.listdir(path)
+            file = random.sample(image_list, 1)[0]
+            await matcher.send(
+                text + MessageSegment.image('file:///' + path + file)
+            )
 
     else:
         pass
