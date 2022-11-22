@@ -1,4 +1,18 @@
 import setuptools
+import os
+
+
+def get_files(path):
+    """获取路径下所有文件相对路径"""
+    file_list = []
+    files = os.listdir(path)
+    for file in files:
+        file_list.append(path + '/' + file)
+    print(file_list)
+    return file_list
+
+
+Files = get_files(r'nonebot_plugin_sky/tools/image')
 
 with open("README.md", "r", encoding="utf-8", errors="ignore") as f:
     long_description = f.read()
@@ -12,7 +26,13 @@ setuptools.setup(
     description='''nonebot2 plugin sky''',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=['nonebot_plugin_sky', 'nonebot_plugin_sky.sky', 'nonebot_plugin_sky.tools', 'nonebot_plugin_sky.utils_'],
+    packages=[
+        'nonebot_plugin_sky',
+        'nonebot_plugin_sky.utils_',
+        'nonebot_plugin_sky.sky',
+        'nonebot_plugin_sky.tools'
+    ],
+    data_files=Files,
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
