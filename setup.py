@@ -21,5 +21,5 @@ setuptools.setup(
     include_package_data=True,
     platforms="any",
     install_requires=[
-        'httpx', 'nonebot2>=2.0.0-beta.1', 'nonebot-adapter-onebot>=2.0.0-beta.1'
+        'httpx', 'nonebot2>=2.0.0-beta.1', 'nonebot-adapter-onebot>=2.0.0-beta.1', 'nonebot_plugin_apscheduler'
     ])
