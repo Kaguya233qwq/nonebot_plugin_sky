@@ -52,6 +52,7 @@ async def scheduler_handler(matcher: Matcher, args: Message = CommandArg()):
                 '我是要励志把小陈吃破产的人！'
             ]
             text = random.sample(texts, 1)[0]
+            # 读取绝对路径
             abspath_ = os.path.abspath(__file__).strip('scheduler.py')
             path = abspath_ + 'image\\'
             image_list = os.listdir(path)
