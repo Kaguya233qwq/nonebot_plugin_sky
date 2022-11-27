@@ -1,7 +1,7 @@
-from nonebot.adapters.onebot.v11 import Message,MessageSegment
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.internal.matcher import Matcher
 from nonebot.params import CommandArg
-from nonebot import require, on_command, logger
+from nonebot import require, on_command, logger, get_bot, get_driver
 
 import random
 import os
@@ -10,6 +10,12 @@ require("nonebot_plugin_apscheduler")
 from nonebot_plugin_apscheduler import scheduler
 
 Scheduler = on_command("-t", aliases={'小助手'})
+
+try:
+    recv_group_id = get_driver().config.recv_group_id
+except Exception as e:
+    str(e)
+    logger.warning('您还未配置接收小助手消息的群id')
 
 
 @Scheduler.handle()
@@ -21,7 +27,7 @@ async def scheduler_handler(matcher: Matcher, args: Message = CommandArg()):
             is_on = True
             scheduler.start()
             await matcher.send(
-                '已开启雨林干饭小助手'
+                '已启动雨林干饭小助手'
             )
         elif '状态' in plain_text:
             if scheduler.state == 1:
@@ -46,11 +52,21 @@ async def scheduler_handler(matcher: Matcher, args: Message = CommandArg()):
         # 设定提前五分钟提醒
         @scheduler.scheduled_job("cron", hour="7,9,11,15,16,17,19", minute="32,55", id="job_0")
         async def auto_run():
-            results = await go()
-            await matcher.send(results)
+            try:
+                bot = get_bot()
+            except Exception as p:
+                logger.error('您还未启动go-cqhttp | %s' % p)
+
+            group_id = recv_group_id
+            results_ = await go()
+            await bot.send_group_msg(
+                group_id=group_id,
+                message=results_
+            )
 
     else:
         pass
+
 
 async def go():
     texts = [
