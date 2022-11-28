@@ -50,7 +50,7 @@ async def scheduler_handler(matcher: Matcher, args: Message = CommandArg()):
 
     if is_on:
         # 设定提前五分钟提醒
-        @scheduler.scheduled_job("cron", hour="7,9,11,15,16,17,19", minute="32,55", id="job_0")
+        @scheduler.scheduled_job("cron", hour="7,9,11,15,17,19", minute="55", id="job_0")
         async def auto_run():
             try:
                 bot = get_bot()

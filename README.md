@@ -34,6 +34,12 @@ apscheduler:
 
 `nb plugin install nonebot_plugin_apscheduler`
 
+## 配置bot.py文件（必需）
+
+您必须确保您的bot.py配置中定时器默认关闭状态，即添加：
+
+`nonebot.init(apscheduler_autostart=False)`
+
 ## 安装本插件
 
 1.使用pip包管理器安装(推荐)：
@@ -93,6 +99,10 @@ _当前版本包含的命令_：
 </p>
 
 ## 更新日志
+
+2022 11.28 v1.2.2
+
+移除小助手时间测试脏数据
 
 2022 11.27 v1.2.1
 
