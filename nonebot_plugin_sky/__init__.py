@@ -14,6 +14,7 @@ from nonebot_plugin_sky.utils_.chain_reply import chain_reply
 from nonebot_plugin_sky.tools.queue import get_state
 from nonebot_plugin_sky.tools.menu import get_menu
 from nonebot_plugin_sky.tools.public_notice import get_notice
+from nonebot_plugin_sky.tools.progenitor_return import Return
 
 from nonebot_plugin_sky.tools.scheduler import *
 
@@ -22,6 +23,7 @@ DailyYoli = on_command("sky -cn", aliases={"今日国服"})
 DailyHaru = on_command("sky -in", aliases={"今日国际服"})
 Queue = on_command("queue", aliases={"排队"})
 Notice = on_command("notice", aliases={"公告"})
+ReturnCN = on_command("return -cn", aliases={"国服复刻"})
 
 
 @DailyYoli.handle()
@@ -106,5 +108,18 @@ async def notice(bot: Bot, event: GroupMessageEvent):
     except NetworkError:
         logger.error('NetworkError: 网络环境较差，调用发送信息接口超时')
         await Notice.send(
+            message='网络环境较差，调用发送信息接口超时'
+        )
+
+
+@ReturnCN.handle()
+async def return_cn():
+    try:
+        return_ = Return()
+        img = await return_.get_data()
+        await ReturnCN.send(img)
+    except (NetworkError, ActionFailed):
+        logger.error('网络环境较差，调用发送信息接口超时')
+        await ReturnCN.send(
             message='网络环境较差，调用发送信息接口超时'
         )

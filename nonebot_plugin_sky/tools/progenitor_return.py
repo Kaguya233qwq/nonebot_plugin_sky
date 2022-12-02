@@ -4,14 +4,12 @@ import httpx
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageSegment
 
-from nonebot_plugin_sky.utils_.date_util import get_today
 
-
-class SkyDaily:
-    """国际服光遇类"""
+class Return:
+    """国服复刻类类"""
 
     def __init__(self):
-        self.url = 'https://weibo.com/ajax/statuses/mymblog?uid=6502272646&page=1&feature=0'
+        self.url = 'https://weibo.com/ajax/statuses/mymblog?uid=5539106873&page=1&feature=0'
         self.longtext = 'https://weibo.com/ajax/statuses/longtext?id='
         self.headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) '
@@ -21,12 +19,12 @@ class SkyDaily:
                       '-yT9jqnAOtRB6P_daaLXfdvYkPfvZhXy3bTeuLdBjWXF9;'  # 未登录时的cookie直接写死
         }
         self.copyright_ = ('------------'
-                           '\r【数据来源：微博@旧日与春】\n'
+                           '\r【数据来源：微博@光遇陈陈】\n'
                            '--本插件仅做数据展示之用，著作权归原文作者所有。'
                            '转载或转发请附文章作者微博--')
 
-    async def get_mblog(self, today):
-        """获取微博 @旧日与春 今日攻略详情"""
+    async def get_mblog(self, params):
+        """获取微博 @光遇陈陈 复刻先祖详情"""
 
         async with httpx.AsyncClient() as client:
             response = await client.get(
@@ -35,26 +33,22 @@ class SkyDaily:
             content = json.loads(response.text)
             overhead = content['data']['list']
             for log in overhead:
-                if '国际服' + today in log['text_raw']:
+                if '【复刻】' in log['text_raw'] and params in log['text_raw']:
                     return log
             return None
 
     async def get_data(self):
         """获取今日攻略数据"""
         results = MessageSegment.text('')
-        today = await get_today()
-        overhead = await self.get_mblog(today)
+        overhead = await self.get_mblog('国服')
         if overhead:
-            longtext = overhead['text_raw']
-            results += MessageSegment.text(longtext)
             pic_infos = overhead['pic_infos']
             for pic in pic_infos:
                 large_url = pic_infos[pic]['large']['url']
                 img = MessageSegment.image(large_url)
                 results += img
-            results += self.copyright_  # 附加版权信息
         else:
-            notice = '今日数据还未更新，请耐心等候'
-            logger.warning('今日数据还未更新，请耐心等候')
+            notice = '没有找到国服复刻先祖的数据'
+            logger.warning(notice)
             results += MessageSegment.text(notice)
         return results
