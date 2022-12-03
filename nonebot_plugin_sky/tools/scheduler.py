@@ -80,7 +80,7 @@ async def go():
     ]
     text = random.sample(texts, 1)[0]
     abspath_ = os.path.abspath(__file__).strip('scheduler.py')
-    path = abspath_ + 'image\\'
+    path = abspath_ + 'image/'
     image_list = os.listdir(path)
     file = random.sample(image_list, 1)[0]
     results = text + MessageSegment.image('file:///' + path + file)
