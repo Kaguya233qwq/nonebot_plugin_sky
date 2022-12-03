@@ -14,6 +14,7 @@ def get_files(path):
 
 Files = get_files(r'nonebot_plugin_sky/tools/image')
 
+
 with open("README.md", "r", encoding="utf-8", errors="ignore") as f:
     long_description = f.read()
 setuptools.setup(

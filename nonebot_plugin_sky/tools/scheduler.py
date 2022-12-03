@@ -11,6 +11,7 @@ from nonebot_plugin_apscheduler import scheduler
 
 Scheduler = on_command("-t", aliases={'小助手'})
 
+
 try:
     recv_group_id = get_driver().config.recv_group_id
 except Exception as e:
