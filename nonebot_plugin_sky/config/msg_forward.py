@@ -32,8 +32,8 @@ def off():
 
 forward = conf()
 
-On = on_command("f -on", aliases={"开启消息转发"})
-Off = on_command("关闭消息转发", aliases={"关闭消息转发"})
+On = on_command("f -on", aliases={"开启转发模式"})
+Off = on_command("f -off", aliases={"关闭转发模式"})
 
 
 @On.handle()
