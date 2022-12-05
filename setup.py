@@ -14,12 +14,11 @@ def get_files(path):
 
 Files = get_files(r'nonebot_plugin_sky/tools/image')
 
-
 with open("README.md", "r", encoding="utf-8", errors="ignore") as f:
     long_description = f.read()
 setuptools.setup(
     name='nonebot-plugin-sky',
-    version='1.2.5',
+    version='1.2.6',
     author='Kaguya233qwq',
     author_email='1435608435@qq.com',
     keywords=["pip", "nonebot2", "nonebot", "sky光遇", "光遇"],
