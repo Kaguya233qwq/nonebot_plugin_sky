@@ -14,6 +14,8 @@ async def get_state():
         response = await client.get(
             url=url,
             headers=headers)
+        if response.status_code != 200:
+            return '服务器返回状态码异常'
         content = json.loads(response.text)
         state = content['text']
         if 'enter' in state:
