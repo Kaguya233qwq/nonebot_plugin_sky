@@ -19,7 +19,7 @@ from nonebot_plugin_sky.tools.progenitor_return import Return
 from nonebot_plugin_sky.tools.scheduler import *
 from nonebot_plugin_sky.config.msg_forward import *
 
-Menu = on_command("sky", aliases={"光遇"})
+Menu = on_command("sky", aliases={"光遇菜单"})
 DailyYoli = on_command("sky -cn", aliases={"今日国服"})
 DailyHaru = on_command("sky -in", aliases={"今日国际服"})
 Queue = on_command("queue", aliases={"排队"})
