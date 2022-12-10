@@ -2,35 +2,36 @@ from nonebot_plugin_sky.config.load_config import load, get_path
 from nonebot import on_command, logger
 from nonebot.internal.matcher import Matcher
 
+from nonebot_plugin_sky.config.load_config import get_config as config
+
 cfg_path = get_path()
 
 
-def conf():
-    config = load()
-    value = config.getboolean('Message', 'forward')
-    logger.success('读取配置成功')
-    return value
+def get_is_forward():
+    try:
+        value = config().getboolean('Message', 'forward')
+        return value
+    except Exception as e:
+        str(e)
 
 
 def on():
     global cfg_path
-    config = load()
-    config.set('Message', 'forward', 'True')
+    config().set('Message', 'forward', 'True')
 
-    config.write(open(cfg_path, 'w+'))
+    config().write(open(cfg_path, 'w+'))
     logger.success('消息转发：开启')
 
 
 def off():
     global cfg_path
-    config = load()
-    config.set('Message', 'forward', 'False')
+    config().set('Message', 'forward', 'False')
 
-    config.write(open(cfg_path, 'w+'))
+    config().write(open(cfg_path, 'w+'))
     logger.success('消息转发：关闭')
 
 
-forward = conf()
+Forward = get_is_forward()
 
 On = on_command("f -on", aliases={"开启转发模式"})
 Off = on_command("f -off", aliases={"关闭转发模式"})
@@ -39,10 +40,10 @@ Off = on_command("f -off", aliases={"关闭转发模式"})
 @On.handle()
 async def on_handle(matcher: Matcher):
     try:
-        global forward
+        global Forward
         on()
         await matcher.send('消息转发开启成功')
-        forward = conf()
+        Forward = get_is_forward()
 
     except Exception as e:
         logger.error('消息转发开启失败')
@@ -52,10 +53,10 @@ async def on_handle(matcher: Matcher):
 @Off.handle()
 async def off_handle(matcher: Matcher):
     try:
-        global forward
+        global Forward
         off()
         await matcher.send('消息转发关闭成功')
-        forward = conf()
+        Forward = get_is_forward()
 
     except Exception as e:
         logger.error('消息转发关闭失败')
@@ -63,4 +64,4 @@ async def off_handle(matcher: Matcher):
 
 
 def is_forward():
-    return forward
+    return Forward

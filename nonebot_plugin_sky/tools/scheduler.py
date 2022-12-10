@@ -3,6 +3,8 @@ from nonebot.internal.matcher import Matcher
 from nonebot.params import CommandArg
 from nonebot import require, on_command, logger, get_bot, get_driver
 
+from nonebot_plugin_sky.config.helper_at_all import *
+
 import random
 import os
 
@@ -10,7 +12,6 @@ require("nonebot_plugin_apscheduler")
 from nonebot_plugin_apscheduler import scheduler
 
 Scheduler = on_command("-t", aliases={'小助手'})
-
 
 try:
     recv_group_id = get_driver().config.recv_group_id
@@ -84,5 +85,8 @@ async def go():
     path = abspath_ + 'image/'
     image_list = os.listdir(path)
     file = random.sample(image_list, 1)[0]
-    results = text + MessageSegment.image('file:///' + path + file)
+    if at_all():
+        results = MessageSegment.at("all") + text + MessageSegment.image('file:///' + path + file)
+    else:
+        results = text + MessageSegment.image('file:///' + path + file)
     return results
