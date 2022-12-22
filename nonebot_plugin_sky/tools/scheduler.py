@@ -15,6 +15,7 @@ Scheduler = on_command("-t", aliases={'小助手'})
 
 try:
     recv_group_id = get_driver().config.recv_group_id
+    print(recv_group_id)
 except Exception as e:
     str(e)
     logger.warning('您还未配置接收小助手消息的群id')
@@ -59,12 +60,21 @@ async def scheduler_handler(matcher: Matcher, args: Message = CommandArg()):
             except Exception as p:
                 logger.error('您还未启动go-cqhttp | %s' % p)
 
-            group_id = recv_group_id
             results_ = await go()
-            await bot.send_group_msg(
-                group_id=group_id,
-                message=results_
-            )
+
+            if isinstance(recv_group_id,list):
+                for group_id in recv_group_id:
+                    await bot.send_group_msg(
+                        group_id=group_id,
+                        message=results_
+                    )
+            elif isinstance(recv_group_id,str):
+                await bot.send_group_msg(
+                        group_id=recv_group_id,
+                        message=results_
+                    )
+            else:
+                logger.error('群id配置错误，请检查您的配置')
 
     else:
         pass
