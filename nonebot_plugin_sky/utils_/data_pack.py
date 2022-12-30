@@ -96,7 +96,7 @@ async def load_image(cmd_path):
     image_list = os.listdir('SkyDataPack/' + cmd_path)
     abs_path = os.path.abspath('SkyDataPack/' + cmd_path)
     for image in image_list:
-        results += MessageSegment.image('file:///' + abs_path + "\\" + image)
+        results += MessageSegment.image('file:///' + abs_path + "/" + image)
     return results
 
 
@@ -112,7 +112,7 @@ async def install_handle():
         data = Data()
         await data.download()
         await install('SkyDataPack.zip')
-        await Install.finish('安装完成，请重新启动Bot')
+        await Install.finish('安装完成')
     else:
         pass
 
