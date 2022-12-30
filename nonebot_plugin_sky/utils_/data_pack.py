@@ -91,12 +91,12 @@ async def load_image(cmd_path):
     扫描指定命令路径下所有图片
     返回一个图片组的MessageSegment
     """
-    results = MessageSegment.face(66) + \
-        MessageSegment.text(cmd_path) + MessageSegment.face(66)
+    love = MessageSegment.face(66)
+    results = love + MessageSegment.text(cmd_path) + love
     image_list = os.listdir('SkyDataPack/' + cmd_path)
     abs_path = os.path.abspath('SkyDataPack/' + cmd_path)
     for image in image_list:
-        results += MessageSegment.image('file:///' + abs_path + "/" + image)
+        results += MessageSegment.image('file:///' + abs_path + "\\" + image)
     return results
 
 
@@ -132,12 +132,9 @@ async def selecting(existed: str = ArgPlainText("existed")):
         await Install.reject('命令不正确，请输入“是”或“否”')
 
 
-menu_list = '---数据包命令---\n'
-
-
 @Cmd.handle()
 async def cmd(args: Message = CommandArg()):
-    global menu_list
+    menu_list = '---数据包命令---\n'
     plain_text = args.extract_plain_text()
     cmd_list = os.listdir('SkyDataPack')
 

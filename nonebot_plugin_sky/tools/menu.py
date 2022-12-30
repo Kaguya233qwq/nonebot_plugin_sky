@@ -1,9 +1,10 @@
+import os
+
+from nonebot.adapters.onebot.v11 import MessageSegment
+
+
 async def get_menu():
-    return (
-        '---光遇菜单---\n'
-        '   今日国服\n'
-        '  今日国际服\n'
-        '     排队\n'
-        '     公告\n'
-        '   国服复刻'
-    )
+    abspath_ = os.path.abspath(__file__).strip('menu.py')
+    path = abspath_ + 'helper_image\\'
+    menu = MessageSegment.image('file:///' + path + 'menu.png')
+    return menu
