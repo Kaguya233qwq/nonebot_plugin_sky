@@ -1,0 +1,152 @@
+import os
+
+import httpx
+
+from asyncio import sleep
+import zipfile
+
+from nonebot import on_command, logger
+from nonebot.params import CommandArg, ArgPlainText
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
+
+
+class Data:
+    """数据传输类"""
+
+    def __init__(self):
+        self.proxy = 'https://ghproxy.com/'  # github万能反代
+        self.url = 'https://github.com/Kaguya233qwq/nonebot_plugin_sky/releases/download/datasource/SkyDataPack.zip'
+        self.headers = {
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) '
+                          'AppleWebKit/537.36 (KHTML, like Gecko) Chrome'
+                          '/62.0.3202.9 Safari/537.36',
+        }
+
+    async def download(self):
+        logger.info('开始下载安装光遇攻略数据包')
+        async with httpx.AsyncClient(
+                headers=self.headers,
+                follow_redirects=True
+        ) as client:
+            async with client.stream(
+                    "GET",
+                    url=self.proxy + self.url
+            ) as stream:
+                size = 0
+                chunk = 1024 * 1024 * 2  # 下载速度2Mb/s
+                total = int(stream.headers['content-length']) / 1024 / 1024
+                with open('SkyDataPack.zip', 'wb') as f:
+                    async for data in stream.aiter_bytes(
+                            chunk_size=chunk
+                    ):
+                        f.write(data)
+                        size += len(data) / 1024 / 1024
+                        print('\r' + '[下载进度]: %0.2f MB/%0.2f MB' % (size, total), end='')
+                        await sleep(1)
+                f.close()
+                logger.success('文件下载完成！')
+
+
+async def install(path):
+    """解压缩并移动到指定位置"""
+
+    async def support_gbk(file: zipfile.ZipFile):
+        """gbk编码防止中文乱码"""
+        name_to_info = file.NameToInfo
+        # copy map first
+        for name, info in name_to_info.copy().items():
+            real_name = name.encode('cp437').decode('gbk')
+            if real_name != name:
+                info.filename = real_name
+                del name_to_info[name]
+                name_to_info[real_name] = info
+        return file
+
+    logger.info('开始解压缩文件')
+    zip_file = zipfile.ZipFile(path)
+    zip_ = await support_gbk(zip_file)
+    file_name = path.strip('.zip')
+    for names in zip_.namelist():
+        zip_.extract(names, file_name)
+    zip_.close()
+    logger.info('解压缩完成')
+    os.unlink('SkyDataPack.zip')
+    logger.success('文件安装完成')
+
+
+async def check():
+    """检查数据包"""
+    try:
+        if os.path.exists('SkyDataPack'):
+            logger.info('数据包已安装')
+            return True
+        else:
+            return False
+    except Exception as e:
+        logger.error('扫描数据包出现错误：%s' % e)
+
+
+async def load_image(cmd_path):
+    """
+    扫描指定命令路径下所有图片
+    返回一个图片组的MessageSegment
+    """
+    results = MessageSegment.face(66) + \
+        MessageSegment.text(cmd_path) + MessageSegment.face(66)
+    image_list = os.listdir('SkyDataPack/' + cmd_path)
+    abs_path = os.path.abspath('SkyDataPack/' + cmd_path)
+    for image in image_list:
+        results += MessageSegment.image('file:///' + abs_path + "/" + image)
+    return results
+
+
+Install = on_command("sky -install", aliases={"安装数据包"})
+Cmd = on_command("")
+
+
+@Install.handle()
+async def install_handle():
+    is_existed = await check()
+    if not is_existed:
+        await Install.send('正在下载安装数据包，请稍候...')
+        data = Data()
+        await data.download()
+        await install('SkyDataPack.zip')
+        await Install.finish('安装完成，请重新启动Bot')
+    else:
+        pass
+
+
+@Install.got("existed", prompt="数据包已存在，是否删除已有资源并重新下载？")
+async def selecting(existed: str = ArgPlainText("existed")):
+    if '是' in existed:
+        os.unlink('SkyDataPack')
+        await Install.send('正在下载安装数据包，请稍候...')
+        data = Data()
+        await data.download()
+        await install('SkyDataPack.zip')
+        await Install.finish('安装完成')
+    elif '否' in existed:
+        await Install.finish('安装已取消')
+    else:
+        await Install.reject('命令不正确，请输入“是”或“否”')
+
+
+menu_list = '---数据包命令---\n'
+
+
+@Cmd.handle()
+async def cmd(args: Message = CommandArg()):
+    global menu_list
+    plain_text = args.extract_plain_text()
+    cmd_list = os.listdir('SkyDataPack')
+
+    if "nenu v2" in plain_text or "菜单v2" in plain_text:
+        for param in cmd_list:
+            menu_list += param + '\n'
+        menu_list += '-----------------'
+        await Cmd.send(menu_list)
+    for cmd_ in cmd_list:
+        if cmd_ in plain_text:
+            results_ = await load_image(cmd_)
+            await Cmd.send(results_)

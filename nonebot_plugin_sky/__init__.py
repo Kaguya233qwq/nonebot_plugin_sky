@@ -4,7 +4,6 @@
 # @Github    : neet姬辉夜大人
 # @Software: PyCharm
 
-from nonebot import on_command
 from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent
 from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed
 
@@ -14,20 +13,21 @@ from nonebot_plugin_sky.utils_.chain_reply import chain_reply
 from nonebot_plugin_sky.tools.queue import get_state
 from nonebot_plugin_sky.tools.menu import get_menu
 from nonebot_plugin_sky.tools.public_notice import get_notice
-from nonebot_plugin_sky.tools.progenitor_return import Return
+from nonebot_plugin_sky.tools.travelling_spirit import Travelling
+from nonebot_plugin_sky.utils_.data_pack import *
 
 from nonebot_plugin_sky.tools.scheduler import *
 from nonebot_plugin_sky.config.msg_forward import *
 
 Menu = on_command("sky", aliases={"光遇菜单"})
-DailyYoli = on_command("sky -cn", aliases={"今日国服"})
+DailyYori = on_command("sky -cn", aliases={"今日国服"})
 DailyHaru = on_command("sky -in", aliases={"今日国际服"})
 Queue = on_command("queue", aliases={"排队"})
 Notice = on_command("notice", aliases={"公告"})
-ReturnCN = on_command("return -cn", aliases={"国服复刻"})
+TravellingCN = on_command("return -cn", aliases={"国服复刻"})
 
 
-@DailyYoli.handle()
+@DailyYori.handle()
 async def yoli(bot: Bot, event: GroupMessageEvent):
     try:
         sky = CN()
@@ -39,11 +39,11 @@ async def yoli(bot: Bot, event: GroupMessageEvent):
                 messages=chain
             )
         else:
-            await DailyYoli.send(results)
+            await DailyYori.send(results)
 
     except (NetworkError, ActionFailed):
         logger.error('网络环境较差，调用发送信息接口超时')
-        await DailyYoli.send(
+        await DailyYori.send(
             message='网络环境较差，调用发送信息接口超时'
         )
 
@@ -119,11 +119,11 @@ async def notice(bot: Bot, event: GroupMessageEvent):
         )
 
 
-@ReturnCN.handle()
+@TravellingCN.handle()
 async def return_cn(bot: Bot, event: GroupMessageEvent):
     try:
-        return_ = Return()
-        results = await return_.get_data()
+        travelling = Travelling()
+        results = await travelling.get_data()
         if is_forward():
             chain = await chain_reply(bot, results)
             await bot.send_group_forward_msg(
@@ -131,9 +131,9 @@ async def return_cn(bot: Bot, event: GroupMessageEvent):
                 messages=chain
             )
         else:
-            await ReturnCN.send(results)
+            await TravellingCN.send(results)
     except (NetworkError, ActionFailed):
         logger.error('网络环境较差，调用发送信息接口超时')
-        await ReturnCN.send(
+        await TravellingCN.send(
             message='网络环境较差，调用发送信息接口超时'
         )

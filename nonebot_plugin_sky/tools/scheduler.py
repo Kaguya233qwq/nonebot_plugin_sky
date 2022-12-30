@@ -92,7 +92,7 @@ async def go():
     ]
     text = random.sample(texts, 1)[0]
     abspath_ = os.path.abspath(__file__).strip('scheduler.py')
-    path = abspath_ + 'image/'
+    path = abspath_ + 'helper_image/'
     image_list = os.listdir(path)
     file = random.sample(image_list, 1)[0]
     if at_all():

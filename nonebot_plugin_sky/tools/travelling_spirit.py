@@ -5,7 +5,7 @@ from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageSegment
 
 
-class Return:
+class Travelling:
     """国服复刻类"""
 
     def __init__(self):
