@@ -1,7 +1,7 @@
 from nonebot.adapters.onebot.v11 import MessageSegment
 from nonebot.adapters.onebot.v11.bot import Bot
 
-from nonebot_plugin_sky.utils_.config_loader import Nick
+from ..utils_.config_loader import Nick
 
 
 async def chain_reply(

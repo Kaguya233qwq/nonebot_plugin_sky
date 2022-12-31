@@ -3,7 +3,7 @@ from nonebot.internal.matcher import Matcher
 from nonebot.params import CommandArg
 from nonebot import require, on_command, logger, get_bot, get_driver
 
-from nonebot_plugin_sky.config.helper_at_all import *
+from ..config.helper_at_all import *
 
 import random
 import os

@@ -7,17 +7,17 @@
 from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent
 from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed
 
-from nonebot_plugin_sky.sky.national import SkyDaily as CN
-from nonebot_plugin_sky.sky.international import SkyDaily as IN
-from nonebot_plugin_sky.utils_.chain_reply import chain_reply
-from nonebot_plugin_sky.tools.queue import get_state
-from nonebot_plugin_sky.tools.menu import get_menu
-from nonebot_plugin_sky.tools.public_notice import get_notice
-from nonebot_plugin_sky.tools.travelling_spirit import Travelling
-from nonebot_plugin_sky.utils_.data_pack import *
+from .sky.national import SkyDaily as CN
+from .sky.international import SkyDaily as IN
+from .utils_.chain_reply import chain_reply
+from .tools.queue import get_state
+from .tools.menu import get_menu
+from .tools.public_notice import get_notice
+from .tools.travelling_spirit import Travelling
+from .utils_.data_pack import *
 
-from nonebot_plugin_sky.tools.scheduler import *
-from nonebot_plugin_sky.config.msg_forward import *
+from .tools.scheduler import *
+from .config.msg_forward import *
 
 Menu = on_command("sky", aliases={"光遇菜单"})
 DailyYori = on_command("sky -cn", aliases={"今日国服"})

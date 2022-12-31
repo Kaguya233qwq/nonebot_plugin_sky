@@ -2,7 +2,7 @@ from nonebot_plugin_sky.config.load_config import load, get_path
 from nonebot import on_command, logger
 from nonebot.internal.matcher import Matcher
 
-from nonebot_plugin_sky.config.load_config import get_config as config
+from ..config.load_config import get_config as config
 
 cfg_path = get_path()
 
