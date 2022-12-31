@@ -15,7 +15,7 @@ Scheduler = on_command("-t", aliases={'小助手'})
 
 try:
     recv_group_id = get_driver().config.recv_group_id
-    print(recv_group_id)
+    logger.success('[雨林干饭小助手] 以下群组已启用：%s' % recv_group_id)
 except Exception as e:
     str(e)
     logger.warning('您还未配置接收小助手消息的群id')
