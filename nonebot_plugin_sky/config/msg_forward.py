@@ -33,8 +33,8 @@ def off():
 
 Forward = get_is_forward()
 
-On = on_command("f -on", aliases={"开启转发模式"})
-Off = on_command("f -off", aliases={"关闭转发模式"})
+On = on_command("开启转发模式")
+Off = on_command("关闭转发模式")
 
 
 @On.handle()

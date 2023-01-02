@@ -9,6 +9,7 @@ def get_files(path):
     for file in files:
         file_list.append(path + '/' + file)
     file_list.append('nonebot_plugin_sky/config/config.ini')
+    file_list.append('nonebot_plugin_sky/tools/menu_image/menu.png')
     return file_list
 
 
@@ -18,7 +19,7 @@ with open("README.md", "r", encoding="utf-8", errors="ignore") as f:
     long_description = f.read()
 setuptools.setup(
     name='nonebot-plugin-sky',
-    version='2.0.2',
+    version='2.0.3',
     author='Kaguya233qwq',
     author_email='1435608435@qq.com',
     keywords=["pip", "nonebot2", "nonebot", "sky光遇", "光遇"],

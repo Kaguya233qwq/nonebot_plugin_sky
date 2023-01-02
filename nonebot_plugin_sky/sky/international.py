@@ -4,8 +4,6 @@ import httpx
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageSegment
 
-from ..utils_.date_util import get_today
-
 
 class SkyDaily:
     """国际服光遇类"""
@@ -42,8 +40,7 @@ class SkyDaily:
     async def get_data(self):
         """获取今日攻略数据"""
         results = MessageSegment.text('')
-        today = await get_today()
-        overhead = await self.get_mblog(today)
+        overhead = await self.get_mblog('')
         if overhead:
             longtext = overhead['text_raw']
             results += MessageSegment.text(longtext)

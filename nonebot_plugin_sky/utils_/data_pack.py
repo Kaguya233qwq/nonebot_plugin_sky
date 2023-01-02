@@ -70,7 +70,7 @@ async def install(path):
         zip_.extract(names, file_name)
     zip_.close()
     logger.info('解压缩完成')
-    os.unlink('SkyDataPack.zip')
+    os.remove('SkyDataPack.zip')
     logger.success('文件安装完成')
 
 
@@ -120,7 +120,7 @@ async def install_handle():
 @Install.got("existed", prompt="数据包已存在，是否删除已有资源并重新下载？")
 async def selecting(existed: str = ArgPlainText("existed")):
     if '是' in existed:
-        os.unlink('SkyDataPack')
+        os.system('rmdir "%s"' % 'SkyDataPack')
         await Install.send('正在下载安装数据包，请稍候...')
         data = Data()
         await data.download()
@@ -136,14 +136,18 @@ async def selecting(existed: str = ArgPlainText("existed")):
 async def cmd(args: Message = CommandArg()):
     menu_list = '---数据包命令---\n'
     plain_text = args.extract_plain_text()
-    cmd_list = os.listdir('SkyDataPack')
 
-    if "nenu v2" in plain_text or "菜单v2" in plain_text:
-        for param in cmd_list:
-            menu_list += param + '\n'
-        menu_list += '-----------------'
-        await Cmd.send(menu_list)
-    for cmd_ in cmd_list:
-        if cmd_ in plain_text:
-            results_ = await load_image(cmd_)
-            await Cmd.send(results_)
+    if os.path.isdir('SkyDataPack'):
+        cmd_list = os.listdir('SkyDataPack')
+        if "nenu v2" in plain_text or "菜单v2" in plain_text:
+            for param in cmd_list:
+                menu_list += param + '\n'
+            menu_list += '-----------------'
+            await Cmd.send(menu_list)
+
+            for cmd_ in cmd_list:
+                if cmd_ == plain_text:
+                    results_ = await load_image(cmd_)
+                    await Cmd.send(results_)
+    else:
+        pass
