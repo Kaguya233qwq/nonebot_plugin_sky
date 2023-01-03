@@ -1,12 +1,11 @@
+import os
+import random
+
+from nonebot import require, get_bot, get_driver
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
-from nonebot.internal.matcher import Matcher
 from nonebot.params import CommandArg
-from nonebot import require, on_command, logger, get_bot, get_driver
 
 from ..config.helper_at_all import *
-
-import random
-import os
 
 require("nonebot_plugin_apscheduler")
 from nonebot_plugin_apscheduler import scheduler
@@ -62,17 +61,17 @@ async def scheduler_handler(matcher: Matcher, args: Message = CommandArg()):
 
             results_ = await go()
 
-            if isinstance(recv_group_id,list):
+            if isinstance(recv_group_id, list):
                 for group_id in recv_group_id:
                     await bot.send_group_msg(
                         group_id=group_id,
                         message=results_
                     )
-            elif isinstance(recv_group_id,str):
+            elif isinstance(recv_group_id, str):
                 await bot.send_group_msg(
-                        group_id=recv_group_id,
-                        message=results_
-                    )
+                    group_id=recv_group_id,
+                    message=results_
+                )
             else:
                 logger.error('群id配置错误，请检查您的配置')
 

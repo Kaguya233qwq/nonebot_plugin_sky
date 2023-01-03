@@ -1,5 +1,6 @@
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageSegment
+
 from .travelling_spirit import Travelling
 
 
