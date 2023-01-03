@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 # @Author  : 子龙君
 # @Email   :  1435608435@qq.com
-# @Github    : neet姬辉夜大人
+# @Github  : neet姬辉夜大人
 # @Software: PyCharm
 
 from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent
 from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed
+from pydantic.datetime_parse import datetime
 
-from .sky.national import SkyDaily as CN
+from .config.msg_forward import *
 from .sky.international import SkyDaily as IN
-from .utils_.chain_reply import chain_reply
-from .tools.queue import get_state
+from .sky.national import SkyDaily as CN
+from .tools.in_travelling_spirit import get_data
 from .tools.menu import get_menu
 from .tools.public_notice import get_notice
-from .tools.travelling_spirit import Travelling as travel_CN
-from .tools.in_travelling_spirit import get_data
-from .utils_.data_pack import *
-
+from .tools.queue import get_state
 from .tools.scheduler import *
-from .config.msg_forward import *
+from .tools.travelling_spirit import Travelling as travel_CN
+from .utils_.chain_reply import chain_reply
+from .utils_.data_pack import *
 
 Menu = on_command("-sky", aliases={"光遇菜单"})
 DailyYori = on_command("sky -cn", aliases={"今日国服", "国服今日任务", "今日任务"})
@@ -27,6 +27,7 @@ Queue = on_command("queue", aliases={"排队"})
 Notice = on_command("notice", aliases={"公告"})
 TravellingCN = on_command("travel -cn", aliases={"国服复刻"})
 TravellingIN = on_command("travel -in", aliases={"国际服复刻"})
+RemainCN = on_command("remain -cn", aliases={"国服季节剩余"})
 
 
 @DailyYori.handle()
@@ -157,4 +158,36 @@ async def travel_in(bot: Bot, event: GroupMessageEvent):
         logger.error('网络环境较差，调用发送信息接口超时')
         await TravellingIN.send(
             message='网络环境较差，调用发送信息接口超时'
+        )
+
+
+# @Author  : ZQDesigned
+# @Email   :  2990918167@qq.com
+# @Github  : ZQDesigned
+# @Software: IDEA Ultimate 2022.3.1
+@RemainCN.handle()
+async def remain_cn():
+    # 定义剩余时间
+    deadline = datetime.datetime(2023, 1, 15, 23, 59, 59)
+    # 获取当前时间
+    now = datetime.datetime.now()
+    # 判断当前时间是否大于截止时间
+    if now > deadline:
+        await RemainCN.send(
+            message='季节已经过去了，下一个季节还有一段时间呢'
+        )
+    else:
+        # 计算剩余时间
+        remain_time = deadline - now
+        # 获取天数
+        days = remain_time.days
+        # 获取小时
+        hours = remain_time.seconds // 3600
+        # 获取分钟
+        minutes = remain_time.seconds % 3600 // 60
+        # 获取秒
+        seconds = remain_time.seconds % 3600 % 60
+        # 发送剩余时间
+        await RemainCN.send(
+            message=f'距离欧若拉季结束还有{days}天{hours}小时{minutes}分钟{seconds}秒'
         )

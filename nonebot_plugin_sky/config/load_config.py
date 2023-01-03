@@ -1,6 +1,6 @@
-from pathlib import Path
-import os
 import configparser
+import os
+from pathlib import Path
 
 from nonebot import logger
 
