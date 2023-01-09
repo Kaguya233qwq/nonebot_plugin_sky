@@ -8,17 +8,19 @@ from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent
 from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed
 from pydantic.datetime_parse import datetime
 
-from .config.msg_forward import *
 from .sky.international import SkyDaily as IN
 from .sky.national import SkyDaily as CN
 from .tools.in_travelling_spirit import get_data
 from .tools.menu import get_menu
 from .tools.public_notice import get_notice
 from .tools.queue import get_state
-from .tools.scheduler import *
 from .tools.travelling_spirit import Travelling as travel_CN
 from .utils_.chain_reply import chain_reply
 from .utils_.data_pack import *
+from .config.msg_forward import *
+from .tools.scheduler import *
+from .utils_.notice_board import *
+
 
 Menu = on_command("-sky", aliases={"光遇菜单"})
 DailyYori = on_command("sky -cn", aliases={"今日国服", "国服今日任务", "今日任务"})
