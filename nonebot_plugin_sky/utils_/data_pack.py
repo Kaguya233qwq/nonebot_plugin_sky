@@ -99,7 +99,8 @@ async def load_image(cmd_path):
 
 
 Install = on_command("sky -install", aliases={"安装数据包"})
-Cmd = on_command("")
+MenuV2 = on_command("menu v2", aliases={"菜单v2", "数据包菜单"})
+Cmd = on_command("-")
 
 
 @Install.handle()
@@ -130,19 +131,23 @@ async def selecting(existed: str = ArgPlainText("existed")):
         await Install.reject('命令不正确，请输入“是”或“否”')
 
 
-@Cmd.handle()
-async def cmd(args: Message = CommandArg()):
+@MenuV2.handle()
+async def menu_v2():
     menu_list = '---数据包命令---\n'
-    plain_text = args.extract_plain_text()
-
     if os.path.isdir('SkyDataPack'):
         cmd_list = os.listdir('SkyDataPack')
-        if "nenu v2" in plain_text or "菜单v2" in plain_text:
-            for param in cmd_list:
-                menu_list += param + '\n'
-            menu_list += '-----------------'
-            await Cmd.send(menu_list)
+        for param in cmd_list:
+            menu_list += "-" + param + '\n'
+        menu_list += '-----------------'
+        await Cmd.send(menu_list)
 
+
+@Cmd.handle()
+async def cmd(args: Message = CommandArg()):
+
+    plain_text = args.extract_plain_text()
+    if os.path.isdir('SkyDataPack'):
+        cmd_list = os.listdir('SkyDataPack')
         for cmd_ in cmd_list:
             if cmd_ == plain_text:
                 results_ = await load_image(cmd_)
