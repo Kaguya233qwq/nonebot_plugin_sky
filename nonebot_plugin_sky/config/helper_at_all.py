@@ -1,8 +1,8 @@
-from ..config.load_config import load, get_path
 from nonebot import on_command, logger
 from nonebot.internal.matcher import Matcher
 
 from ..config.load_config import get_config as config
+from ..config.load_config import get_path
 
 cfg_path = get_path()
 

@@ -1,13 +1,11 @@
 import os
+import zipfile
+from asyncio import sleep
 
 import httpx
-
-from asyncio import sleep
-import zipfile
-
 from nonebot import on_command, logger
-from nonebot.params import CommandArg, ArgPlainText
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
+from nonebot.params import CommandArg, ArgPlainText
 
 
 class Data:

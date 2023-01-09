@@ -1,5 +1,6 @@
-import setuptools
 import os
+
+import setuptools
 
 
 def get_files(path):
