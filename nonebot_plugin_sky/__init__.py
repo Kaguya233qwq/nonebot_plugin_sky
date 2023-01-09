@@ -6,7 +6,7 @@
 
 from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent
 from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed
-from pydantic.datetime_parse import datetime
+import datetime
 
 from .sky.international import SkyDaily as IN
 from .sky.national import SkyDaily as CN
