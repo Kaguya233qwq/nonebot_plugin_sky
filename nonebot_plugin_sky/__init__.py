@@ -19,6 +19,8 @@ from .utils_.data_pack import *
 
 from .tools.scheduler import *
 from .config.msg_forward import *
+from .guild import *
+from .utils_.notice_board import *
 
 Menu = on_command("-sky", aliases={"光遇菜单"})
 DailyYori = on_command("sky -cn", aliases={"今日国服", "国服今日任务", "今日任务"})

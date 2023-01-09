@@ -145,9 +145,9 @@ async def cmd(args: Message = CommandArg()):
             menu_list += '-----------------'
             await Cmd.send(menu_list)
 
-            for cmd_ in cmd_list:
-                if cmd_ == plain_text:
-                    results_ = await load_image(cmd_)
-                    await Cmd.send(results_)
+        for cmd_ in cmd_list:
+            if cmd_ == plain_text:
+                results_ = await load_image(cmd_)
+                await Cmd.send(results_)
     else:
         pass
