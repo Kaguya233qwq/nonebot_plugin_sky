@@ -19,8 +19,12 @@ async def get_notice():
             headers=headers
         )
         bs = BeautifulSoup(res.text)
-        notice = bs.find_all(id='LC2')[0].text
-        return notice
+        results_ = ''
+        notice_list = bs.find_all(class_='blob-code blob-code-inner js-file-line')
+        for notice in notice_list:
+            results_ += notice.text+'\n'
+        print(notice_list)
+        return results_
 
 
 Notice = on_command("插件公告")
@@ -29,4 +33,4 @@ Notice = on_command("插件公告")
 @Notice.handle()
 async def _():
     results_ = await get_notice()
-    await Notice.send("❀❀❀【公告板】❀❀❀\n"+results_)
+    await Notice.send(results_)
