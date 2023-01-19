@@ -19,7 +19,7 @@ class Travelling:
                       '-yT9jqnAOtRB6P_daaLXfdvYkPfvZhXy3bTeuLdBjWXF9;'  # 未登录时的cookie直接写死
         }
         self.copyright_ = ('------------'
-                           '\r【数据来源：微博@木易不高兴了啊】\n'
+                           '\r【数据来源：微博@光遇陈陈】\n'
                            '--本插件仅做数据展示之用，著作权归原文作者所有。'
                            '转载或转发请附文章作者微博--')
 
