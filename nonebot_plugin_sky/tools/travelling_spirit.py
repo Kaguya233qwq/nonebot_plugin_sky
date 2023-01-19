@@ -9,7 +9,7 @@ class Travelling:
     """国服复刻类"""
 
     def __init__(self):
-        self.url = 'https://weibo.com/ajax/statuses/mymblog?uid=5539106873&feature=0'
+        self.url = 'https://weibo.com/ajax/statuses/mymblog?uid=7444390196&feature=0'
         self.longtext = 'https://weibo.com/ajax/statuses/longtext?id='
         self.headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) '
@@ -19,12 +19,12 @@ class Travelling:
                       '-yT9jqnAOtRB6P_daaLXfdvYkPfvZhXy3bTeuLdBjWXF9;'  # 未登录时的cookie直接写死
         }
         self.copyright_ = ('------------'
-                           '\r【数据来源：微博@光遇陈陈】\n'
+                           '\r【数据来源：微博@木易不高兴了啊】\n'
                            '--本插件仅做数据展示之用，著作权归原文作者所有。'
                            '转载或转发请附文章作者微博--')
 
     async def get_mblog(self, params, max_page):
-        """获取微博 @光遇陈陈 复刻先祖详情"""
+        """获取微博 @木易不高兴了啊 复刻先祖详情"""
 
         for page in range(1, max_page + 1):
             param = {
@@ -40,7 +40,8 @@ class Travelling:
                 overhead = content['data']['list']
                 for log in overhead:
                     if ('本周复刻' in log['text_raw'] or
-                            '#光遇复刻#' in log['text_raw']
+                            '#光遇复刻#' in log['text_raw'] or
+                            '复刻' in log['text_raw']
                             and params in log['text_raw']):
                         return log
         return None
