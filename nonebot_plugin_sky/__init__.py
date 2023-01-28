@@ -20,6 +20,7 @@ from .utils_.data_pack import *
 from .config.msg_forward import *
 from .tools.scheduler import *
 from .utils_.notice_board import *
+from .utils_.check_update import *
 
 
 Menu = on_command("-sky", aliases={"光遇菜单"})
@@ -170,7 +171,7 @@ async def travel_in(bot: Bot, event: GroupMessageEvent):
 @RemainCN.handle()
 async def remain_cn():
     # 定义剩余时间
-    deadline = datetime.datetime(2023, 1, 15, 23, 59, 59)
+    deadline = datetime.datetime(2023, 4, 2, 23, 59, 59)
     # 获取当前时间
     now = datetime.datetime.now()
     # 判断当前时间是否大于截止时间
@@ -191,5 +192,5 @@ async def remain_cn():
         seconds = remain_time.seconds % 3600 % 60
         # 发送剩余时间
         await RemainCN.send(
-            message=f'距离欧若拉季结束还有{days}天{hours}小时{minutes}分钟{seconds}秒'
+            message=f'距离追忆季结束还有{days}天{hours}小时{minutes}分钟{seconds}秒'
         )

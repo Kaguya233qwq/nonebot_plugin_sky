@@ -39,9 +39,7 @@ class Travelling:
                 content = json.loads(response.text)
                 overhead = content['data']['list']
                 for log in overhead:
-                    if ('本周复刻' in log['text_raw'] or
-                            '#光遇复刻#' in log['text_raw'] or
-                            '复刻' in log['text_raw']
+                    if ('#光遇复刻#' in log['text_raw']
                             and params in log['text_raw']):
                         return log
         return None

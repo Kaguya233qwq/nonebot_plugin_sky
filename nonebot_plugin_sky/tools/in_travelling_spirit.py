@@ -55,12 +55,16 @@ async def get_data():
     results = MessageSegment.text('')
     overhead = await travel.get_mblog('【国际服】', 100)
     if overhead:
-        pic_infos = overhead['pic_infos']
-        for pic in pic_infos:
-            large_url = pic_infos[pic]['large']['url']
-            img = MessageSegment.image(large_url)
-            results += img
-        results += copyright_
+        pic_infos = overhead.get('pic_infos')
+        if pic_infos:
+            for pic in pic_infos:
+                large_url = pic_infos[pic]['large']['url']
+                img = MessageSegment.image(large_url)
+                results += img
+            results += copyright_
+        else:
+            results += overhead['text_raw']
+            results += copyright_
     else:
         notice = '没有找到国际服复刻先祖的数据'
         logger.warning(notice)

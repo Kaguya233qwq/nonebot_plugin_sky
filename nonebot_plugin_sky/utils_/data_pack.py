@@ -1,5 +1,6 @@
 import os
 import zipfile
+import shutil
 from asyncio import sleep
 
 import httpx
@@ -23,8 +24,7 @@ class Data:
     async def download(self):
         logger.info('开始下载安装光遇攻略数据包')
         async with httpx.AsyncClient(
-                headers=self.headers,
-                follow_redirects=True
+                headers=self.headers
         ) as client:
             async with client.stream(
                     "GET",
@@ -119,7 +119,7 @@ async def install_handle():
 @Install.got("existed", prompt="数据包已存在，是否删除已有资源并重新下载？")
 async def selecting(existed: str = ArgPlainText("existed")):
     if '是' in existed:
-        os.system('rmdir "%s"' % 'SkyDataPack')
+        shutil.rmtree('SkyDataPack')
         await Install.send('正在下载安装数据包，请稍候...')
         data = Data()
         await data.download()
@@ -137,7 +137,8 @@ async def menu_v2():
     if os.path.isdir('SkyDataPack'):
         cmd_list = os.listdir('SkyDataPack')
         for param in cmd_list:
-            menu_list += "-" + param + '\n'
+            if os.path.isdir('SkyDataPack/%s' % param):
+                menu_list += "-" + param + '\n'
         menu_list += '-----------------'
         await Cmd.send(menu_list)
 

@@ -13,7 +13,7 @@ async def get_notice():
                       'AppleWebKit/537.36 (KHTML, like Gecko) Chrome'
                       '/62.0.3202.9 Safari/537.36'
     }
-    async with httpx.AsyncClient(verify=False, timeout=10000) as client:
+    async with httpx.AsyncClient(verify=False, timeout=None) as client:
         res = await client.get(
             url=url,
             headers=headers
