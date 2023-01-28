@@ -14,7 +14,7 @@ def get_files(path):
     return file_list
 
 
-Files = get_files(r'../tools/helper_image')
+Files = get_files(r'nonebot_plugin_sky/tools/helper_image')
 
 
 with open("README.md", "r", encoding="utf-8", errors="ignore") as f:
