@@ -39,14 +39,18 @@ class Travelling:
                 content = json.loads(response.text)
                 overhead = content['data']['list']
                 for log in overhead:
-                    if ('【复刻】' in log['text_raw']
-                            and params in log['text_raw']):
+                    if (
+                        '【复刻】' in log['text_raw']
+                        and params in log['text_raw']
+                        and '时间' in log['text_raw']
+                        and '地点' in log['text_raw']
+                    ):
                         return log
         return None
 
 
 async def get_data():
-    """获取今日攻略数据"""
+    """获取复刻数据"""
     copyright_ = ('------------'
                   '\r【数据来源：微博@光遇陈陈】\n'
                   '--本插件仅做数据展示之用，著作权归原文作者所有。'

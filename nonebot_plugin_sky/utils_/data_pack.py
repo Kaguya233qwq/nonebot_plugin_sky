@@ -23,26 +23,29 @@ class Data:
 
     async def download(self):
         logger.info('开始下载安装光遇攻略数据包')
-        async with httpx.AsyncClient(
-                headers=self.headers
-        ) as client:
-            async with client.stream(
-                    "GET",
-                    url=self.proxy + self.url
-            ) as stream:
-                size = 0
-                chunk = 1024 * 1024 * 2  # 下载速度2Mb/s
-                total = int(stream.headers['content-length']) / 1024 / 1024
-                with open('SkyDataPack.zip', 'wb') as f:
-                    async for data in stream.aiter_bytes(
-                            chunk_size=chunk
-                    ):
-                        f.write(data)
-                        size += len(data) / 1024 / 1024
-                        print('\r' + '[下载进度]: %0.2f MB/%0.2f MB' % (size, total), end='')
-                        await sleep(1)
-                f.close()
-                logger.success('文件下载完成！')
+        try:
+            async with httpx.AsyncClient(
+                    headers=self.headers
+            ) as client:
+                async with client.stream(
+                        "GET",
+                        url=self.proxy + self.url
+                ) as stream:
+                    size = 0
+                    chunk = 1024 * 1024 * 2  # 下载速度2Mb/s
+                    total = int(stream.headers['content-length']) / 1024 / 1024
+                    with open('SkyDataPack.zip', 'wb') as f:
+                        async for data in stream.aiter_bytes(
+                                chunk_size=chunk
+                        ):
+                            f.write(data)
+                            size += len(data) / 1024 / 1024
+                            print('\r' + '[下载进度]: %0.2f MB/%0.2f MB' % (size, total), end='')
+                            await sleep(1)
+                    f.close()
+                    logger.success('文件下载完成！')
+        except (httpx.HTTPError, httpx.NetworkError):
+            logger.error('数据包下载失败，请检查网络后重试')
 
 
 async def install(path):
@@ -105,34 +108,46 @@ Cmd = on_command("-")
 
 @Install.handle()
 async def install_handle():
-    is_existed = await check()
-    if not is_existed:
-        await Install.send('正在下载安装数据包，请稍候...')
-        data = Data()
-        await data.download()
-        await install('SkyDataPack.zip')
-        await Install.finish('安装完成')
-    else:
-        pass
+    """
+    下载数据包的流程逻辑
+    """
+    try:
+        is_existed = await check()
+        if not is_existed:
+            await Install.send('正在下载安装数据包，请稍候...')
+            data = Data()
+            await data.download()
+            await install('SkyDataPack.zip')
+            await Install.finish('安装完成')
+        else:
+            pass
+    except (httpx.HTTPError, httpx.NetworkError):
+        await Install.send('安装失败。请稍后重试')
 
 
 @Install.got("existed", prompt="数据包已存在，是否删除已有资源并重新下载？")
 async def selecting(existed: str = ArgPlainText("existed")):
-    if '是' in existed:
-        shutil.rmtree('SkyDataPack')
-        await Install.send('正在下载安装数据包，请稍候...')
-        data = Data()
-        await data.download()
-        await install('SkyDataPack.zip')
-        await Install.finish('安装完成')
-    elif '否' in existed:
-        await Install.finish('安装已取消')
-    else:
-        await Install.reject('命令不正确，请输入“是”或“否”')
+    try:
+        if '是' in existed:
+            shutil.rmtree('SkyDataPack')
+            await Install.send('正在下载安装数据包，请稍候...')
+            data = Data()
+            await data.download()
+            await install('SkyDataPack.zip')
+            await Install.finish('安装完成')
+        elif '否' in existed:
+            await Install.finish('安装已取消')
+        else:
+            await Install.reject('命令不正确，请输入“是”或“否”')
+    except (httpx.HTTPError, httpx.NetworkError):
+        await Install.send('安装失败。请稍后重试')
 
 
 @MenuV2.handle()
 async def menu_v2():
+    """
+    扫描目录下的文件夹，生成命令列表
+    """
     menu_list = '---数据包命令---\n'
     if os.path.isdir('SkyDataPack'):
         cmd_list = os.listdir('SkyDataPack')
@@ -145,7 +160,9 @@ async def menu_v2():
 
 @Cmd.handle()
 async def cmd(args: Message = CommandArg()):
-
+    """
+    扫描文件夹，按照文件夹名注入命令
+    """
     plain_text = args.extract_plain_text()
     if os.path.isdir('SkyDataPack'):
         cmd_list = os.listdir('SkyDataPack')
