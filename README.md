@@ -344,3 +344,7 @@ _当前版本包含的命令_：
 
 </details>
 
+## 已通过墨菲安全检测：
+
+[![Security Status](https://www.murphysec.com/platform3/v3/badge/1614390303725748224.svg?t=1)](https://www.murphysec.com/accept?code=42caa007865facda50ed119894201320&type=1&from=2&t=2)
+
