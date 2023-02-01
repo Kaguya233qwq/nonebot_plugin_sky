@@ -1,4 +1,5 @@
 import json
+import re
 
 import httpx
 from nonebot import logger
@@ -23,7 +24,7 @@ class Travelling:
                            '--本插件仅做数据展示之用，著作权归原文作者所有。'
                            '转载或转发请附文章作者微博--')
 
-    async def get_mblog(self, params, max_page):
+    async def get_mblog(self, max_page):
         """获取微博 @光遇陈陈 国际服复刻先祖详情"""
 
         for page in range(1, max_page + 1):
@@ -40,10 +41,12 @@ class Travelling:
                 overhead = content['data']['list']
                 for log in overhead:
                     if (
-                        '【复刻】' in log['text_raw']
-                        and params in log['text_raw']
-                        and '时间' in log['text_raw']
-                        and '地点' in log['text_raw']
+                            log.get('pic_infos') and
+                            re.findall(
+                                r'(^【国际服】【复刻】).*?#(光遇)*(复刻)#',
+                                log['text_raw']
+                            )
+                            # 错了再改
                     ):
                         return log
         return None
@@ -57,7 +60,7 @@ async def get_data():
                   '转载或转发请附文章作者微博--')
     travel = Travelling()
     results = MessageSegment.text('')
-    overhead = await travel.get_mblog('【国际服】', 100)
+    overhead = await travel.get_mblog(100)
     if overhead:
         pic_infos = overhead.get('pic_infos')
         if pic_infos:
