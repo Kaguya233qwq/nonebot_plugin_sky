@@ -53,11 +53,13 @@ apscheduler:
 
 `nb plugin install nonebot_plugin_apscheduler`
 
-## 配置bot.py文件（必需）
+## 配置bot.py文件（雨林干饭小助手必要的，如果不配置会报错）
 
 您必须确保您的bot.py配置中定时器默认关闭状态，即添加：
 
 `nonebot.init(apscheduler_autostart=False)`
+
+在新版的nonebot2中已经移除了bot.py这个文件，详情请参照nb2的文档编写。
 
 ## 安装本插件
 
@@ -141,7 +143,7 @@ _当前版本包含的命令_：
 
 * [X]  每日干饭提醒小助手
 * [X]  更多光遇攻略
-* [ ]  数据包扩充
+* [X]  数据包扩充
 * [ ]  光遇扩展插件
 
 # ✨效果展示✨
