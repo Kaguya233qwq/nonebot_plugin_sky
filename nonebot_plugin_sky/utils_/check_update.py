@@ -6,7 +6,7 @@ from nonebot import on_command, logger
 
 logging.captureWarnings(True)  # 去掉建议使用SSL验证的显示
 
-Version = '2.0.8.post1'  # 全局插件版本信息
+Version = '2.0.9'  # 全局插件版本信息
 
 
 async def get_datapack_ver():
@@ -95,7 +95,7 @@ async def check_handle():
             results += '-当前插件已是最新版本(v%s)\n' % Version
             logger.info('当前插件已是最新版本(v%s)' % Version)
         else:
-            results += '-[New]发现新版本插件：v%s\n' % plugin_latest
+            results += f'-[New]发现新版本插件：v{Version} -> v{plugin_latest}\n'
             logger.warning('发现新版本插件：v%s' % plugin_latest)
     else:
         results += '-[Error]插件检查更新失败，请稍后重试'
@@ -107,7 +107,7 @@ async def check_handle():
             results += '-本地数据包已是最新版本(v%s)' % datapack_current
             logger.info('本地数据包已是最新版本(v%s)' % datapack_current)
         else:
-            results += '-[New]发现新版本数据包：v%s' % datapack_latest
+            results += f'-[New]发现新版本数据包：v{datapack_current} -> v{datapack_latest}'
             logger.warning('发现新版本数据包：v%s' % datapack_latest)
     else:
         results += '-[Error]数据包检查更新失败，请稍后重试'

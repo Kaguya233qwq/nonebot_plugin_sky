@@ -4,7 +4,6 @@
 # @Github  : neet姬辉夜大人
 # @Software: PyCharm
 
-from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent
 from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed
 import datetime
 
@@ -21,7 +20,7 @@ from .config.msg_forward import *
 from .tools.scheduler import *
 from .utils_.notice_board import *
 from .utils_.check_update import *
-
+from .tools.candles_query import *
 
 Menu = on_command("-sky", aliases={"光遇菜单"})
 DailyYori = on_command("sky -cn", aliases={"今日国服", "国服今日任务", "今日任务"})
