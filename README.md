@@ -34,17 +34,21 @@ _“因光而遇”_
 
 ### 6.遇到问题
 
-### 7.更新日志
+### 7.感谢名单
+
+### 8.更新日志
 
 # ✨开始使用✨
 
-## 在.env文件中配置接收小助手消息的群号
+## 1.在.env文件中配置接收小助手消息的群号
 
 `recv_group_id="12345"`(单个)
 
 `recv_group_id=["12345","66666",...]`(多个)
 
-## 安装前置插件依赖（**必需**）：
+## 2.检查前置插件依赖：
+
+### 一般情况下这个依赖是自动装好的
 
 apscheduler:
 [Github项目地址](https://github.com/nonebot/plugin-apscheduler)
@@ -53,17 +57,17 @@ apscheduler:
 
 `nb plugin install nonebot_plugin_apscheduler`
 
-## 配置bot.py文件（雨林干饭小助手必要的，如果不配置会报错）
+## 3.配置bot.py文件（雨林干饭小助手必要的，如果不配置会报错）
 
 您必须确保您的bot.py配置中定时器默认关闭状态，即添加：
 
 `nonebot.init(apscheduler_autostart=False)`
 
-在新版的nonebot2中已经移除了bot.py这个文件，详情请参照nb2的文档编写。
+### _**在新版的nonebot2中nb create命令默认不再生成bot.py文件，需要手动使用nb命令生成**_
 
-## 安装本插件
+## 4.安装本插件
 
-1.使用pip包管理器安装(推荐)：
+1.使用pip包管理器安装(**推荐**)：
 
 `pip install nonebot-plugin-sky`
 
@@ -107,7 +111,7 @@ _当前版本包含的命令_：
 
 ### 若有需要，关闭转发模式即可。
 
-### **//【攻略数据来自微博@今天游离翻车了吗 @旧日与春 @光遇陈陈】**
+### **//【攻略数据来自微博@今天游离翻车了吗 @旧日与春 @光遇陈陈 @张张幼稚园】**
 
 ### **任何情况下攻略最后的版权信息请勿私自移除**
 
@@ -152,31 +156,29 @@ _当前版本包含的命令_：
 
 # ✨效果展示✨
 
-![](.README_images/test.jpg)
+<p align="center">
+  <a href="https://github.com/"><img src="https://github.com/Kaguya233qwq/nonebot_plugin_sky/blob/main/.README_images/view.png?raw=true" width="300" height="350" alt="QRCode"></a>
+</p>
 
 # ✨遇到问题✨
 
-## **联系他 （本插件的真寻移植版开发者）**
-
-## **QQ：1179514075**
-
-## **或者联系我本人（优先找他）**
+## 扫码加入我们的qq群，在线答疑解惑
 
 <p align="center">
-  <a href="https://github.com/"><img src="https://github.com/Kaguya233qwq/nonebot_plugin_alicdk_get/blob/main/.README_images/17623ac4.png?raw=true" width="300" height="350" alt="QRCode"></a>
+  <a href="https://github.com/"><img src="https://github.com/Kaguya233qwq/nonebot_plugin_sky/blob/main/.README_images/group.png?raw=true" width="300" height="350" alt="QRCode"></a>
 </p>
 
 ## ✨感谢名单（不分先后）✨
 
-####光萌攻略组 -> *提供蜡烛查询api*
+光萌攻略组 -> *提供蜡烛查询api*
 
-####新浪微博@光遇陈陈 —> *攻略内容*
+新浪微博@光遇陈陈 —> *攻略内容*
 
-####新浪微博@旧日与春 —> *攻略内容*
+新浪微博@旧日与春 —> *攻略内容*
 
-####新浪微博@今天游离翻车了吗 —> *攻略内容*
+新浪微博@今天游离翻车了吗 —> *攻略内容*
 
-####新浪微博@张张幼稚园 —> *攻略内容*
+新浪微博@张张幼稚园 —> *攻略内容*
 
 ## ✨更新日志✨
 
