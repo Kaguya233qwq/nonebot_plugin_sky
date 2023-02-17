@@ -157,7 +157,7 @@ _当前版本包含的命令_：
 # ✨效果展示✨
 
 <p align="center">
-  <a href="https://github.com/"><img src="https://github.com/Kaguya233qwq/nonebot_plugin_sky/blob/main/.README_images/view.png?raw=true" width="300" height="350" alt="QRCode"></a>
+  <a href="https://github.com/"><img src="https://github.com/Kaguya233qwq/nonebot_plugin_sky/.README_images/view.png?raw=true" width="300" height="350" alt="View"></a>
 </p>
 
 # ✨遇到问题✨
@@ -165,7 +165,7 @@ _当前版本包含的命令_：
 ## 扫码加入我们的qq群，在线答疑解惑
 
 <p align="center">
-  <a href="https://github.com/"><img src="https://github.com/Kaguya233qwq/nonebot_plugin_sky/blob/main/.README_images/group.png?raw=true" width="300" height="350" alt="QRCode"></a>
+  <a href="https://github.com/"><img src="https://github.com/Kaguya233qwq/nonebot_plugin_sky/.README_images/group.png?raw=true" width="300" height="350" alt="QRCode"></a>
 </p>
 
 ## ✨感谢名单（不分先后）✨
