@@ -43,9 +43,10 @@ class Travelling:
                     if (
                             log.get('pic_infos') and
                             re.findall(
-                                r'(^【国际服】【复刻】).*?#(光遇)*(复刻)#',
+                                r'#(光遇)*([\u4e00-\u9fa5])*(先祖)*(复刻)+#',
                                 log['text_raw']
-                            )
+                            ) and
+                            '国际服' in log['text_raw']
                             # 错了再改
                     ):
                         return log

@@ -45,8 +45,9 @@ class Travelling:
                             re.findall(
                                 r'#(光遇)*([\u4e00-\u9fa5])*(先祖)*(复刻)+#',
                                 log['text_raw']
-                            )
-                            # 陈陈成功提升了我的正则水平
+                            ) and
+                            '国服' in log['text_raw']
+                            # 讲声多谢陈陈哥啦
                     ):
                         return log
         return None

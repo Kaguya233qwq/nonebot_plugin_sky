@@ -1,3 +1,5 @@
+import re
+
 import httpx
 from bs4 import BeautifulSoup
 import logging
@@ -6,7 +8,7 @@ from nonebot import on_command, logger
 
 logging.captureWarnings(True)  # 去掉建议使用SSL验证的显示
 
-Version = '2.0.9.post1'  # 全局插件版本信息
+Version = '2.0.10'  # 全局插件版本信息
 
 
 async def get_datapack_ver():
@@ -56,7 +58,7 @@ async def check_datapack_latest():
     """
     检查最新发布的数据包版本
     """
-    url = 'https://github.com/Kaguya233qwq/nonebot_plugin_sky'
+    url = 'https://gitee.com/Kaguya233qwq/nonebot_plugin_sky/'
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) '
                       'AppleWebKit/537.36 (KHTML, like Gecko) Chrome'
@@ -71,10 +73,11 @@ async def check_datapack_latest():
                 url=url,
                 headers=headers
             )
-            bs = BeautifulSoup(res.text)
+            bs = BeautifulSoup(res.text,'lxml')
             latest_ver = bs.find(
-                class_='css-truncate css-truncate-target text-bold mr-2'
-            ).text.strip('SkyDataPack-')
+                string=re.compile(
+                    'SkyDataPack-v(\d+.\d+.\d+)')
+            ).strip('SkyDataPack-v')
             return latest_ver
     except Exception as e:
         str(e)

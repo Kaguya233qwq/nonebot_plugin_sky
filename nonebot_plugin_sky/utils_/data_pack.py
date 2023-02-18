@@ -8,13 +8,15 @@ from nonebot import on_command, logger
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.params import CommandArg, ArgPlainText
 
+from .check_update import check_datapack_latest
+
 
 class Data:
     """数据传输类"""
 
     def __init__(self):
-        self.proxy = 'https://ghproxy.com/'  # github万能反代
-        self.url = 'https://github.com/Kaguya233qwq/nonebot_plugin_sky/releases/download/datasource/SkyDataPack.zip'
+
+        self.url = f'https://gitee.com/Kaguya233qwq/nonebot_plugin_sky/releases/download/SkyDataPack-v'
         self.headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) '
                           'AppleWebKit/537.36 (KHTML, like Gecko) Chrome'
@@ -24,12 +26,15 @@ class Data:
     async def download(self):
         logger.info('开始下载安装光遇攻略数据包')
         try:
+            version = await check_datapack_latest()
+            ver_url = f'{version}/SkyDataPack.zip'
             async with httpx.AsyncClient(
                     headers=self.headers
             ) as client:
                 async with client.stream(
                         "GET",
-                        url=self.proxy + self.url
+                        url=self.url + ver_url,
+                        follow_redirects=True
                 ) as stream:
                     size = 0
                     chunk = 1024 * 1024 * 2  # 下载速度2Mb/s
