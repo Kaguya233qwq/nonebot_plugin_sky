@@ -40,11 +40,28 @@ _“因光而遇”_
 
 # ✨开始使用✨
 
-## 1.在.env文件中配置接收小助手消息的群号
+## 1.安装nonebot2框架及环境部署：
 
-`recv_group_id="12345"`(单个)
+这里只简单介绍步骤，详情查看
 
-`recv_group_id=["12345","66666",...]`(多个)
+[Nonebot2文档](https://nb2.baka.icu/docs/start/installation)
+
+[Nonebot2保姆级部署教程](https://www.bilibili.com/video/BV1aZ4y1f7e2)
+
+执行`pip install nb-cli`
+
+安装完就可以执行`nb create`命令来初始化项目模板文件。适配器请选择onebot-v11
+
+之后根据文档中配置好env文件的地址、端口等内容
+
+交互端推荐[go-cqhttp的rc3版本](https://github.com/Mrs4s/go-cqhttp/releases/v1.0.0-rc3)
+
+（rc4版本存在无法发送图片的bug）
+
+需要配置和nb一样的IP地址和端口
+
+...
+
 
 ## 2.检查前置插件依赖：
 
@@ -57,23 +74,34 @@ apscheduler:
 
 `nb plugin install nonebot_plugin_apscheduler`
 
-## 3.配置bot.py文件（雨林干饭小助手必要的，如果不配置会报错）
+## 3.配置bot.py文件，配置群号（雨林干饭小助手必要的，如果不配置会报错）
 
 您必须确保您的bot.py配置中定时器默认关闭状态，即添加：
 
 `nonebot.init(apscheduler_autostart=False)`
 
+如果你不要求也可以忽略
+
+在.env.xxx文件中配置接收小助手消息的群号，如果.env中ENVIRONMENT=prod,
+则在.env.prod中添加以下内容：
+
+`recv_group_id="12345"`(单个)
+
+`recv_group_id=["12345","66666",...]`(多个)
+
 ### _**在新版的nonebot2中nb create命令默认不再生成bot.py文件，需要手动使用nb命令生成**_
 
 ## 4.安装本插件
 
-1.使用pip包管理器安装(**推荐**)：
+1.使用nb插件管理器安装(**推荐**)：
 
-`pip install nonebot-plugin-sky`
+先cd到你创建的项目文件夹内，再执行
+
+`nb plugin install nonebot-plugin-sky`即可完成安装
 
 或
 
-2.克隆本项目到本地，在bot.py中导入插件：
+2.克隆本项目到本地，在bot.py中导入插件：（不推荐 可忽略）
 
 `nonebot.load_plugin(r"nonebot_plugin_sky")`
 
