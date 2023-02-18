@@ -15,23 +15,6 @@ def get_at_all():
         str(e)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def at_all_on():
     global cfg_path
     config().set('Helper', 'at_all', 'True')
