@@ -3,6 +3,8 @@ import json
 from nonebot.adapters.onebot.v11 import MessageSegment
 
 
+# 卡片已被和谐，必须破解token算法，暂时弃用
+
 def card_group_bot(
         *args: str,
         title: str,

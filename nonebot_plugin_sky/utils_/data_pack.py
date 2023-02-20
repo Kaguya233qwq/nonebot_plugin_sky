@@ -177,3 +177,11 @@ async def cmd(args: Message = CommandArg()):
                 await Cmd.send(results_)
     else:
         pass
+
+
+__all__ = (
+    "install_handle",
+    "selecting",
+    "menu_v2",
+    "cmd"
+)

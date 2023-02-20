@@ -4,7 +4,7 @@
 # @Github  : neet姬辉夜大人
 # @Software: PyCharm
 
-from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed
+from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed, Bot, GroupMessageEvent
 import datetime
 
 from .sky.international import SkyDaily as IN

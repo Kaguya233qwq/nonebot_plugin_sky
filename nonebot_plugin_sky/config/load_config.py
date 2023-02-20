@@ -19,8 +19,10 @@ def load():
         # 这里编写需要初始化的配置项
         conf.add_section('Message')
         conf.add_section('Helper')
+        conf.add_section('Travelling')
         conf.set('Message', 'forward', 'True')
         conf.set('Helper', 'at_all', 'True')
+        conf.set('Travelling', 'cache', 'True')
 
         conf.write(open(cfg_path, 'a'))
         logger.success('配置文件初始化成功')
@@ -35,3 +37,10 @@ logger.success('读取配置成功')
 
 def get_config():
     return CONFIG
+
+
+__all__ = (
+    "get_path",
+    "load",
+    "get_config"
+)

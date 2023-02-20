@@ -1,4 +1,4 @@
-from nonebot import get_bot, logger, on_command
+from nonebot import get_bot, logger
 from nonebot.exception import ActionFailed
 
 

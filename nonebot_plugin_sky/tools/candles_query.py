@@ -6,13 +6,12 @@ import httpx
 import json
 
 from nonebot import on_command
-from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent, Message, PRIVATE, Bot, MessageSegment
+from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent, Message, PRIVATE, Bot
 from nonebot.internal.matcher import Matcher
 from nonebot.internal.params import ArgPlainText
 from nonebot.params import CommandArg
 
 from ..utils_.chain_reply import chain_reply
-from ..utils_.json_cards import card_group_bot
 from ..config.msg_forward import is_forward
 
 
@@ -154,12 +153,17 @@ async def season_candles_handler(bot: Bot, event: GroupMessageEvent):
 async def candle_view(event: GroupMessageEvent):
     sky_id = await load_sky_id(str(event.sender.user_id))
     white_candles = await __get_data(sky_id, 'bl')
-    white = f"● 普通蜡烛总数：{white_candles['data'][0]['residual']}"
+    white = f"● 普通蜡烛总数：{white_candles['data'][0]['residual']}\n"
     season_candles = await __get_data(sky_id, 'jl')
     season = f"● 季节蜡烛总数：{season_candles['data'][0]['residual']}"
-    results = card_group_bot(
-        white, season,
-        title="蜡烛总览",
-        prompt="蜡烛总览"
-    )
+    results = white + season
     await CandlesView.send(results)
+
+
+__all__ = (
+    "save_id_handler",
+    "sky_id_handler",
+    "white_candles_handler",
+    "season_candles_handler",
+    "candle_view"
+)

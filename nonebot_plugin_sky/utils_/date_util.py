@@ -10,3 +10,8 @@ async def get_today():
     today_format = str(date.tm_mon) + '.' + str(date.tm_mday)
     logger.info('今天是：{}'.format(today))
     return today_format
+
+
+__all__ = (
+    "get_today"
+)
