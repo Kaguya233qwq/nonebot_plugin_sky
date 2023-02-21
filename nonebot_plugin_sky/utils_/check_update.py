@@ -8,7 +8,7 @@ from nonebot import on_command, logger
 
 logging.captureWarnings(True)  # 去掉建议使用SSL验证的显示
 
-Version = '2.0.11'  # 全局插件版本信息
+Version = 'v2.0.11.post1'  # 全局插件版本信息
 
 
 async def get_datapack_ver():

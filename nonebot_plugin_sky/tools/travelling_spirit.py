@@ -20,12 +20,12 @@ class Travelling:
                       '-yT9jqnAOtRB6P_daaLXfdvYkPfvZhXy3bTeuLdBjWXF9;'  # 未登录时的cookie直接写死
         }
         self.copyright_ = ('------------'
-                           '\r【数据来源：微博@光遇陈陈】\n'
+                           '\r【数据来源：微博@光遇陈陈和包包】\n'
                            '--本插件仅做数据展示之用，著作权归原文作者所有。'
                            '转载或转发请附文章作者微博--')
 
     async def get_mblog(self, max_page):
-        """获取微博 @光遇陈陈 复刻先祖详情"""
+        """获取微博 @光遇陈陈和包包 复刻先祖详情"""
 
         for page in range(1, max_page + 1):
             param = {
@@ -46,7 +46,7 @@ class Travelling:
                                 r'#(光遇)*([\u4e00-\u9fa5])*(先祖)*(复刻)+#',
                                 log['text_raw']
                             ) and
-                            '国服' in log['text_raw']
+                            '国际服' not in log['text_raw']
                             # 讲声多谢陈陈哥啦
                     ):
                         return log
