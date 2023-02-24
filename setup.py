@@ -9,7 +9,6 @@ def get_files(path):
     files = os.listdir(path)
     for file in files:
         file_list.append(path + '/' + file)
-    file_list.append('nonebot_plugin_sky/config/config.ini')
     file_list.append('nonebot_plugin_sky/tools/menu_image/menu.png')
     return file_list
 
