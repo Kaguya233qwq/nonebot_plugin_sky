@@ -1,7 +1,7 @@
 <div align="center">
 
 <p align="center">
-  <a href=""><img src="https://img1.baidu.com/it/u=3563761161,679242917&fm=253&fmt=auto&app=138&f=PNG?w=360&h=360" width="200" height="200" alt="kfc"></a>
+  <a href=""><img src="https://img1.baidu.com/it/u=3563761161,679242917&fm=253&fmt=auto&app=138&f=PNG?w=360&h=360" width="200" height="200" alt="sky"></a>
 </p>
 
 # nonebot_plugin_sky
@@ -20,29 +20,35 @@ _“因光而遇”_
 
 </div>
 
-# 目录：
+# ✨安装与部署✨
 
-### 1.开始使用
+###在这里我将本插件的用户分为三种类型，请选择适合自己的方案进行部署：
 
-### 2.使用命令
+<details>
 
-### 3.新版数据包说明
+<summary>1.我从未接触过Nonebot框架</summary>
 
-### 4.TODO
+### 如果你仅仅想简单部署一个光遇功能的机器人,
+### 不想太操心其他繁杂琐事的话，
+### 那么我推荐你加入我们的插件交流群获取：
 
-### 5.效果图
+###【Nonebot+go-cqhttp集成光遇插件一键部署包】↓ ↓ ↓
 
-### 6.遇到问题
+<p align="center">
+<img src="https://github.com/Kaguya233qwq/nonebot_plugin_sky/blob/main/.README_images/group.png?raw=true" width="200" height="350" alt="sky"></a>
+</p>
 
-### 7.感谢名单
+</details>
 
-### 8.更新日志
+<details>
 
-# ✨开始使用✨
+<summary>2.我喜欢自己配置Nonebot框架</summary>
 
 ## 1.安装nonebot2框架及环境部署：
 
-这里只简单介绍步骤，详情查看
+以下为Nonebot2环境配置基础，你需要对Nonebot2框架有一个足够的了解
+
+这里只简单介绍步骤，新手教程推荐：
 
 [Nonebot2文档](https://nb2.baka.icu/docs/start/installation)
 
@@ -89,7 +95,9 @@ apscheduler:
 
 `recv_group_id=["12345","66666",...]`(多个)
 
-### _**在新版的nonebot2中nb create命令默认不再生成bot.py文件，需要手动使用nb命令生成**_
+### _**在新版的nonebot2中nb create命令默认不再生成bot.py文件，需要手动使用nb命令生成：**_
+
+`nb` 选择 `生成机器人的入口文件`
 
 ## 4.安装本插件
 
@@ -105,11 +113,41 @@ apscheduler:
 
 `nonebot.load_plugin(r"nonebot_plugin_sky")`
 
-# ✨使用命令✨
+</details>
 
-在有bot的群内发送`[命令前缀]+光遇`或`[命令前缀]+sky`来获取菜单
+<details>
 
-_当前版本包含的命令_：
+<summary>3.我是nonebot开发者/插件作者</summary>
+
+### 1.使用nb-cli进行安装：
+
+<code>~~ddl nb !~~</code>(划掉)
+
+<code>nb plugin install nonebot-plugin-sky</code>
+
+###2.以下操作是为了使干饭小助手正常运行：
+
+您必须确保您的bot.py配置中定时器默认关闭状态，即添加：
+
+`nonebot.init(apscheduler_autostart=False)`
+
+在.env.xxx文件中配置接收小助手消息的群号:
+
+`recv_group_id="12345"`(单个)
+
+`recv_group_id=["12345","66666",...]`(多个)
+
+
+
+</details>
+
+# ✨命令列表✨
+
+在有bot的群内发送`光遇菜单`或`sky`来获取菜单（遵循[命令前缀]）
+
+<details>
+
+<summary>当前最新版本包含的命令：</summary>
 
 | 命令                    | 说明                            |
 |-----------------------|-------------------------------|
@@ -136,15 +174,18 @@ _当前版本包含的命令_：
 | `蜡烛`                  | 查询蜡烛总览                             |
 | `更新插件`               | 检查插件更新进行升级操作                 |
 
-### 注意：转发模式是默认开启的。在这个状态下部分命令在私聊的环境下没有效果，是因为转发消息不支持私聊。
+</details>
 
-### 若有需要，关闭转发模式即可。
 
-### **//【攻略数据来自微博@今天游离翻车了吗 @旧日与春 @光遇陈陈 @张张幼稚园】**
+注意：转发模式是默认开启的。在这个状态下部分命令在私聊的环境下没有效果，是因为转发消息不支持私聊。
+
+若有需要，关闭转发模式即可。
 
 ### **任何情况下攻略最后的版权信息请勿私自移除**
 
-## ✨★★新版数据包说明★✨
+**【攻略数据来自微博@今天游离翻车了吗 @旧日与春 @光遇陈陈与宝宝 @张张幼稚园】**
+
+## ✨★新版数据包说明★✨
 
 在2.0版本中引入了光遇数据包（SkyDataPack）系统
 
@@ -156,7 +197,9 @@ _当前版本包含的命令_：
 
 3.支持自定义修改或扩充
 
-### 使用教程：
+<details>
+
+<summary>使用说明</summary>
 
 1.在群聊内或私聊bot发送`安装数据包`即可开始下载安装数据包
 
@@ -175,6 +218,9 @@ _当前版本包含的命令_：
 1.命令只能为SkyDataPack文件夹内的文件夹，暂不支持子命令和更多极的文件夹
 
 2.命令文件夹下目前只支持图片文件（jpg，png，bmp）
+
+</details>
+
 
 ## ✨TODO？✨
 
@@ -362,8 +408,6 @@ _当前版本包含的命令_：
 <details>
 
 <summary>更早的记录（2022.12.1之前）</summary>
-
-<pre><code>
 
 2022 11.28 v1.2.2
 
