@@ -8,7 +8,7 @@ from nonebot import on_command, logger
 
 logging.captureWarnings(True)  # 去掉建议使用SSL验证的显示
 
-Version = '2.1'  # 全局插件版本信息  （不用加v！）
+Version = '2.1.post1'  # 全局插件版本信息  （不用加v！）
 
 
 async def get_datapack_ver():
@@ -140,7 +140,7 @@ async def upgrade_handle():
         logger.error("检查更新失败")
     elif upgrade is True:
         await Upgrade.send("正在更新插件，请稍候..")
-        pip.main(["install", "--upgrade", "nonebot-plugin-sky"])
+        pip.main(["install", "nonebot-plugin-sky", "--upgrade"])
         await Upgrade.send("插件更新完成，请重新启动Nonebot")
     else:
         await Upgrade.send("插件已是最新版，无需更新")
