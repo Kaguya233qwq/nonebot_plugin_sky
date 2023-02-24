@@ -30,6 +30,7 @@ Notice = on_command("notice", aliases={"公告"})
 TravellingCN = on_command("travel -cn", aliases={"国服复刻"})
 TravellingIN = on_command("travel -in", aliases={"国际服复刻"})
 RemainCN = on_command("remain -cn", aliases={"国服季节剩余"})
+RemainIN = on_command("remain -in", aliases={"国际服季节剩余"})
 
 
 @DailyYori.handle()
@@ -163,21 +164,24 @@ async def travel_in(bot: Bot, event: GroupMessageEvent):
         )
 
 
-# @Author  : ZQDesigned
-# @Email   :  2990918167@qq.com
-# @Github  : ZQDesigned
-# @Software: IDEA Ultimate 2022.3.1
-@RemainCN.handle()
-async def remain_cn():
+def remain(
+        season_name: str,
+        year: int,
+        month: int,
+        day: int,
+        hour: int,
+        minute: int,
+        second: int
+) -> str:
     # 定义剩余时间
-    deadline = datetime.datetime(2023, 4, 3, 15, 00, 00)
+    deadline = datetime.datetime(
+        year, month, day, hour, minute, second
+    )
     # 获取当前时间
     now = datetime.datetime.now()
     # 判断当前时间是否大于截止时间
     if now > deadline:
-        await RemainCN.send(
-            message='季节已经过去了，下一个季节还有一段时间呢'
-        )
+        return '季节已经过去了，下一个季节还有一段时间呢'
     else:
         # 计算剩余时间
         remain_time = deadline - now
@@ -190,6 +194,20 @@ async def remain_cn():
         # 获取秒
         seconds = remain_time.seconds % 3600 % 60
         # 发送剩余时间
-        await RemainCN.send(
-            message=f'距离追忆季结束还有{days}天{hours}小时{minutes}分钟{seconds}秒'
-        )
+        return f'距离{season_name}结束还有{days}天{hours}小时{minutes}分钟{seconds}秒'
+
+
+# @Author  : ZQDesigned
+# @Email   :  2990918167@qq.com
+# @Github  : ZQDesigned
+# @Software: IDEA Ultimate 2022.3.1
+@RemainCN.handle()
+async def remain_cn():
+    results = remain("追忆季", 2023, 4, 20, 00, 00, 00)
+    await RemainIN.send(results)
+
+
+@RemainIN.handle()
+async def remain_in():
+    results = remain("缅怀季", 2023, 4, 3, 15, 00, 00)
+    await RemainIN.send(results)

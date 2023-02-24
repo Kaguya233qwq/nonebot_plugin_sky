@@ -5,7 +5,8 @@ from typing import Union
 
 import httpx
 from nonebot import on_command
-from nonebot.adapters.onebot.v11 import PRIVATE, Message, PrivateMessageEvent, Bot, GroupMessageEvent, MessageSegment
+from nonebot.adapters.onebot.v11 import PRIVATE_FRIEND, Message, PrivateMessageEvent, Bot, GroupMessageEvent, MessageSegment, \
+    MessageEvent
 from nonebot.internal.matcher import Matcher
 from nonebot.internal.params import ArgPlainText
 from nonebot.params import CommandArg
@@ -18,14 +19,18 @@ async def save_sky_id(qq: str, sky_id: str) -> None:
     """
     保存qq号与对应的sky_id
     """
-    if not os.path.exists('Sky'):
-        os.makedirs('Sky')
     if not os.path.isfile('Sky/origin_id'):
         with open("Sky/origin_id", "a") as f:
             f.write(json.dumps({qq: sky_id}))
     else:
         with open("Sky/origin_id", 'r') as f:
-            tmp = json.loads(f.read()).update({qq: sky_id})
+            content = f.read()
+            if content == "":
+                tmp = json.dumps({qq: sky_id})
+            else:
+                tmp = json.loads(content)
+                tmp.update({qq: sky_id})
+                tmp = json.dumps(tmp)
         with open("Sky/origin_id", 'w') as f:
             f.write(tmp)
 
@@ -34,11 +39,15 @@ async def load_sky_id(qq: str) -> Union[None, str]:
     """
     根据qq读取绑定的光遇id
     """
-    if not os.path.exists('Sky') or not os.path.isfile('Sky/origin_id'):
+    if not os.path.isfile('Sky/origin_id'):
         return None
     with open("Sky/origin_id", 'r') as f:
-        tmp = json.loads(f.read())
-        return tmp.get(qq, '')
+        content = f.read()
+        if content != '' and content is not None:
+            tmp = json.loads(content)
+        else:
+            return None
+        return tmp.get(qq, None)
 
 
 To_Get_Uid = (
@@ -200,7 +209,7 @@ class Sprite:
             return '查询失败，未知错误'
 
 
-SaveId = on_command("id -s", aliases={"光遇绑定"}, permission=PRIVATE)
+SaveId = on_command("id -s", aliases={"光遇绑定"}, permission=PRIVATE_FRIEND)
 QueryWhiteCandles = on_command("q -w", aliases={"查询白蜡"})
 QuerySeasonCandles = on_command("q -s", aliases={"查询季蜡"})
 CandlesView = on_command("q -all", aliases={"蜡烛", "我的蜡烛"})  # 啊蜡烛~我的蜡烛~（无端联想）
@@ -217,11 +226,15 @@ async def save_id_handler(matcher: Matcher, args: Message = CommandArg()):
 
 
 @SaveId.got("sky_id", prompt="请输入您的光遇原id，注意不是纯数字的id,可在精灵-查询-查询id查到")
-async def sky_id_handler(event: PrivateMessageEvent, sky_id: str = ArgPlainText("sky_id")):
+async def sky_id_handler(event: MessageEvent, sky_id: str = ArgPlainText("sky_id")):
     if not re.match('[a-z\d]{8}-[a-z\d]{4}-[a-z\d]{4}-[a-z\d]{4}-[a-z\d]{12}', sky_id):
         await SaveId.reject("您输入的光遇原id格式有误，请重新输入")
-    await save_sky_id(str(event.sender.user_id), sky_id)
-    await SaveId.finish("绑定成功")
+    tmp = await load_sky_id(str(event.sender.user_id))
+    if not tmp:
+        await save_sky_id(str(event.sender.user_id), sky_id)
+        await SaveId.finish("绑定成功")
+    else:
+        await SaveId.finish("你已经绑定过了，无需重复绑定")
 
 
 @QueryWhiteCandles.handle()
