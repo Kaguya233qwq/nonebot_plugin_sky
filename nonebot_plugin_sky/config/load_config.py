@@ -43,9 +43,8 @@ def load():
         setting.close()
         logger.success('配置文件初始化成功')
 
-    else:
-        conf.read(cfg_path_, encoding="utf-8")
-        return conf
+    conf.read(cfg_path_, encoding="utf-8")
+    return conf
 
 
 CONFIG = load()

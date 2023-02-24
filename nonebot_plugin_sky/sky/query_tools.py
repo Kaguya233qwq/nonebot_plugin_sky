@@ -20,6 +20,7 @@ async def save_sky_id(qq: str, sky_id: str) -> None:
     """
     if not os.path.exists('Sky'):
         os.makedirs('Sky')
+    if not os.path.isfile('Sky/origin_id'):
         with open("Sky/origin_id", "a") as f:
             f.write(json.dumps({qq: sky_id}))
     else:
@@ -33,7 +34,7 @@ async def load_sky_id(qq: str) -> Union[None, str]:
     """
     根据qq读取绑定的光遇id
     """
-    if not os.path.exists('Sky'):
+    if not os.path.exists('Sky') or not os.path.isfile('Sky/origin_id'):
         return None
     with open("Sky/origin_id", 'r') as f:
         tmp = json.loads(f.read())
