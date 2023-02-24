@@ -2,9 +2,9 @@ from nonebot import on_command, logger
 from nonebot.internal.matcher import Matcher
 
 from ..config.load_config import get_config as config
-from ..config.load_config import get_path
+from ..config.load_config import cfg_path
 
-cfg_path = get_path()
+cfg_path_ = cfg_path()
 
 
 def get_at_all():
@@ -16,18 +16,18 @@ def get_at_all():
 
 
 def at_all_on():
-    global cfg_path
+    global cfg_path_
     config().set('Helper', 'at_all', 'True')
 
-    config().write(open(cfg_path, 'w+'))
+    config().write(open(cfg_path_, 'w+'))
     logger.success('小助手艾特全体：开启')
 
 
 def at_all_off():
-    global cfg_path
+    global cfg_path_
     config().set('Helper', 'at_all', 'False')
 
-    config().write(open(cfg_path, 'w+'))
+    config().write(open(cfg_path_, 'w+'))
     logger.success('小助手艾特全体：关闭')
 
 

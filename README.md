@@ -22,17 +22,17 @@ _“因光而遇”_
 
 # ✨安装与部署✨
 
-###在这里我将本插件的用户分为三种类型，请选择适合自己的方案进行部署：
+##以下三种类型请选择适合自己的方案进行部署：
 
 <details>
 
 <summary>1.我从未接触过Nonebot框架</summary>
 
-### 如果你仅仅想简单部署一个光遇功能的机器人,
-### 不想太操心其他繁杂琐事的话，
-### 那么我推荐你加入我们的插件交流群获取：
+ 如果你仅仅想简单部署一个光遇功能的机器人,
+ 不想太操心其他繁杂琐事的话，
+ 那么我推荐你加入我们的插件交流群获取：
 
-###【Nonebot+go-cqhttp集成光遇插件一键部署包】↓ ↓ ↓
+【Nonebot+go-cqhttp集成光遇插件一键部署包】↓ ↓ ↓
 
 <p align="center">
 <img src="https://github.com/Kaguya233qwq/nonebot_plugin_sky/blob/main/.README_images/group.png?raw=true" width="200" height="350" alt="sky"></a>
@@ -173,6 +173,8 @@ apscheduler:
 | `查询季蜡`               | 查询季节蜡烛的变化记录                    |
 | `蜡烛`                  | 查询蜡烛总览                             |
 | `更新插件`               | 检查插件更新进行升级操作                 |
+| `光遇天气预报`/`sky天气`/`光遇天气` | 查询今日天气预报               |
+| `活动日历`               | 查询活动日历                           |
 
 </details>
 
@@ -227,14 +229,13 @@ apscheduler:
 * [X]  每日干饭提醒小助手
 * [X]  更多光遇攻略
 * [X]  数据包扩充
+* [ ]  命令管理器 （优先）
 * [ ]  光遇扩展插件
 
 # ✨效果展示✨
 
 <p align="center">
-
-![](.README_images/view.png)
-
+<img src="https://github.com/Kaguya233qwq/nonebot_plugin_sky/blob/main/.README_images/view.png?raw=true" width="400" height="700" alt="sky"></a>
 </p>
 
 # ✨遇到问题✨
@@ -244,9 +245,7 @@ apscheduler:
 (群文件有一键启动包)
 
 <p align="center">
-
-![](.README_images/group.png)
-
+<img src="https://github.com/Kaguya233qwq/nonebot_plugin_sky/blob/main/.README_images/group.png?raw=true" width="200" height="350" alt="sky"></a>
 </p>
 
 ## ✨感谢名单（不分先后）✨
@@ -264,6 +263,26 @@ apscheduler:
 新浪微博&哔哩哔哩@木易不高兴了啊 —> *攻略内容*
 
 ## ✨更新日志✨
+
+2023.2.24 v2.1
+
+1.增加时间点判断逻辑，全面提升复刻匹配准确度
+
+2.重构配置文件路径到Sky文件夹下方便统一管理
+
+3.蜡烛查询全面重写，升级为官方接口，命令无变化
+
+4.新增天气预报、活动日历命令，同蜡烛查询系列命令一样需绑定光遇uid
+
+5.简化完善了文档说明，使用户有更佳的选择与体验
+
+6.修复版本号问题
+
+7.其他优化处理
+
+<details>
+
+<summary>更早的记录（2023.2.24之前）</summary>
 
 2023.2.21 v2.0.11.post1
 
@@ -404,10 +423,6 @@ apscheduler:
 2022 12.2 v1.2.3
 
 新增国服复刻先祖查询
-
-<details>
-
-<summary>更早的记录（2022.12.1之前）</summary>
 
 2022 11.28 v1.2.2
 

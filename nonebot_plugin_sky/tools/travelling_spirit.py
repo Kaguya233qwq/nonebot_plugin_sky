@@ -4,6 +4,7 @@ import re
 import httpx
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageSegment
+from ..utils_ import time_no_more
 
 
 class Travelling:
@@ -46,6 +47,7 @@ class Travelling:
                                 r'#(光遇)*([\u4e00-\u9fa5])*(先祖)*(复刻)+#',
                                 log['text_raw']
                             ) and
+                            time_no_more(log.get("created_at"), 12, 5) and
                             '国际服' not in log['text_raw']
                             # 讲声多谢陈陈哥啦
                     ):

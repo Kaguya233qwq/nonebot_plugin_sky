@@ -2,9 +2,9 @@ from nonebot import on_command, logger
 from nonebot.internal.matcher import Matcher
 
 from ..config.load_config import get_config as config
-from ..config.load_config import get_path
+from ..config.load_config import cfg_path
 
-cfg_path = get_path()
+cfg_path_ = cfg_path()
 
 
 def get_is_forward():
@@ -16,18 +16,18 @@ def get_is_forward():
 
 
 def on():
-    global cfg_path
+    global cfg_path_
     config().set('Message', 'forward', 'True')
 
-    config().write(open(cfg_path, 'w+'))
+    config().write(open(cfg_path_, 'w+'))
     logger.success('消息转发：开启')
 
 
 def off():
-    global cfg_path
+    global cfg_path_
     config().set('Message', 'forward', 'False')
 
-    config().write(open(cfg_path, 'w+'))
+    config().write(open(cfg_path_, 'w+'))
     logger.success('消息转发：关闭')
 
 

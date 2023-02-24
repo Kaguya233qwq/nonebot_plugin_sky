@@ -20,9 +20,9 @@ from .config.msg_forward import *
 from .tools.scheduler import *
 from .utils_.notice_board import *
 from .utils_.check_update import *
-from .tools.candles_query import *
+from .sky.query_tools import *
 
-Menu = on_command("-sky", aliases={"光遇菜单"})
+Menu = on_command("sky", aliases={"光遇菜单"})
 DailyYori = on_command("sky -cn", aliases={"今日国服", "国服今日任务", "今日任务"})
 DailyHaru = on_command("sky -in", aliases={"今日国际服", "今日国际服任务"})
 Queue = on_command("queue", aliases={"排队"})
@@ -170,7 +170,7 @@ async def travel_in(bot: Bot, event: GroupMessageEvent):
 @RemainCN.handle()
 async def remain_cn():
     # 定义剩余时间
-    deadline = datetime.datetime(2023, 4, 2, 23, 59, 59)
+    deadline = datetime.datetime(2023, 4, 3, 15, 00, 00)
     # 获取当前时间
     now = datetime.datetime.now()
     # 判断当前时间是否大于截止时间
