@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import time
 from typing import Union
 
 import httpx
@@ -53,9 +54,9 @@ async def load_sky_id(qq: str) -> Union[None, str]:
 To_Get_Uid = (
         '如何获取uid？见下图：' +
         MessageSegment.image(
-            'https://github.com/Kaguya233qwq/'
-            'nonebot_plugin_sky/blob/main/'
-            '.README_images/get_uid.jpg?raw=true')
+            'https://gitee.com/Kaguya233qwq/'
+            'nonebot_plugin_sky/raw/main/'
+            '.README_images/get_uid.jpg')
 )
 
 
@@ -238,7 +239,7 @@ async def sky_id_handler(event: MessageEvent, sky_id: str = ArgPlainText("sky_id
 
 
 @QueryWhiteCandles.handle()
-async def white_candles_handler(bot: Bot, event: GroupMessageEvent):
+async def white_candles_handler(bot: Bot, event: MessageEvent):
     sky_id = await load_sky_id(str(event.sender.user_id))
     if not sky_id:
         await QueryWhiteCandles.send(
@@ -257,19 +258,28 @@ async def white_candles_handler(bot: Bot, event: GroupMessageEvent):
         if '这边查询一下' not in results:
             pass
         else:
+            time.sleep(1)
             results = await query.get_candles(sky_id)
         if is_forward():
             chain = await chain_reply(bot, results)
-            await bot.send_group_forward_msg(
-                group_id=event.group_id,
-                messages=chain
-            )
+            msg_type = event.message_type
+            if msg_type == 'group':
+                group_id = re.findall('_(\d{5,})_', event.get_session_id())[0]
+                await bot.send_group_forward_msg(
+                    group_id=group_id,
+                    messages=chain
+                )
+            elif msg_type == 'private':
+                await bot.send_private_forward_msg(
+                    user_id=event.get_session_id(),
+                    messages=chain
+                )
         else:
             await QueryWhiteCandles.send(results)
 
 
 @QuerySeasonCandles.handle()
-async def season_candles_handler(bot: Bot, event: GroupMessageEvent):
+async def season_candles_handler(bot: Bot, event: MessageEvent):
     sky_id = await load_sky_id(str(event.sender.user_id))
     if not sky_id:
         await QuerySeasonCandles.send(
@@ -288,19 +298,28 @@ async def season_candles_handler(bot: Bot, event: GroupMessageEvent):
         if '这边查询一下' not in results:
             pass
         else:
+            time.sleep(1)
             results = await query.get_season_candles(sky_id)
         if is_forward():
             chain = await chain_reply(bot, results)
-            await bot.send_group_forward_msg(
-                group_id=event.group_id,
-                messages=chain
-            )
+            msg_type = event.message_type
+            if msg_type == 'group':
+                group_id = re.findall('_(\d{5,})_', event.get_session_id())[0]
+                await bot.send_group_forward_msg(
+                    group_id=group_id,
+                    messages=chain
+                )
+            elif msg_type == 'private':
+                await bot.send_private_forward_msg(
+                    user_id=event.get_session_id(),
+                    messages=chain
+                )
         else:
             await QuerySeasonCandles.send(results)
 
 
 @CandlesView.handle()
-async def candle_view(event: GroupMessageEvent):
+async def candle_view(event: MessageEvent):
     sky_id = await load_sky_id(str(event.sender.user_id))
     if not sky_id:
         await CandlesView.send(
@@ -321,6 +340,7 @@ async def candle_view(event: GroupMessageEvent):
         if '这边查询一下' not in season and '这边查询一下' not in white:
             pass
         else:
+            time.sleep(1)
             season = await query.get_season_candles(sky_id)
             white = await query.get_candles(sky_id)
         season_left = re.findall('剩余：(\d+)+?', season)[0]
@@ -331,7 +351,7 @@ async def candle_view(event: GroupMessageEvent):
 
 
 @Weather.handle()
-async def weather_handle(event: GroupMessageEvent):
+async def weather_handle(event: MessageEvent):
     query = Sprite()
     sky_id = await load_sky_id(str(event.sender.user_id))
     if not sky_id:
@@ -351,7 +371,7 @@ async def weather_handle(event: GroupMessageEvent):
 
 
 @Activities.handle()
-async def act_handle(event: GroupMessageEvent):
+async def act_handle(event: MessageEvent):
     query = Sprite()
     sky_id = await load_sky_id(str(event.sender.user_id))
     if not sky_id:

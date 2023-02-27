@@ -48,8 +48,8 @@ async def scheduler_handler(matcher: Matcher, args: Message = CommandArg()):
             await matcher.send("【功能测试】\n" + results)
         else:
             await matcher.send('指令关键字错误请重新输入')
-    except Exception as e:
-        await matcher.send('发生错误：%s' % e)
+    except Exception as error:
+        await matcher.send('发生错误：%s' % error)
 
     if is_on:
         # 设定提前五分钟提醒

@@ -134,12 +134,13 @@ async def check_handle():
 
 @Upgrade.handle()
 async def upgrade_handle():
+    await Upgrade.send('检查插件是否有更新..')
     upgrade = await upgrade_plugin()
     if upgrade is None:
         await Upgrade.send("检查更新失败")
         logger.error("检查更新失败")
     elif upgrade is True:
-        await Upgrade.send("正在更新插件，请稍候..")
+        await Upgrade.send("正在下载更新，请稍候..")
         pip.main(["install", "nonebot-plugin-sky", "--upgrade"])
         await Upgrade.send("插件更新完成，请重新启动Nonebot")
     else:

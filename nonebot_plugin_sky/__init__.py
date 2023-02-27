@@ -3,17 +3,15 @@
 # @Email   :  1435608435@qq.com
 # @Github  : neet姬辉夜大人
 # @Software: PyCharm
+from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed, Bot, MessageEvent
 
-from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed, Bot, GroupMessageEvent
-import datetime
-
-from .sky.international import SkyDaily as IN
-from .sky.national import SkyDaily as CN
+from .sky.international import SkyDaily as Task_in
+from .sky.national import SkyDaily as Task_cn
 from .tools.in_travelling_spirit import get_data
 from .tools.menu import get_menu
 from .tools.public_notice import get_notice
 from .tools.queue import get_state
-from .tools.travelling_spirit import Travelling as travel_CN
+from .tools.travelling_spirit import Travelling as Travelling_cn
 from .utils_.chain_reply import chain_reply
 from .utils_.data_pack import *
 from .config.msg_forward import *
@@ -21,29 +19,42 @@ from .tools.scheduler import *
 from .utils_.notice_board import *
 from .utils_.check_update import *
 from .sky.query_tools import *
+from .config.command import *
+import re
+import datetime
 
-Menu = on_command("sky", aliases={"光遇菜单"})
-DailyYori = on_command("sky -cn", aliases={"今日国服", "国服今日任务", "今日任务"})
-DailyHaru = on_command("sky -in", aliases={"今日国际服", "今日国际服任务"})
-Queue = on_command("queue", aliases={"排队"})
-Notice = on_command("notice", aliases={"公告"})
-TravellingCN = on_command("travel -cn", aliases={"国服复刻"})
-TravellingIN = on_command("travel -in", aliases={"国际服复刻"})
-RemainCN = on_command("remain -cn", aliases={"国服季节剩余"})
-RemainIN = on_command("remain -in", aliases={"国际服季节剩余"})
+initialize()  # 初始化全局命令
+
+Menu = on_command("Sky", aliases=get_cmd_alias("menu"))
+DailyYori = on_command("sky -cn", aliases=get_cmd_alias("sky_cn"))
+DailyHaru = on_command("sky -in", aliases=get_cmd_alias("sky_in"))
+Queue = on_command("queue", aliases=get_cmd_alias("queue"))
+Notice = on_command("notice", aliases=get_cmd_alias("notice"))
+TravellingCN = on_command("travel -cn", aliases=get_cmd_alias("travel_cn"))
+TravellingIN = on_command("travel -in", aliases=get_cmd_alias("travel_in"))
+RemainCN = on_command("remain -cn", aliases=get_cmd_alias("remain_cn"))
+RemainIN = on_command("remain -in", aliases=get_cmd_alias("remain_in"))
 
 
 @DailyYori.handle()
-async def daily_yori(bot: Bot, event: GroupMessageEvent):
+async def daily_yori(bot: Bot, event: MessageEvent):
     try:
-        sky = CN()
+        sky = Task_cn()
         results = await sky.get_data()
         if is_forward():
             chain = await chain_reply(bot, results)
-            await bot.send_group_forward_msg(
-                group_id=event.group_id,
-                messages=chain
-            )
+            msg_type = event.message_type
+            if msg_type == 'group':
+                group_id = re.findall('_(\d{5,})_', event.get_session_id())[0]
+                await bot.send_group_forward_msg(
+                    group_id=group_id,
+                    messages=chain
+                )
+            elif msg_type == 'private':
+                await bot.send_private_forward_msg(
+                    user_id=event.get_session_id(),
+                    messages=chain
+                )
         else:
             await DailyYori.send(results)
 
@@ -55,16 +66,24 @@ async def daily_yori(bot: Bot, event: GroupMessageEvent):
 
 
 @DailyHaru.handle()
-async def daily_haru(bot: Bot, event: GroupMessageEvent):
+async def daily_haru(bot: Bot, event: MessageEvent):
     try:
-        sky = IN()
+        sky = Task_in()
         results = await sky.get_data()
         if is_forward():
             chain = await chain_reply(bot, results)
-            await bot.send_group_forward_msg(
-                group_id=event.group_id,
-                messages=chain
-            )
+            msg_type = event.message_type
+            if msg_type == 'group':
+                group_id = re.findall('_(\d{5,})_', event.get_session_id())[0]
+                await bot.send_group_forward_msg(
+                    group_id=group_id,
+                    messages=chain
+                )
+            elif msg_type == 'private':
+                await bot.send_private_forward_msg(
+                    user_id=event.get_session_id(),
+                    messages=chain
+                )
         else:
             await DailyHaru.send(results)
 
@@ -106,15 +125,23 @@ async def menu():
 
 
 @Notice.handle()
-async def notice(bot: Bot, event: GroupMessageEvent):
+async def notice(bot: Bot, event: MessageEvent):
     try:
         notice_ = await get_notice()
         if is_forward():
             chain = await chain_reply(bot, notice_)
-            await bot.send_group_forward_msg(
-                group_id=event.group_id,
-                messages=chain
-            )
+            msg_type = event.message_type
+            if msg_type == 'group':
+                group_id = re.findall('_(\d{5,})_', event.get_session_id())[0]
+                await bot.send_group_forward_msg(
+                    group_id=group_id,
+                    messages=chain
+                )
+            elif msg_type == 'private':
+                await bot.send_private_forward_msg(
+                    user_id=event.get_session_id(),
+                    messages=chain
+                )
         else:
             await Notice.send(notice_)
 
@@ -126,16 +153,24 @@ async def notice(bot: Bot, event: GroupMessageEvent):
 
 
 @TravellingCN.handle()
-async def travel_cn(bot: Bot, event: GroupMessageEvent):
+async def travel_cn(bot: Bot, event: MessageEvent):
     try:
-        travelling = travel_CN()
+        travelling = Travelling_cn()
         results = await travelling.get_data()
         if is_forward():
             chain = await chain_reply(bot, results)
-            await bot.send_group_forward_msg(
-                group_id=event.group_id,
-                messages=chain
-            )
+            msg_type = event.message_type
+            if msg_type == 'group':
+                group_id = re.findall('_(\d{5,})_', event.get_session_id())[0]
+                await bot.send_group_forward_msg(
+                    group_id=group_id,
+                    messages=chain
+                )
+            elif msg_type == 'private':
+                await bot.send_private_forward_msg(
+                    user_id=event.get_session_id(),
+                    messages=chain
+                )
         else:
             await TravellingCN.send(results)
     except (NetworkError, ActionFailed):
@@ -146,15 +181,23 @@ async def travel_cn(bot: Bot, event: GroupMessageEvent):
 
 
 @TravellingIN.handle()
-async def travel_in(bot: Bot, event: GroupMessageEvent):
+async def travel_in(bot: Bot, event: MessageEvent):
     try:
         results = await get_data()
         if is_forward():
             chain = await chain_reply(bot, results)
-            await bot.send_group_forward_msg(
-                group_id=event.group_id,
-                messages=chain
-            )
+            msg_type = event.message_type
+            if msg_type == 'group':
+                group_id = re.findall('_(\d{5,})_', event.get_session_id())[0]
+                await bot.send_group_forward_msg(
+                    group_id=group_id,
+                    messages=chain
+                )
+            elif msg_type == 'private':
+                await bot.send_private_forward_msg(
+                    user_id=event.get_session_id(),
+                    messages=chain
+                )
         else:
             await TravellingIN.send(results)
     except (NetworkError, ActionFailed):

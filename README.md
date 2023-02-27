@@ -35,7 +35,7 @@ _“因光而遇”_
 【Nonebot+go-cqhttp集成光遇插件一键部署包】↓ ↓ ↓
 
 <p align="center">
-<img src="https://github.com/Kaguya233qwq/nonebot_plugin_sky/blob/main/.README_images/group.png?raw=true" width="200" height="350" alt="sky"></a>
+<img src="https://gitee.com/Kaguya233qwq/nonebot_plugin_sky/raw/main/.README_images/group.png" width="200" height="350" alt="sky"></a>
 </p>
 
 </details>
@@ -179,11 +179,6 @@ apscheduler:
 
 </details>
 
-
-注意：转发模式是默认开启的。在这个状态下部分命令在私聊的环境下没有效果，是因为转发消息不支持私聊。
-
-若有需要，关闭转发模式即可。
-
 ### **任何情况下攻略最后的版权信息请勿私自移除**
 
 **【攻略数据来自微博@今天游离翻车了吗 @旧日与春 @光遇陈陈和包包 @张张幼稚园】**
@@ -236,7 +231,7 @@ apscheduler:
 # ✨效果展示✨
 
 <p align="center">
-<img src="https://github.com/Kaguya233qwq/nonebot_plugin_sky/blob/main/.README_images/view.png?raw=true" width="400" height="700" alt="sky"></a>
+<img src="https://gitee.com/Kaguya233qwq/nonebot_plugin_sky/raw/main/.README_images/view.png" width="400" height="740" alt="sky"></a>
 </p>
 
 # ✨遇到问题✨
@@ -246,7 +241,7 @@ apscheduler:
 (群文件有一键启动包)
 
 <p align="center">
-<img src="https://github.com/Kaguya233qwq/nonebot_plugin_sky/blob/main/.README_images/group.png?raw=true" width="200" height="350" alt="sky"></a>
+<img src="https://gitee.com/Kaguya233qwq/nonebot_plugin_sky/raw/main/.README_images/group.png" width="200" height="350" alt="sky"></a>
 </p>
 
 ## ✨感谢名单（不分先后）✨
@@ -262,6 +257,16 @@ apscheduler:
 新浪微博&哔哩哔哩@木易不高兴了啊 —> *攻略内容*
 
 ## ✨更新日志✨
+
+2023.2.27 v2.2
+
+1.新增全局自定义命令管理器，目前仅支持部分命令
+
+2.使大部分命令都适配了私聊场景
+
+3.优化更新插件的手感（什）
+
+4.修改文档内图片为gitee镜像源
 
 2023.2.24 v2.1.2
 
