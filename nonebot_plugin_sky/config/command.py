@@ -2,7 +2,6 @@ import os
 import json
 import re
 from pathlib import Path
-from typing import Union
 
 from nonebot import on_command, logger
 from nonebot.adapters.onebot.v11 import Message
@@ -83,7 +82,7 @@ def from_template_import():
     logger.success('导入成功')
 
 
-def get_cmd_alias(cmd: str) -> Union[None, set]:
+def get_cmd_alias(cmd: str) -> set:
     """
     根据命令获取命令别名
     """
