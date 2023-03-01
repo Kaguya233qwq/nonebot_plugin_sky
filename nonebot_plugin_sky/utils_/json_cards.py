@@ -1,5 +1,4 @@
 import json
-
 from nonebot.adapters.onebot.v11 import MessageSegment
 
 

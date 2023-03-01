@@ -3,14 +3,20 @@ from typing import Union
 from nonebot.adapters.onebot.v11 import MessageSegment
 from nonebot.adapters.onebot.v11.bot import Bot
 
-from ..utils_.config_loader import Nick
+from ..utils_.bot_loader import Nick
 
 
 async def chain_reply(
-        # 构造聊天记录转发消息
         bot: Bot,
         msg: Union[str, MessageSegment]
-):
+) -> list:
+    """
+    构造聊天记录转发消息
+
+    :param bot:
+    :param msg:
+    :return:
+    """
     chain = []
 
     data = {

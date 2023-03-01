@@ -4,7 +4,7 @@ import httpx
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageSegment
 
-from ..utils_.date_util import get_today
+from ...utils_.date_util import get_today
 
 
 class SkyDaily:

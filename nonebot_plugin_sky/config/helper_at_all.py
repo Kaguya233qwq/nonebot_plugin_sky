@@ -3,6 +3,7 @@ from nonebot.internal.matcher import Matcher
 
 from ..config.load_config import get_config as config
 from ..config.load_config import cfg_path
+from .command import get_cmd_alias
 
 cfg_path_ = cfg_path()
 
@@ -33,8 +34,8 @@ def at_all_off():
 
 At_all = get_at_all()
 
-AtAllOn = on_command("f -on", aliases={"开启艾特全体"})
-AtAllOff = on_command("f -off", aliases={"关闭艾特全体"})
+AtAllOn = on_command("at all -on", aliases=get_cmd_alias('at_all_on'))
+AtAllOff = on_command("at all -off", aliases=get_cmd_alias('at_all_off'))
 
 
 @AtAllOn.handle()

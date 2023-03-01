@@ -6,13 +6,14 @@ from typing import Union
 
 import httpx
 from nonebot import on_command
-from nonebot.adapters.onebot.v11 import PRIVATE_FRIEND, Message, Bot, MessageSegment,MessageEvent
+from nonebot.adapters.onebot.v11 import PRIVATE_FRIEND, Message, Bot, MessageSegment, MessageEvent
 from nonebot.internal.matcher import Matcher
 from nonebot.internal.params import ArgPlainText
 from nonebot.params import CommandArg
 
+from ..utils_ import send_forward_msg
 from ..config.msg_forward import is_forward
-from ..utils_.chain_reply import chain_reply
+from ..config.command import *
 
 
 async def save_sky_id(qq: str, sky_id: str) -> None:
@@ -111,13 +112,19 @@ class Sprite:
             answer = res.json()['answer']
             return answer
 
-    async def get_activities(self, sky_id: str) -> str:
+    async def get_activities(
+            self,
+            sky_id: str
+    ) -> Union[str, MessageSegment]:
         """
         获取活动日历
         """
         answer = await self.get_answer(sky_id, 'T一c四_热点精灵日历')
-        img = re.findall('src="(.*?)"', answer)[0]
-        return img
+        if '光遇的世界很美好' in answer:
+            return '暂无活动日历哦~'
+        else:
+            results = re.findall('src="(.*?)"', answer)[0]
+            return MessageSegment.image(results)
 
     async def get_weather(self, sky_id: str) -> str:
         """
@@ -209,13 +216,13 @@ class Sprite:
             return '查询失败，未知错误'
 
 
-SaveId = on_command("id -s", aliases={"光遇绑定"}, permission=PRIVATE_FRIEND)
-QueryWhiteCandles = on_command("q -w", aliases={"查询白蜡"})
-QuerySeasonCandles = on_command("q -s", aliases={"查询季蜡"})
-CandlesView = on_command("q -all", aliases={"蜡烛", "我的蜡烛"})  # 啊蜡烛~我的蜡烛~（无端联想）
+SaveId = on_command("id -s", aliases=get_cmd_alias('save_sky_id'), permission=PRIVATE_FRIEND)
+QueryWhiteCandles = on_command("q -w", aliases=get_cmd_alias('qw'))
+QuerySeasonCandles = on_command("q -s", aliases=get_cmd_alias('qs'))
+CandlesView = on_command("q -all", aliases=get_cmd_alias('qa'))  # 啊蜡烛~我的蜡烛~（无端联想）
 
-Weather = on_command("sky weather", aliases={"光遇天气预报", "sky天气", "光遇天气"})
-Activities = on_command("sky act", aliases={"活动日历", "精灵日历"})
+Weather = on_command("sky weather", aliases=get_cmd_alias('sky_weather'))
+Activities = on_command("sky act", aliases=get_cmd_alias('sky_activities'))
 
 
 @SaveId.handle()
@@ -260,19 +267,7 @@ async def white_candles_handler(bot: Bot, event: MessageEvent):
             time.sleep(1)
             results = await query.get_candles(sky_id)
         if is_forward():
-            chain = await chain_reply(bot, results)
-            msg_type = event.message_type
-            if msg_type == 'group':
-                group_id = re.findall('_(\d{5,})_', event.get_session_id())[0]
-                await bot.send_group_forward_msg(
-                    group_id=group_id,
-                    messages=chain
-                )
-            elif msg_type == 'private':
-                await bot.send_private_forward_msg(
-                    user_id=event.get_session_id(),
-                    messages=chain
-                )
+            await send_forward_msg(bot, event, results)
         else:
             await QueryWhiteCandles.send(results)
 
@@ -300,19 +295,7 @@ async def season_candles_handler(bot: Bot, event: MessageEvent):
             time.sleep(1)
             results = await query.get_season_candles(sky_id)
         if is_forward():
-            chain = await chain_reply(bot, results)
-            msg_type = event.message_type
-            if msg_type == 'group':
-                group_id = re.findall('_(\d{5,})_', event.get_session_id())[0]
-                await bot.send_group_forward_msg(
-                    group_id=group_id,
-                    messages=chain
-                )
-            elif msg_type == 'private':
-                await bot.send_private_forward_msg(
-                    user_id=event.get_session_id(),
-                    messages=chain
-                )
+            await send_forward_msg(bot, event, results)
         else:
             await QuerySeasonCandles.send(results)
 
@@ -386,7 +369,7 @@ async def act_handle(event: MessageEvent):
                 To_Get_Uid
             )
         results = await query.get_activities(sky_id)
-        await Activities.send(MessageSegment.image(results))
+        await Activities.send(results)
 
 
 __all__ = (

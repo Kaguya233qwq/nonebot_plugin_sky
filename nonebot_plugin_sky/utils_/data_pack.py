@@ -9,10 +9,11 @@ from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.params import CommandArg, ArgPlainText
 
 from .check_update import check_datapack_latest
+from ..config.command import get_cmd_alias
 
 
-class Data:
-    """数据传输类"""
+class SkyDataPack:
+    """光遇数据包类"""
 
     def __init__(self):
 
@@ -106,8 +107,8 @@ async def load_image(cmd_path):
     return results
 
 
-Install = on_command("sky -install", aliases={"安装数据包"})
-MenuV2 = on_command("menu v2", aliases={"菜单v2", "数据包菜单"})
+Install = on_command("data_pack -install", aliases=get_cmd_alias('data_pack_install'))
+MenuV2 = on_command("menu v2", aliases=get_cmd_alias('menu_v2'))
 Cmd = on_command("-")
 
 
@@ -120,7 +121,7 @@ async def install_handle():
         is_existed = await check()
         if not is_existed:
             await Install.send('正在下载安装数据包，请稍候...')
-            data = Data()
+            data = SkyDataPack()
             await data.download()
             await install('SkyDataPack.zip')
             await Install.finish('安装完成')
@@ -136,7 +137,7 @@ async def selecting(existed: str = ArgPlainText("existed")):
         if '是' in existed:
             shutil.rmtree('SkyDataPack')
             await Install.send('正在下载安装数据包，请稍候...')
-            data = Data()
+            data = SkyDataPack()
             await data.download()
             await install('SkyDataPack.zip')
             await Install.finish('安装完成')

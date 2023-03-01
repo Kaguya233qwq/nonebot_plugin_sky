@@ -1,6 +1,7 @@
 from nonebot import on_command, logger
 from nonebot.internal.matcher import Matcher
 
+from .command import get_cmd_alias
 from ..config.load_config import get_config as config
 from ..config.load_config import cfg_path
 
@@ -33,8 +34,8 @@ def off():
 
 Forward = get_is_forward()
 
-On = on_command("开启转发模式")
-Off = on_command("关闭转发模式")
+On = on_command("forward -on", aliases=get_cmd_alias('forward_on'))
+Off = on_command("forward -off",aliases=get_cmd_alias('forward_off'))
 
 
 @On.handle()

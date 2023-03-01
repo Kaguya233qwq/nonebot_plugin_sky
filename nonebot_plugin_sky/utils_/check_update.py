@@ -5,10 +5,11 @@ from bs4 import BeautifulSoup
 import logging
 
 from nonebot import on_command, logger
+from ..config.command import get_cmd_alias
 
 logging.captureWarnings(True)  # 去掉建议使用SSL验证的显示
 
-Version = '2.1.2'  # 全局插件版本信息  （不用加v！）
+Version = '2.2'  # 全局插件版本信息  （不用加v！）
 
 
 async def get_datapack_ver():
@@ -97,8 +98,8 @@ async def upgrade_plugin():
         return None
 
 
-Check = on_command("check", aliases={"检查更新"})
-Upgrade = on_command("upgrade", aliases={"更新插件"})
+Check = on_command("check", aliases=get_cmd_alias('check'))
+Upgrade = on_command("upgrade", aliases=get_cmd_alias('upgrade'))
 
 
 @Check.handle()

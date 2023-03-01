@@ -5,13 +5,13 @@
 # @Software: PyCharm
 from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed, Bot, MessageEvent
 
-from .sky.international import SkyDaily as Task_in
-from .sky.national import SkyDaily as Task_cn
-from .tools.in_travelling_spirit import get_data
+from .sky.daily_tasks.international import SkyDaily as Task_in
+from .sky.daily_tasks.national import SkyDaily as Task_cn
+from .sky.travelling_spirit.international import get_data
 from .tools.menu import get_menu
-from .tools.public_notice import get_notice
-from .tools.queue import get_state
-from .tools.travelling_spirit import Travelling as Travelling_cn
+from .sky.public_notice import get_notice
+from .sky.queue import get_state
+from .sky.travelling_spirit.national import Travelling as Travelling_cn
 from .utils_.chain_reply import chain_reply
 from .utils_.data_pack import *
 from .config.msg_forward import *
@@ -20,16 +20,15 @@ from .utils_.notice_board import *
 from .utils_.check_update import *
 from .sky.query_tools import *
 from .config.command import *
-import re
+from .utils_ import send_forward_msg
 import datetime
 
-initialize()  # 初始化全局命令
 
-Menu = on_command("Sky", aliases=get_cmd_alias("menu"))
+Menu = on_command("Sky", aliases=get_cmd_alias("sky_menu"))
 DailyYori = on_command("sky -cn", aliases=get_cmd_alias("sky_cn"))
 DailyHaru = on_command("sky -in", aliases=get_cmd_alias("sky_in"))
-Queue = on_command("queue", aliases=get_cmd_alias("queue"))
-Notice = on_command("notice", aliases=get_cmd_alias("notice"))
+Queue = on_command("queue", aliases=get_cmd_alias("sky_queue"))
+Notice = on_command("notice", aliases=get_cmd_alias("sky_notice"))
 TravellingCN = on_command("travel -cn", aliases=get_cmd_alias("travel_cn"))
 TravellingIN = on_command("travel -in", aliases=get_cmd_alias("travel_in"))
 RemainCN = on_command("remain -cn", aliases=get_cmd_alias("remain_cn"))
@@ -42,19 +41,7 @@ async def daily_yori(bot: Bot, event: MessageEvent):
         sky = Task_cn()
         results = await sky.get_data()
         if is_forward():
-            chain = await chain_reply(bot, results)
-            msg_type = event.message_type
-            if msg_type == 'group':
-                group_id = re.findall('_(\d{5,})_', event.get_session_id())[0]
-                await bot.send_group_forward_msg(
-                    group_id=group_id,
-                    messages=chain
-                )
-            elif msg_type == 'private':
-                await bot.send_private_forward_msg(
-                    user_id=event.get_session_id(),
-                    messages=chain
-                )
+            await send_forward_msg(bot, event, results)
         else:
             await DailyYori.send(results)
 
@@ -71,19 +58,7 @@ async def daily_haru(bot: Bot, event: MessageEvent):
         sky = Task_in()
         results = await sky.get_data()
         if is_forward():
-            chain = await chain_reply(bot, results)
-            msg_type = event.message_type
-            if msg_type == 'group':
-                group_id = re.findall('_(\d{5,})_', event.get_session_id())[0]
-                await bot.send_group_forward_msg(
-                    group_id=group_id,
-                    messages=chain
-                )
-            elif msg_type == 'private':
-                await bot.send_private_forward_msg(
-                    user_id=event.get_session_id(),
-                    messages=chain
-                )
+            await send_forward_msg(bot, event, results)
         else:
             await DailyHaru.send(results)
 
@@ -129,19 +104,7 @@ async def notice(bot: Bot, event: MessageEvent):
     try:
         notice_ = await get_notice()
         if is_forward():
-            chain = await chain_reply(bot, notice_)
-            msg_type = event.message_type
-            if msg_type == 'group':
-                group_id = re.findall('_(\d{5,})_', event.get_session_id())[0]
-                await bot.send_group_forward_msg(
-                    group_id=group_id,
-                    messages=chain
-                )
-            elif msg_type == 'private':
-                await bot.send_private_forward_msg(
-                    user_id=event.get_session_id(),
-                    messages=chain
-                )
+            await send_forward_msg(bot, event, notice_)
         else:
             await Notice.send(notice_)
 
@@ -158,19 +121,7 @@ async def travel_cn(bot: Bot, event: MessageEvent):
         travelling = Travelling_cn()
         results = await travelling.get_data()
         if is_forward():
-            chain = await chain_reply(bot, results)
-            msg_type = event.message_type
-            if msg_type == 'group':
-                group_id = re.findall('_(\d{5,})_', event.get_session_id())[0]
-                await bot.send_group_forward_msg(
-                    group_id=group_id,
-                    messages=chain
-                )
-            elif msg_type == 'private':
-                await bot.send_private_forward_msg(
-                    user_id=event.get_session_id(),
-                    messages=chain
-                )
+            await send_forward_msg(bot, event, results)
         else:
             await TravellingCN.send(results)
     except (NetworkError, ActionFailed):
@@ -185,19 +136,7 @@ async def travel_in(bot: Bot, event: MessageEvent):
     try:
         results = await get_data()
         if is_forward():
-            chain = await chain_reply(bot, results)
-            msg_type = event.message_type
-            if msg_type == 'group':
-                group_id = re.findall('_(\d{5,})_', event.get_session_id())[0]
-                await bot.send_group_forward_msg(
-                    group_id=group_id,
-                    messages=chain
-                )
-            elif msg_type == 'private':
-                await bot.send_private_forward_msg(
-                    user_id=event.get_session_id(),
-                    messages=chain
-                )
+            await send_forward_msg(bot, event, results)
         else:
             await TravellingIN.send(results)
     except (NetworkError, ActionFailed):

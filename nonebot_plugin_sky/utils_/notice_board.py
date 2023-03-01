@@ -2,6 +2,7 @@ import httpx
 from bs4 import BeautifulSoup
 import logging
 from nonebot import on_command
+from ..config.command import get_cmd_alias
 
 logging.captureWarnings(True)  # 去掉建议使用SSL验证的显示
 
@@ -27,7 +28,7 @@ async def get_notice():
         return results_
 
 
-Notice = on_command("插件公告", aliases={"公告板"})
+Notice = on_command("插件公告", aliases=get_cmd_alias('notice'))
 
 
 @Notice.handle()

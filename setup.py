@@ -19,7 +19,7 @@ with open("README.md", "r", encoding="utf-8", errors="ignore") as f:
     long_description = f.read()
 setuptools.setup(
     name='nonebot-plugin-sky',
-    version='v2.1.2',
+    version='v2.2',
     author='Kaguya233qwq',
     author_email='1435608435@qq.com',
     keywords=["pip", "nonebot2", "nonebot", "sky光遇", "光遇"],
@@ -27,14 +27,7 @@ setuptools.setup(
     description='''nonebot2 plugin sky''',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=[
-        'nonebot_plugin_sky',
-        'nonebot_plugin_sky.utils_',
-        'nonebot_plugin_sky.sky',
-        'nonebot_plugin_sky.tools',
-        'nonebot_plugin_sky.config',
-        'nonebot_plugin_sky.guild'
-    ],
+    packages=setuptools.find_packages(),
     data_files=Files,
     classifiers=[
         "Programming Language :: Python :: 3",

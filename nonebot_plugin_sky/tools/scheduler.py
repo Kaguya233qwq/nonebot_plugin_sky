@@ -5,13 +5,13 @@ from nonebot import require, get_bot, get_driver, on_command, logger
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.internal.matcher import Matcher
 from nonebot.params import CommandArg
-
+from ..config.command import get_cmd_alias
 from ..config.helper_at_all import *
 
 require("nonebot_plugin_apscheduler")
 from nonebot_plugin_apscheduler import scheduler
 
-Scheduler = on_command("-t", aliases={'小助手'})
+Scheduler = on_command("-sc", aliases=get_cmd_alias('helper_name'))
 
 try:
     recv_group_id = get_driver().config.recv_group_id

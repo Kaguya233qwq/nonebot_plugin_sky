@@ -9,26 +9,6 @@ from nonebot.params import EventPlainText
 
 ConfigPath = 'Sky/cmd_setting.cfg'
 TemplatePath = 'Sky/cmd_template.txt'
-CmdList = []
-
-
-def initialize():
-    """
-    初始化全局命令
-    """
-    global CmdList
-    if not Path('Sky').is_dir():
-        os.mkdir('Sky')
-    if not Path(ConfigPath).is_file():
-        create_template()
-        from_template_import()
-        logger.success("命令配置初始化成功")
-    else:
-        from_template_import()
-        with open(ConfigPath, 'r') as f:
-            lines = f.readlines()
-        CmdList = lines
-        logger.success('全局命令配置读取成功')
 
 
 def create_template():
@@ -39,27 +19,41 @@ def create_template():
         with open(TemplatePath, 'a') as f:
             f.write(
                 # 主要命令
-                'menu=光遇菜单,sky菜单\n'
+                'sky_menu=光遇菜单,sky菜单\n'
                 'sky_cn=今日国服\n'
                 'sky_in=今日国际服\n'
                 'travel_cn=国服复刻\n'
                 'travel_in=国际服复刻\n'
                 'remain_cn=国服季节剩余\n'
                 'remain_in=国际服季节剩余\n'
-                'queue=排队\n'
-                'notice=公告\n'
+                'sky_queue=排队\n'
+                'sky_notice=公告\n'
 
-                # 蜡烛查询命令
-                'save_id=光遇绑定\n'
+                # 精灵小工具命令
+                'save_sky_id=光遇绑定\n'
                 'qw=查询白蜡\n'
                 'qs=查询季蜡\n'
                 'qa=蜡烛,我的蜡烛\n'
                 'sky_weather=光遇天气预报,sky天气,光遇天气\n'
                 'sky_activities=活动日历,精灵日历\n'
 
+                # 更新相关命令
+                'check=检查更新\n'
+                'upgrade=更新插件\n'
+
+                # 数据包相关命令
+                'data_pack_install=安装数据包\n'
+                'menu_v2=菜单v2,数据包菜单\n'
+
                 # 配置命令
+                'at_all_on=开启艾特全体\n'
+                'at_all_off=关闭艾特全体\n'
+                'forward_on=开启转发模式\n'
+                'forward_off=关闭转发模式\n'
                 'cmd_add=添加命令\n'
-                'cmd_import=导入命令\n'
+
+                # 雨林干饭小助手
+                'helper_name=小助手'
             )
         logger.success('命令模板生成成功')
 
@@ -80,6 +74,26 @@ def from_template_import():
         with open(ConfigPath, 'a') as cfg:
             cfg.write(content)
     logger.success('导入成功')
+
+
+def initialize():
+    """
+    初始化全局命令
+    """
+    global CmdList
+    if not Path('Sky').is_dir():
+        os.mkdir('Sky')
+    if not Path(ConfigPath).is_file():
+        create_template()  # 初始化命令模板
+        logger.success("命令配置初始化成功")
+    from_template_import()
+    with open(ConfigPath, 'r') as f:
+        lines = f.readlines()
+    logger.success('全局命令配置读取成功')
+    return lines
+
+
+CmdList = initialize()  # 加载全局配置
 
 
 def get_cmd_alias(cmd: str) -> set:
@@ -141,7 +155,7 @@ async def add_cmd_aliases(
     return True
 
 
-AddCmdAliases = on_command('cmd -add', aliases={'添加命令'})
+AddCmdAliases = on_command('cmd -add', aliases=get_cmd_alias('cmd_add'))
 
 
 @AddCmdAliases.handle()
@@ -166,8 +180,10 @@ async def add_cmd_aliases_handle(args: Message = EventPlainText()):
                 'Command not found：找不到命令'
             )
 
+
 __all__ = (
     "add_cmd_aliases_handle",
     "get_cmd_alias",
-    "initialize"
+    "initialize",
+    "CmdList"
 )

@@ -4,11 +4,11 @@ import re
 import httpx
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageSegment
-from ..utils_ import time_no_more
+from ...utils_ import time_no_more
 
 
 class Travelling:
-    """国际服复刻类"""
+    """国服复刻类"""
 
     def __init__(self):
         self.url = 'https://weibo.com/ajax/statuses/mymblog?uid=5539106873&feature=0'
@@ -21,12 +21,12 @@ class Travelling:
                       '-yT9jqnAOtRB6P_daaLXfdvYkPfvZhXy3bTeuLdBjWXF9;'  # 未登录时的cookie直接写死
         }
         self.copyright_ = ('------------'
-                           '\r【数据来源：微博@光遇陈陈】\n'
+                           '\r【数据来源：微博@光遇陈陈和包包】\n'
                            '--本插件仅做数据展示之用，著作权归原文作者所有。'
                            '转载或转发请附文章作者微博--')
 
     async def get_mblog(self, max_page):
-        """获取微博 @光遇陈陈 国际服复刻先祖详情"""
+        """获取微博 @光遇陈陈和包包 复刻先祖详情"""
 
         for page in range(1, max_page + 1):
             param = {
@@ -47,36 +47,26 @@ class Travelling:
                                 r'#(光遇)*([\u4e00-\u9fa5])*(先祖)*(复刻)+#',
                                 log['text_raw']
                             ) and
-                            time_no_more(log.get('created_at'), 9, 50) and
-                            '国际服' in log['text_raw']
-                            # 错了再改
+                            time_no_more(log.get("created_at"), 12, 5) and
+                            '国际服' not in log['text_raw']
+                            # 讲声多谢陈陈哥啦
                     ):
                         return log
         return None
 
-
-async def get_data():
-    """获取复刻数据"""
-    copyright_ = ('------------'
-                  '\r【数据来源：微博@光遇陈陈】\n'
-                  '--本插件仅做数据展示之用，著作权归原文作者所有。'
-                  '转载或转发请附文章作者微博--')
-    travel = Travelling()
-    results = MessageSegment.text('')
-    overhead = await travel.get_mblog(100)
-    if overhead:
-        pic_infos = overhead.get('pic_infos')
-        if pic_infos:
+    async def get_data(self):
+        """获取复刻数据"""
+        results = MessageSegment.text('')
+        overhead = await self.get_mblog(40)
+        if overhead:
+            pic_infos = overhead['pic_infos']
             for pic in pic_infos:
                 large_url = pic_infos[pic]['large']['url']
                 img = MessageSegment.image(large_url)
                 results += img
-            results += copyright_
+            results += self.copyright_
         else:
-            results += overhead['text_raw']
-            results += copyright_
-    else:
-        notice = '没有找到国际服复刻先祖的数据'
-        logger.warning(notice)
-        results += MessageSegment.text(notice)
-    return results
+            notice = '没有找到国服复刻先祖的数据'
+            logger.warning(notice)
+            results += MessageSegment.text(notice)
+        return results
