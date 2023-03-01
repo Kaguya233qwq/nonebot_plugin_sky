@@ -53,7 +53,10 @@ def create_template():
                 'cmd_add=添加命令\n'
 
                 # 雨林干饭小助手
-                'helper_name=小助手'
+                'helper_name=小助手\n'
+                
+                # 其他
+                'noticeboard=插件公告,插件公告板'
             )
         logger.success('命令模板生成成功')
 

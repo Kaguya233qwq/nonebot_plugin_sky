@@ -28,7 +28,7 @@ async def get_notice():
         return results_
 
 
-Notice = on_command("插件公告", aliases=get_cmd_alias('notice'))
+Notice = on_command("noticeboard", aliases=get_cmd_alias('noticeboard'))
 
 
 @Notice.handle()
