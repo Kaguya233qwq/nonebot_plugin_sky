@@ -3,7 +3,7 @@ import json
 import httpx
 
 
-async def get_notice():
+async def get_sky_notice():
     """获取官方公告"""
     url = 'https://ma75.update.netease.com/game_notice/announcement_live.json'
     headers = {

@@ -54,7 +54,7 @@ def create_template():
 
                 # 雨林干饭小助手
                 'helper_name=小助手\n'
-                
+
                 # 其他
                 'noticeboard=插件公告,插件公告板'
             )
@@ -165,12 +165,11 @@ AddCmdAliases = on_command('cmd -add', aliases=get_cmd_alias('cmd_add'))
 async def add_cmd_aliases_handle(args: Message = EventPlainText()):
     msg = str(args)
     if not re.findall('cmd -add (.+) (.+)', msg):
-        await AddCmdAliases.reject(
+        await AddCmdAliases.send(
             '您输入的命令格式有误。用法：\n'
             'cmd -add [cmd] [alias]'
         )
     else:
-        print(re.findall('cmd -add (.+) (.+)', msg))
         cmd = re.findall('cmd -add (.+) (.+)', msg)[0][0]
         alias = re.findall('cmd -add (.+) (.+)', msg)[0][1]
         results = await add_cmd_aliases(cmd, alias)

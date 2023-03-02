@@ -7,7 +7,7 @@ from ..config.command import get_cmd_alias
 logging.captureWarnings(True)  # 去掉建议使用SSL验证的显示
 
 
-async def get_notice():
+async def get_plugin_notice():
     url = 'https://gitee.com/Kaguya233qwq/notice_manager/blob/main/public_sky/notice.txt'
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) '
@@ -19,12 +19,11 @@ async def get_notice():
             url=url,
             headers=headers
         )
-        bs = BeautifulSoup(res.text)
+        bs = BeautifulSoup(res.text, 'lxml')
         results_ = ''
         notice_list = bs.find_all(class_='line')
         for notice in notice_list:
             results_ += notice.text
-        print(notice_list)
         return results_
 
 
@@ -33,5 +32,11 @@ Notice = on_command("noticeboard", aliases=get_cmd_alias('noticeboard'))
 
 @Notice.handle()
 async def notice_handle():
-    results_ = await get_notice()
+    results_ = await get_plugin_notice()
     await Notice.send(results_)
+
+
+__all__ = (
+    'notice_handle',
+    'Notice'
+)

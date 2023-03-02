@@ -9,7 +9,7 @@ from .sky.daily_tasks.international import SkyDaily as Task_in
 from .sky.daily_tasks.national import SkyDaily as Task_cn
 from .sky.travelling_spirit.international import get_data
 from .tools.menu import get_menu
-from .sky.public_notice import get_notice
+from .sky.public_notice import get_sky_notice
 from .sky.queue import get_state
 from .sky.travelling_spirit.national import Travelling as Travelling_cn
 from .utils_.chain_reply import chain_reply
@@ -25,52 +25,52 @@ import datetime
 
 
 Menu = on_command("Sky", aliases=get_cmd_alias("sky_menu"))
-DailyYori = on_command("sky -cn", aliases=get_cmd_alias("sky_cn"))
-DailyHaru = on_command("sky -in", aliases=get_cmd_alias("sky_in"))
-Queue = on_command("queue", aliases=get_cmd_alias("sky_queue"))
-Notice = on_command("notice", aliases=get_cmd_alias("sky_notice"))
+DailyCN = on_command("sky -cn", aliases=get_cmd_alias("sky_cn"))
+DailyIN = on_command("sky -in", aliases=get_cmd_alias("sky_in"))
 TravellingCN = on_command("travel -cn", aliases=get_cmd_alias("travel_cn"))
 TravellingIN = on_command("travel -in", aliases=get_cmd_alias("travel_in"))
 RemainCN = on_command("remain -cn", aliases=get_cmd_alias("remain_cn"))
 RemainIN = on_command("remain -in", aliases=get_cmd_alias("remain_in"))
+Queue = on_command("queue", aliases=get_cmd_alias("sky_queue"))
+Notice = on_command("notice", aliases=get_cmd_alias("sky_notice"))
 
 
-@DailyYori.handle()
-async def daily_yori(bot: Bot, event: MessageEvent):
+@DailyCN.handle()
+async def daily_cn(bot: Bot, event: MessageEvent):
     try:
         sky = Task_cn()
         results = await sky.get_data()
         if is_forward():
             await send_forward_msg(bot, event, results)
         else:
-            await DailyYori.send(results)
+            await DailyCN.send(results)
 
     except (NetworkError, ActionFailed):
         logger.error('网络环境较差，调用发送信息接口超时')
-        await DailyYori.send(
+        await DailyCN.send(
             message='网络环境较差，调用发送信息接口超时'
         )
 
 
-@DailyHaru.handle()
-async def daily_haru(bot: Bot, event: MessageEvent):
+@DailyIN.handle()
+async def daily_in(bot: Bot, event: MessageEvent):
     try:
         sky = Task_in()
         results = await sky.get_data()
         if is_forward():
             await send_forward_msg(bot, event, results)
         else:
-            await DailyHaru.send(results)
+            await DailyIN.send(results)
 
     except (NetworkError, ActionFailed):
         logger.error('网络环境较差，调用发送信息接口超时')
-        await DailyHaru.send(
+        await DailyIN.send(
             message='网络环境较差，调用发送信息接口超时'
         )
 
 
 @Queue.handle()
-async def queue():
+async def queue_handle():
     try:
         state = await get_state()
         await Queue.send(
@@ -85,7 +85,7 @@ async def queue():
 
 
 @Menu.handle()
-async def menu():
+async def menu_handle():
     try:
         menu_ = await get_menu()
         await Menu.send(
@@ -100,9 +100,9 @@ async def menu():
 
 
 @Notice.handle()
-async def notice(bot: Bot, event: MessageEvent):
+async def notice_handle(bot: Bot, event: MessageEvent):
     try:
-        notice_ = await get_notice()
+        notice_ = await get_sky_notice()
         if is_forward():
             await send_forward_msg(bot, event, notice_)
         else:
@@ -155,6 +155,15 @@ def remain(
         minute: int,
         second: int
 ) -> str:
+    """
+    通用季节倒计时
+    """
+
+    # @Author  : ZQDesigned
+    # @Email   :  2990918167@qq.com
+    # @Github  : ZQDesigned
+    # @Software: IDEA Ultimate 2022.3.1
+
     # 定义剩余时间
     deadline = datetime.datetime(
         year, month, day, hour, minute, second
@@ -179,10 +188,6 @@ def remain(
         return f'距离{season_name}结束还有{days}天{hours}小时{minutes}分钟{seconds}秒'
 
 
-# @Author  : ZQDesigned
-# @Email   :  2990918167@qq.com
-# @Github  : ZQDesigned
-# @Software: IDEA Ultimate 2022.3.1
 @RemainCN.handle()
 async def remain_cn():
     results = remain("追忆季", 2023, 4, 20, 00, 00, 00)
