@@ -1,10 +1,8 @@
-import json
 import re
 
 import httpx
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageSegment
-from ...utils_ import time_no_more
 
 
 class Travelling:
@@ -38,17 +36,17 @@ class Travelling:
                     headers=self.headers,
                     params=param
                 )
-                content = json.loads(response.text)
+                content = response.json()
                 overhead = content['data']['list']
                 for log in overhead:
                     if (
                             log.get('pic_infos') and
                             re.findall(
-                                r'#(光遇)*([\u4e00-\u9fa5])*(先祖)*(复刻)+#',
+                                r'#(光遇)*?([\u4e00-\u9fa5])*?(先祖)*?(复刻)*?([\u4e00-\u9fa5])*?#',
                                 log['text_raw']
                             ) and
-                            time_no_more(log.get("created_at"), 12, 5) and
-                            '国际服' not in log['text_raw']
+                            '国服' in log['text_raw'] and
+                            '兑换图' in log['text_raw']
                             # 讲声多谢包包姐啦
                     ):
                         return log

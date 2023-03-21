@@ -1,5 +1,3 @@
-import json
-
 import httpx
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageSegment
@@ -23,24 +21,27 @@ class SkyDaily:
                            '--本插件仅做数据展示之用，著作权归原文作者所有。'
                            '转载或转发请附文章作者微博--')
 
-    async def get_mblog(self, today):
+    async def get_mblog(self):
         """获取微博 @旧日与春 今日攻略详情"""
 
         async with httpx.AsyncClient() as client:
             response = await client.get(
                 url=self.url,
                 headers=self.headers)
-            content = json.loads(response.text)
+            content = response.json()
             overhead = content['data']['list']
             for log in overhead:
-                if '国际服' + today in log['text_raw']:
+                if (
+                        '国际服' in log['text_raw'] and
+                        '兑换图' in log['text_raw']
+                ):
                     return log
             return None
 
     async def get_data(self):
         """获取今日攻略数据"""
         results = MessageSegment.text('')
-        overhead = await self.get_mblog('')
+        overhead = await self.get_mblog()
         if overhead:
             longtext = overhead['text_raw']
             results += MessageSegment.text(longtext)
