@@ -35,7 +35,7 @@ _“因光而遇”_
 【Nonebot+go-cqhttp集成光遇插件一键部署包】↓ ↓ ↓
 
 <p align="center">
-<img src="https://gitee.com/Kaguya233qwq/nonebot_plugin_sky/raw/main/.README_images/group.png" width="200" height="350" alt="sky"></a>
+<img src="https://gitee.com/Kaguyaaa/nonebot_plugin_sky/raw/main/.README_images/group.png" width="200" height="350" alt="sky"></a>
 </p>
 
 </details>
@@ -248,7 +248,7 @@ Nonebot项目文件夹下的`sky/`目录
 # ✨效果展示✨
 
 <p align="center">
-<img src="https://gitee.com/Kaguya233qwq/nonebot_plugin_sky/raw/main/.README_images/view.png" width="400" height="740" alt="sky"></a>
+<img src="https://gitee.com/Kaguyaaa/nonebot_plugin_sky/raw/main/.README_images/view.png" width="400" height="740" alt="sky"></a>
 </p>
 
 # ✨遇到问题✨
@@ -258,7 +258,7 @@ Nonebot项目文件夹下的`sky/`目录
 (群文件有一键启动包)
 
 <p align="center">
-<img src="https://gitee.com/Kaguya233qwq/nonebot_plugin_sky/raw/main/.README_images/group.png" width="200" height="350" alt="sky"></a>
+<img src="https://gitee.com/Kaguyaaa/nonebot_plugin_sky/raw/main/.README_images/group.png" width="200" height="350" alt="sky"></a>
 </p>
 
 ## ✨感谢名单（不分先后）✨
@@ -275,6 +275,10 @@ Nonebot项目文件夹下的`sky/`目录
 
 ## ✨更新日志✨
 
+2023.3.23 v2.2.4
+
+修复已知问题，更换项目的gitee镜像仓库
+
 2023.3.21 v2.2.3
 
 修复已知的问题
@@ -285,7 +289,6 @@ Nonebot项目文件夹下的`sky/`目录
 
 更换复刻数据源为微博@光遇包包1号
 
-
 2023.3.2 v2.2.1
 
 1.修复光遇官方公告与插件公告冲突问题
@@ -295,6 +298,10 @@ Nonebot项目文件夹下的`sky/`目录
 3.修复lxml警告问题
 
 4.蜡烛查询增加对应异常捕获处理
+
+<details>
+
+<summary>更早的记录（2023.3.1之前）</summary>
 
 2023.3.1 v2.2
 
@@ -339,10 +346,6 @@ Nonebot项目文件夹下的`sky/`目录
 6.修复版本号问题
 
 7.其他优化处理
-
-<details>
-
-<summary>更早的记录（2023.2.24之前）</summary>
 
 2023.2.21 v2.0.11.post1
 

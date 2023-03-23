@@ -17,7 +17,7 @@ class SkyDataPack:
 
     def __init__(self):
 
-        self.url = f'https://gitee.com/Kaguya233qwq/nonebot_plugin_sky/releases/download/SkyDataPack-v'
+        self.url = f'https://gitee.com/Kaguyaaa/nonebot_plugin_sky/releases/download/SkyDataPack-v'
         self.headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) '
                           'AppleWebKit/537.36 (KHTML, like Gecko) Chrome'

@@ -4,6 +4,8 @@ import httpx
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageSegment
 
+from ...utils_ import time_no_more
+
 
 class Travelling:
     """国服复刻类"""
@@ -44,10 +46,9 @@ class Travelling:
                             re.findall(
                                 r'#(光遇)*?([\u4e00-\u9fa5])*?(先祖)*?(复刻)*?([\u4e00-\u9fa5])*?#',
                                 log['text_raw']
-                            ) and
-                            '国服' in log['text_raw'] and
-                            '兑换图' in log['text_raw']
-                            # 讲声多谢包包姐啦
+                            ) and re.findall("【*?国服】*?.*?【*?(先祖)*?(复刻)*?兑换图】*?", log['text_raw'])
+                            and time_no_more(log.get('created_at'), 12, 50)
+                            # 为了包包我已经放弃了优雅。
                     ):
                         return log
         return None

@@ -48,7 +48,7 @@ class Travelling:
                                 log['text_raw']
                             ) and
                             time_no_more(log.get('created_at'), 9, 50) and
-                            '国际服' in log['text_raw']
+                            re.findall('【*?国.*?际.*?服】*?', log['text_raw'])
                             # 错了再改
                     ):
                         return log

@@ -9,7 +9,7 @@ from ..config.command import get_cmd_alias
 
 logging.captureWarnings(True)  # 去掉建议使用SSL验证的显示
 
-Version = '2.2.3'  # 全局插件版本信息  （不用加v！）
+Version = '2.2.4'  # 全局插件版本信息  （不用加v！）
 
 
 async def get_datapack_ver():
@@ -59,7 +59,7 @@ async def check_datapack_latest():
     """
     检查最新发布的数据包版本
     """
-    url = 'https://gitee.com/Kaguya233qwq/nonebot_plugin_sky/'
+    url = 'https://gitee.com/Kaguyaaa/nonebot_plugin_sky/'
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) '
                       'AppleWebKit/537.36 (KHTML, like Gecko) Chrome'
