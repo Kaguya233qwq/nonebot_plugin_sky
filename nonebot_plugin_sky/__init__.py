@@ -23,7 +23,6 @@ from .config.command import *
 from .utils_ import send_forward_msg
 import datetime
 
-
 Menu = on_command("Sky", aliases=get_cmd_alias("sky_menu"))
 DailyCN = on_command("sky -cn", aliases=get_cmd_alias("sky_cn"))
 DailyIN = on_command("sky -in", aliases=get_cmd_alias("sky_in"))
@@ -116,14 +115,11 @@ async def notice_handle(bot: Bot, event: MessageEvent):
 
 
 @TravellingCN.handle()
-async def travel_cn(bot: Bot, event: MessageEvent):
+async def travel_cn():
     try:
         travelling = Travelling_cn()
         results = await travelling.get_data()
-        if is_forward():
-            await send_forward_msg(bot, event, results)
-        else:
-            await TravellingCN.send(results)
+        await TravellingCN.send(results)
     except (NetworkError, ActionFailed):
         logger.error('网络环境较差，调用发送信息接口超时')
         await TravellingCN.send(
@@ -132,13 +128,10 @@ async def travel_cn(bot: Bot, event: MessageEvent):
 
 
 @TravellingIN.handle()
-async def travel_in(bot: Bot, event: MessageEvent):
+async def travel_in():
     try:
         results = await get_data()
-        if is_forward():
-            await send_forward_msg(bot, event, results)
-        else:
-            await TravellingIN.send(results)
+        await TravellingIN.send(results)
     except (NetworkError, ActionFailed):
         logger.error('网络环境较差，调用发送信息接口超时')
         await TravellingIN.send(

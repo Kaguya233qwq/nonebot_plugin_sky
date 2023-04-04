@@ -4,7 +4,7 @@ import httpx
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageSegment
 
-from ...utils_ import time_no_more
+from ...utils_ import time_no_more, weibo_image
 
 
 class Travelling:
@@ -46,8 +46,7 @@ class Travelling:
                             re.findall(
                                 r'#(光遇)*?([\u4e00-\u9fa5])*?(先祖)*?(复刻)*?([\u4e00-\u9fa5])*?#',
                                 log['text_raw']
-                            ) and re.findall("【*?国服】*?.*?【*?(先祖)*?(复刻)*?兑换图】*?", log['text_raw'])
-                            and time_no_more(log.get('created_at'), 12, 50)
+                            ) and time_no_more(log.get('created_at'), 12, 50)
                             # 为了包包我已经放弃了优雅。
                     ):
                         return log
@@ -58,12 +57,15 @@ class Travelling:
         results = MessageSegment.text('')
         overhead = await self.get_mblog(40)
         if overhead:
-            pic_infos = overhead['pic_infos']
-            for pic in pic_infos:
-                large_url = pic_infos[pic]['large']['url']
-                img = MessageSegment.image(large_url)
-                results += img
-            results += self.copyright_
+            pic_infos = overhead.get('pic_infos')
+            if pic_infos:
+                for pic in pic_infos:
+                    large_url = pic_infos[pic]['largest']['url']
+                    path = await weibo_image(large_url, pic)
+                    img = MessageSegment.image(path)
+                    results += img
+            else:
+                results += overhead['text_raw']
         else:
             notice = '没有找到国服复刻先祖的数据'
             logger.warning(notice)

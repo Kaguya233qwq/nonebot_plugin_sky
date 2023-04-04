@@ -4,6 +4,7 @@ import httpx
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageSegment
 
+from ...utils_ import weibo_image
 from ...utils_.date_util import get_today
 
 
@@ -61,8 +62,9 @@ class SkyDaily:
             results += MessageSegment.text(longtext)
             pic_infos = overhead['pic_infos']
             for pic in pic_infos:
-                large_url = pic_infos[pic]['large']['url']
-                img = MessageSegment.image(large_url)
+                large_url = pic_infos[pic]['largest']['url']
+                path = await weibo_image(large_url, pic)
+                img = MessageSegment.image(path)
                 results += img
             results += self.copyright_  # 附加版权信息
         else:

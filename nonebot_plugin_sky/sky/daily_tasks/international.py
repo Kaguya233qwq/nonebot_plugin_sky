@@ -2,6 +2,8 @@ import httpx
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageSegment
 
+from ...utils_ import weibo_image
+
 
 class SkyDaily:
     """国际服光遇类"""
@@ -33,7 +35,7 @@ class SkyDaily:
             for log in overhead:
                 if (
                         '国际服' in log['text_raw'] and
-                        '兑换图' in log['text_raw']
+                        '任务' in log['text_raw']
                 ):
                     return log
             return None
@@ -47,8 +49,9 @@ class SkyDaily:
             results += MessageSegment.text(longtext)
             pic_infos = overhead['pic_infos']
             for pic in pic_infos:
-                large_url = pic_infos[pic]['large']['url']
-                img = MessageSegment.image(large_url)
+                large_url = pic_infos[pic]['largest']['url']
+                path = await weibo_image(large_url, pic)
+                img = MessageSegment.image(path)
                 results += img
             results += self.copyright_  # 附加版权信息
         else:
