@@ -44,9 +44,9 @@ class Travelling:
                     if (
                             log.get('pic_infos') and
                             re.findall(
-                                r'#(光遇)*?([\u4e00-\u9fa5])*?(先祖)*?(复刻)*?([\u4e00-\u9fa5])*?#',
+                                r'#(光遇复刻)*([\u4e00-\u9fa5])*(先祖复刻)*([\u4e00-\u9fa5])*#',
                                 log['text_raw']
-                            ) and time_no_more(log.get('created_at'), 12, 50)
+                            ) and time_no_more(log.get('created_at'), 12, 30)
                             # 为了包包我已经放弃了优雅。
                     ):
                         return log

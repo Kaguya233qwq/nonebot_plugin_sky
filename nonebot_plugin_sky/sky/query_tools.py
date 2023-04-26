@@ -59,12 +59,11 @@ def get_id_img():
     path = 'file:///' + abspath_ + 'get_id.png'
     return MessageSegment.image(path)
 
+
 To_Get_Uid = (
         '如何获取uid？见下图：' +
         get_id_img()
 )
-
-
 
 
 class Sprite:
@@ -215,15 +214,18 @@ class Sprite:
         try:
             if results.get('answer'):
                 answer = results.get('answer')
-                changes: str = answer.strip(
-                    '<默认回复>小易帮您查到'
-                    '最近季节蜡烛变化记录：#r请留意：'
-                    '#R维护补偿#n所获得道具记录本功能不显示'
-                )
-                log = changes.replace('#r', '\n').replace('#R', '【').replace('#n', '】').strip(
-                    '若您想要查询更多蜡烛变化请点击<ask>【更多蜡烛查询】</ask'
-                )
-                return f'---最近的季节蜡烛变化记录---\n{log}'
+                if '小易帮您查到' in answer:
+                    changes: str = answer.strip(
+                        '<默认回复>小易帮您查到'
+                        '最近季节蜡烛变化记录：#r请留意：'
+                        '#R维护补偿#n所获得道具记录本功能不显示'
+                    )
+                    log = changes.replace('#r', '\n').replace('#R', '【').replace('#n', '】').strip(
+                        '若您想要查询更多蜡烛变化请点击<ask>【更多蜡烛查询】</ask'
+                    )
+                    return f'---最近的季节蜡烛变化记录---\n{log}'
+                elif '请稍候再查看' in answer:
+                    return '季节真空期，季蜡数默认为零'
             else:
                 return '服务器异常，返回结果时出现错误'
         except Exception as e:
@@ -332,17 +334,15 @@ async def candle_view(event: MessageEvent):
         try:
             season = await query.get_season_candles(sky_id)
             white = await query.get_candles(sky_id)
-
+            season_left = ''
             if '这边查询一下' not in season and '这边查询一下' not in white:
                 pass
             else:
                 time.sleep(1)
                 season = await query.get_season_candles(sky_id)
                 white = await query.get_candles(sky_id)
-            try:
-                season_left = re.findall('剩余：(\d+)+?', season)[0]
-            except Exception:
-                season_left = '查询失败'
+            if '真空期' in season:
+                season_left = 0
             white_left = re.findall('剩余：(\d+)+?', white)[0]
             await CandlesView.send(
                 f'蜡烛总览：\n●普通蜡烛：{white_left}\n●季节蜡烛：{season_left}'
