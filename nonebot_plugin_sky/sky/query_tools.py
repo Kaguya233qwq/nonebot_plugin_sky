@@ -15,6 +15,9 @@ from ..utils_ import send_forward_msg
 from ..config.msg_forward import is_forward
 from ..config.command import *
 
+NO_CACHE_ID_MSG = '没有相应缓存数据，请先私聊bot进行id绑定操作。\n'
+NO_BIND_MSG = '您还没有绑定您的光遇id，请私聊bot发送“光遇绑定”来进行绑定\n'
+
 
 async def save_sky_id(qq: str, sky_id: str) -> None:
     """
@@ -51,13 +54,18 @@ async def load_sky_id(qq: str) -> Union[None, str]:
         return tmp.get(qq, None)
 
 
+def get_id_img():
+    abspath_ = os.path.abspath(__file__).strip('query_tools.py')
+    path = abspath_ + 'get_id.png'
+    return MessageSegment.image('file:///' + path + 'menu.png')
+
 To_Get_Uid = (
         '如何获取uid？见下图：' +
-        MessageSegment.image(
-            'https://gitee.com/Kaguya233qwq/'
-            'nonebot_plugin_sky/raw/main/'
-            '.README_images/get_uid.jpg')
+        get_id_img()
+
 )
+
+
 
 
 class Sprite:
@@ -257,14 +265,13 @@ async def white_candles_handler(bot: Bot, event: MessageEvent):
     sky_id = await load_sky_id(str(event.sender.user_id))
     if not sky_id:
         await QueryWhiteCandles.send(
-            '没有相应缓存数据，请先私聊bot进行id绑定操作。\n'
+            NO_CACHE_ID_MSG
             + To_Get_Uid
         )
     else:
         if sky_id == '':
             await QueryWhiteCandles.send(
-                '您还没有绑定您的光遇id，'
-                '请私聊bot发送“光遇绑定”来进行绑定\n' +
+                NO_BIND_MSG +
                 To_Get_Uid
             )
         query = Sprite()
@@ -285,14 +292,13 @@ async def season_candles_handler(bot: Bot, event: MessageEvent):
     sky_id = await load_sky_id(str(event.sender.user_id))
     if not sky_id:
         await QuerySeasonCandles.send(
-            '没有相应缓存数据，请先私聊bot进行id绑定操作。\n' +
+            NO_CACHE_ID_MSG +
             To_Get_Uid
         )
     else:
         if sky_id == '':
             await QuerySeasonCandles.send(
-                '您还没有绑定您的光遇id，'
-                '请私聊bot发送“光遇绑定”来进行绑定\n' +
+                NO_BIND_MSG +
                 To_Get_Uid
             )
         query = Sprite()
@@ -313,14 +319,13 @@ async def candle_view(event: MessageEvent):
     sky_id = await load_sky_id(str(event.sender.user_id))
     if not sky_id:
         await CandlesView.send(
-            '没有相应缓存数据，请先私聊bot进行id绑定操作。\n' +
+            NO_CACHE_ID_MSG +
             To_Get_Uid
         )
     else:
         if sky_id == '':
             await CandlesView.send(
-                '您还没有绑定您的光遇id，'
-                '请私聊bot发送“光遇绑定”来进行绑定\n' +
+                NO_BIND_MSG +
                 To_Get_Uid
             )
         query = Sprite()
@@ -335,7 +340,10 @@ async def candle_view(event: MessageEvent):
                 time.sleep(1)
                 season = await query.get_season_candles(sky_id)
                 white = await query.get_candles(sky_id)
-            season_left = re.findall('剩余：(\d+)+?', season)[0]
+            try:
+                season_left = re.findall('剩余：(\d+)+?', season)[0]
+            except Exception:
+                season_left = '查询失败'
             white_left = re.findall('剩余：(\d+)+?', white)[0]
             await CandlesView.send(
                 f'蜡烛总览：\n●普通蜡烛：{white_left}\n●季节蜡烛：{season_left}'
@@ -351,14 +359,13 @@ async def weather_handle(event: MessageEvent):
     sky_id = await load_sky_id(str(event.sender.user_id))
     if not sky_id:
         await Weather.send(
-            '没有相应缓存数据，请先私聊bot进行id绑定操作。\n' +
+            NO_CACHE_ID_MSG +
             To_Get_Uid
         )
     else:
         if sky_id == '':
             await Weather.send(
-                '您还没有绑定您的光遇id，'
-                '请私聊bot发送“光遇绑定”来进行绑定\n' +
+                NO_BIND_MSG +
                 To_Get_Uid
             )
         results = await query.get_weather(sky_id)
@@ -371,14 +378,13 @@ async def act_handle(event: MessageEvent):
     sky_id = await load_sky_id(str(event.sender.user_id))
     if not sky_id:
         await Activities.send(
-            '没有相应缓存数据，请先私聊bot进行id绑定操作。\n' +
+            NO_CACHE_ID_MSG +
             To_Get_Uid
         )
     else:
         if sky_id == '':
             await Activities.send(
-                '您还没有绑定您的光遇id，'
-                '请私聊bot发送“光遇绑定”来进行绑定\n' +
+                NO_BIND_MSG +
                 To_Get_Uid
             )
         results = await query.get_activities(sky_id)
