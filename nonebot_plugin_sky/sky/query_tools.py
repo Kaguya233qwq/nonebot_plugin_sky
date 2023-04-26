@@ -56,13 +56,12 @@ async def load_sky_id(qq: str) -> Union[None, str]:
 
 def get_id_img():
     abspath_ = os.path.abspath(__file__).strip('query_tools.py')
-    path = abspath_ + 'get_id.png'
-    return MessageSegment.image('file:///' + path + 'menu.png')
+    path = 'file:///' + abspath_ + 'get_id.png'
+    return MessageSegment.image(path)
 
 To_Get_Uid = (
         '如何获取uid？见下图：' +
         get_id_img()
-
 )
 
 
