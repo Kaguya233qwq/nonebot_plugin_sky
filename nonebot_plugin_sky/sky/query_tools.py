@@ -390,10 +390,10 @@ async def act_handle(event: MessageEvent):
         await Activities.send(results)
 
 
-__all__ = (
-    "save_id_handler",
-    "sky_id_handler",
-    "white_candles_handler",
-    "season_candles_handler",
-    "weather_handle"
-)
+# __all__ = (
+#     "save_id_handler",
+#     "sky_id_handler",
+#     "white_candles_handler",
+#     "season_candles_handler",
+#     "weather_handle"
+# )

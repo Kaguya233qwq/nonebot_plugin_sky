@@ -183,11 +183,11 @@ def remain(
 
 @RemainCN.handle()
 async def remain_cn():
-    results = remain("追忆季", 2023, 4, 20, 00, 00, 00)
+    results = remain("夜行季国服", 2023, 7, 19, 00, 00, 00)
     await RemainIN.send(results)
 
 
 @RemainIN.handle()
 async def remain_in():
-    results = remain("缅怀季", 2023, 4, 3, 15, 00, 00)
+    results = remain("夜行季国际服", 2023, 6, 25, 15, 00, 00)
     await RemainIN.send(results)
