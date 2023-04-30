@@ -25,7 +25,6 @@ async def get_plugin_notice():
         notice_list = bs.find_all(class_='line')
         for notice in notice_list:
             results_ += notice.text
-        print(results_)
         return results_
 
 
