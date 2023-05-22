@@ -35,7 +35,7 @@ def off():
 Forward = get_is_forward()
 
 On = on_command("forward -on", aliases=get_cmd_alias('forward_on'))
-Off = on_command("forward -off",aliases=get_cmd_alias('forward_off'))
+Off = on_command("forward -off", aliases=get_cmd_alias('forward_off'))
 
 
 @On.handle()

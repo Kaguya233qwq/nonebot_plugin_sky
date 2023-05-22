@@ -46,7 +46,9 @@ class SkyDataPack:
                         ):
                             f.write(data)
                             size += len(data) / 1024 / 1024
-                            print('\r' + '[下载进度]: %0.2f MB/%0.2f MB' % (size, total), end='')
+                            print(
+                                '\r' + '[下载进度]: %0.2f MB/%0.2f MB' %
+                                (size, total), end='')
                             await sleep(1)
                     f.close()
                     logger.success('文件下载完成！')
@@ -107,7 +109,9 @@ async def load_image(cmd_path):
     return results
 
 
-Install = on_command("data_pack -install", aliases=get_cmd_alias('data_pack_install'))
+Install = on_command(
+    "data_pack -install",
+    aliases=get_cmd_alias('data_pack_install'))
 MenuV2 = on_command("menu v2", aliases=get_cmd_alias('menu_v2'))
 Cmd = on_command("-")
 

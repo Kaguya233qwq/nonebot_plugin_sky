@@ -64,3 +64,9 @@ async def cache_off_handle():
 
 def is_cache():
     return Cache
+
+
+__all__ = (
+    "cache_on_handle",
+    "cache_off_handle"
+)
