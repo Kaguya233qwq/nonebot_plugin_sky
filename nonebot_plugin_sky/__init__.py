@@ -24,6 +24,7 @@ from .utils_.check_update import *
 from .utils_.data_pack import *
 from .utils_.notice_board import *
 from .config.travelling_cache import *
+from .utils_.travel_cycle import download_img, is_exist, NormalTravel
 
 Menu = on_command("Sky", aliases=get_cmd_alias("sky_menu"))
 DailyCN = on_command("sky -cn", aliases=get_cmd_alias("sky_cn"))
@@ -119,9 +120,30 @@ async def notice_handle(bot: Bot, event: MessageEvent):
 @TravellingCN.handle()
 async def travel_cn():
     try:
-        travelling = Travelling_cn()
-        results = await travelling.get_data()
-        await TravellingCN.send(results)
+        status = NormalTravel.travel_status()
+        if status.get('status') is True:
+            # 如果在复刻期间内就判断有无缓存
+            release_time = status.get('current_release').strip(' 12:00:00')
+            cache = is_exist(release_time)
+            if cache:
+                # 如果有复刻缓存则发送缓存
+                await TravellingCN.send(MessageSegment.image(cache))
+            else:
+                # 没有就执行实时调用
+                travelling = Travelling_cn()
+                img_url = await travelling.get_data()
+                if img_url:
+                    # 将收到的url下载下来并发送
+                    download_img(img_url, release_time)
+                    cache = is_exist(release_time)
+                    await TravellingCN.send(cache)
+                else:
+                    await TravellingCN.send('没有找到国服复刻先祖的数据')
+        else:
+            # 如果不在复刻期间，则发送提示信息
+            await TravellingCN.send(
+                f'当前无复刻先祖信息，下次复刻公布时间：\n{status.get("current_release")}'
+            )
     except (NetworkError, ActionFailed):
         logger.error('网络环境较差，调用发送信息接口超时')
         await TravellingCN.send(
@@ -132,6 +154,7 @@ async def travel_cn():
 @TravellingIN.handle()
 async def travel_in():
     try:
+        # 实时调用
         results = await get_data()
         await TravellingIN.send(results)
     except (NetworkError, ActionFailed):

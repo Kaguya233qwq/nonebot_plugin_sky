@@ -58,11 +58,11 @@ class Travelling:
         return None
 
 
-async def get_data():
+async def get_data() -> Union[str, None]:
     """获取复刻数据"""
+    results = ''
     travel = Travelling()
-    results = MessageSegment.text('')
-    overhead = await travel.get_mblog(100)
+    overhead = await travel.get_mblog(2)
     if overhead == 'invalid':
         return '超过未登录能获取页数的最大值：2'
     if overhead:
@@ -71,12 +71,11 @@ async def get_data():
             for pic in pic_infos:
                 large_url = pic_infos[pic]['largest']['url']
                 path = await weibo_image(large_url, pic)
-                img = MessageSegment.image(path)
-                results += img
+                results = path
         else:
-            results += overhead['text_raw']
+            results = None
     else:
         notice = '没有找到国际服复刻先祖的数据'
         logger.warning(notice)
-        results += MessageSegment.text(notice)
+        results = None
     return results
