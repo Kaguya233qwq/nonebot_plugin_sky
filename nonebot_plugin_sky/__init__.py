@@ -3,6 +3,7 @@
 # @Email   :  1435608435@qq.com
 # @Github  : neet姬辉夜大人
 # @Software: PyCharm
+import asyncio
 import datetime
 
 from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed, Bot, MessageEvent
@@ -24,7 +25,7 @@ from .utils_.check_update import *
 from .utils_.data_pack import *
 from .utils_.notice_board import *
 from .config.travelling_cache import *
-from .utils_.travel_cycle import download_img, is_exist, NormalTravel
+from .utils_.travel_cycle import download_img, is_exist, NormalTravel,bot_tips
 
 Menu = on_command("Sky", aliases=get_cmd_alias("sky_menu"))
 DailyCN = on_command("sky -cn", aliases=get_cmd_alias("sky_cn"))
@@ -119,8 +120,11 @@ async def notice_handle(bot: Bot, event: MessageEvent):
 
 @TravellingCN.handle()
 async def travel_cn():
+    travel = NormalTravel()
     try:
-        status = NormalTravel.travel_status()
+
+        status = travel.national()
+        tips = bot_tips(status)
         if status.get('status') is True:
             # 如果在复刻期间内就判断有无缓存
             release_time = status.get('current_release').strip(' 12:00:00')
@@ -134,7 +138,7 @@ async def travel_cn():
                 img_url = await travelling.get_data()
                 if img_url:
                     # 将收到的url下载下来并发送
-                    download_img(img_url, release_time)
+                    await download_img(img_url, release_time)
                     cache = is_exist(release_time)
                     await TravellingCN.send(cache)
                 else:
@@ -142,8 +146,10 @@ async def travel_cn():
         else:
             # 如果不在复刻期间，则发送提示信息
             await TravellingCN.send(
-                f'当前无复刻先祖信息，下次复刻公布时间：\n{status.get("current_release")}'
+                f'当前无复刻先祖信息，下次复刻公布时间：\n{status.get("next_release")}'
             )
+            await asyncio.sleep(2)
+            await TravellingCN.send(tips)
     except (NetworkError, ActionFailed):
         logger.error('网络环境较差，调用发送信息接口超时')
         await TravellingCN.send(
@@ -156,7 +162,10 @@ async def travel_in():
     try:
         # 实时调用
         results = await get_data()
-        await TravellingIN.send(results)
+        if results:
+            await TravellingIN.send(results)
+        else:
+            await TravellingIN.send('未获取到国际服复刻先祖信息（维护中）')
     except (NetworkError, ActionFailed):
         logger.error('网络环境较差，调用发送信息接口超时')
         await TravellingIN.send(
