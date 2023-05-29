@@ -13,7 +13,6 @@ from .config.msg_forward import *
 from .sky.daily_tasks.international import SkyDaily as Task_in
 from .sky.daily_tasks.national import SkyDaily as Task_cn
 from .sky.public_notice import get_sky_notice
-from .sky.query_tools import *
 from .sky.queue import get_state
 from .sky.travelling_spirit.international import get_data
 from .sky.travelling_spirit.national import Travelling as Travelling_cn
