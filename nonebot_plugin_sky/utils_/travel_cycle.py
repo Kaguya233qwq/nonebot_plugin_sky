@@ -78,7 +78,7 @@ async def download_img(img_url: str, file_name: str):
     下载复刻图片到本地
     """
     try:
-        path = f'Sky/TravelCache/{file_name}.jpg'
+        path = f'Sky/Cache/{file_name}.jpg'
         async with httpx.AsyncClient() as client:
             res = await client.get(
                 url=img_url
@@ -96,8 +96,8 @@ def is_exist(file_name: str):
     本地是否存在复刻缓存
     :return:
     """
-    path = f'Sky/TravelCache/{file_name}.jpg'
-    if os.path.isdir(path):
+    path = f'Sky/Cache/{file_name}.jpg'
+    if os.path.isfile(path):
         abs_path = os.path.abspath(path)
         return f'file:///{abs_path}'
     return False

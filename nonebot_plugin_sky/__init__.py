@@ -24,7 +24,7 @@ from .utils_.check_update import *
 from .utils_.data_pack import *
 from .utils_.notice_board import *
 from .config.travelling_cache import *
-from .utils_.travel_cycle import download_img, is_exist, NormalTravel,bot_tips
+from .utils_.travel_cycle import download_img, is_exist, NormalTravel, bot_tips
 
 Menu = on_command("Sky", aliases=get_cmd_alias("sky_menu"))
 DailyCN = on_command("sky -cn", aliases=get_cmd_alias("sky_cn"))
@@ -126,7 +126,7 @@ async def travel_cn():
         tips = bot_tips(status)
         if status.get('status') is True:
             # 如果在复刻期间内就判断有无缓存
-            release_time = status.get('current_release').strip(' 12:00:00')
+            release_time = status.get('current_release').replace(' 12:00:00', '')
             cache = is_exist(release_time)
             if cache:
                 # 如果有复刻缓存则发送缓存
@@ -136,10 +136,11 @@ async def travel_cn():
                 travelling = Travelling_cn()
                 img_url = await travelling.get_data()
                 if img_url:
-                    # 将收到的url下载下来并发送
-                    await download_img(img_url, release_time)
                     cache = is_exist(release_time)
-                    await TravellingCN.send(cache)
+                    if cache:
+                        await TravellingCN.send(MessageSegment.image(cache))
+                    else:
+                        await TravellingCN.send('发送图片缓存失败！请联系开发者解决')
                 else:
                     await TravellingCN.send('没有找到国服复刻先祖的数据')
         else:
@@ -147,8 +148,8 @@ async def travel_cn():
             await TravellingCN.send(
                 f'当前无复刻先祖信息，下次复刻公布时间：\n{status.get("next_release")}'
             )
-            await asyncio.sleep(2)
-            await TravellingCN.send(tips)
+        await asyncio.sleep(2)
+        await TravellingCN.send(tips)
     except (NetworkError, ActionFailed):
         logger.error('网络环境较差，调用发送信息接口超时')
         await TravellingCN.send(

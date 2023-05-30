@@ -3,8 +3,8 @@ from typing import Union
 
 import httpx
 from nonebot import logger
-from nonebot.adapters.onebot.v11 import MessageSegment
 
+from ...utils_.travel_cycle import NormalTravel
 from ...utils_ import time_no_more, weibo_image
 
 
@@ -58,6 +58,8 @@ class Travelling:
 
     async def get_data(self) -> Union[str, None]:
         """获取复刻数据"""
+        travel = NormalTravel()
+        status = travel.national()
         results = ''
         overhead = await self.get_mblog(2)
         if overhead == 'invalid':
@@ -67,7 +69,8 @@ class Travelling:
             if pic_infos:
                 for pic in pic_infos:
                     large_url = pic_infos[pic]['largest']['url']
-                    path = await weibo_image(large_url, pic)
+                    release_time = status.get('current_release').replace(' 12:00:00', '')
+                    path = await weibo_image(large_url, release_time)
                     results = path
             else:
                 results = None
