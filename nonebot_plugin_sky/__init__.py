@@ -3,25 +3,28 @@
 # @Email   :  1435608435@qq.com
 # @Github  : neet姬辉夜大人
 # @Software: PyCharm
+import asyncio
+import datetime
+
 from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed, Bot, MessageEvent
 
+from .config.command import *
+from .config.msg_forward import *
 from .sky.daily_tasks.international import SkyDaily as Task_in
 from .sky.daily_tasks.national import SkyDaily as Task_cn
-from .sky.travelling_spirit.international import get_data
-from .tools.menu import get_menu
 from .sky.public_notice import get_sky_notice
 from .sky.queue import get_state
+from .sky.travelling_spirit.international import get_data
 from .sky.travelling_spirit.national import Travelling as Travelling_cn
-from .utils_.chain_reply import chain_reply
-from .utils_.data_pack import *
-from .config.msg_forward import *
+from .tools.menu import get_menu
 from .tools.scheduler import *
-from .utils_.notice_board import *
-from .utils_.check_update import *
-from .sky.query_tools import *
-from .config.command import *
 from .utils_ import send_forward_msg
-import datetime
+from .utils_.chain_reply import chain_reply
+from .utils_.check_update import *
+from .utils_.data_pack import *
+from .utils_.notice_board import *
+from .config.travelling_cache import *
+from .utils_.travel_cycle import download_img, is_exist, NormalTravel, bot_tips
 
 Menu = on_command("Sky", aliases=get_cmd_alias("sky_menu"))
 DailyCN = on_command("sky -cn", aliases=get_cmd_alias("sky_cn"))
@@ -116,10 +119,37 @@ async def notice_handle(bot: Bot, event: MessageEvent):
 
 @TravellingCN.handle()
 async def travel_cn():
+    travel = NormalTravel()
     try:
-        travelling = Travelling_cn()
-        results = await travelling.get_data()
-        await TravellingCN.send(results)
+
+        status = travel.national()
+        tips = bot_tips(status)
+        if status.get('status') is True:
+            # 如果在复刻期间内就判断有无缓存
+            release_time = status.get('current_release').replace(' 12:00:00', '')
+            cache = is_exist(release_time)
+            if cache:
+                # 如果有复刻缓存则发送缓存
+                await TravellingCN.send(MessageSegment.image(cache))
+            else:
+                # 没有就执行实时调用
+                travelling = Travelling_cn()
+                img_url = await travelling.get_data()
+                if img_url:
+                    cache = is_exist(release_time)
+                    if cache:
+                        await TravellingCN.send(MessageSegment.image(cache))
+                    else:
+                        await TravellingCN.send('发送图片缓存失败！请联系开发者解决')
+                else:
+                    await TravellingCN.send('没有找到国服复刻先祖的数据')
+        else:
+            # 如果不在复刻期间，则发送提示信息
+            await TravellingCN.send(
+                f'当前无复刻先祖信息，下次复刻公布时间：\n{status.get("next_release")}'
+            )
+        await asyncio.sleep(2)
+        await TravellingCN.send(tips)
     except (NetworkError, ActionFailed):
         logger.error('网络环境较差，调用发送信息接口超时')
         await TravellingCN.send(
@@ -130,8 +160,12 @@ async def travel_cn():
 @TravellingIN.handle()
 async def travel_in():
     try:
+        # 实时调用
         results = await get_data()
-        await TravellingIN.send(results)
+        if results:
+            await TravellingIN.send(results)
+        else:
+            await TravellingIN.send('未获取到国际服复刻先祖信息（维护中）')
     except (NetworkError, ActionFailed):
         logger.error('网络环境较差，调用发送信息接口超时')
         await TravellingIN.send(

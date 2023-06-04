@@ -29,14 +29,13 @@ def load():
     cfg_path_ = cfg_path()
     conf = configparser.ConfigParser()
     if not Path(cfg_path_).is_file():
-
         # 这里编写需要初始化的配置项
         conf.add_section('Message')
         conf.add_section('Helper')
         conf.add_section('Travelling')
         conf.set('Message', 'forward', 'True')
         conf.set('Helper', 'at_all', 'False')
-        conf.set('Travelling', 'cache', 'False')
+        conf.set('Travelling', 'cache', 'True')
 
         setting = open(cfg_path_, 'a')
         conf.write(setting)

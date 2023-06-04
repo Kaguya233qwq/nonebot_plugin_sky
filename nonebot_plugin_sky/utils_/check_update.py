@@ -9,7 +9,7 @@ from ..config.command import get_cmd_alias
 
 logging.captureWarnings(True)  # 去掉建议使用SSL验证的显示
 
-Version = '2.2.7'  # 全局插件版本信息  （不用加v！）
+Version = '2.2.9.post1'  # 全局插件版本信息  （不用加v！）
 
 
 async def get_datapack_ver():
@@ -77,7 +77,7 @@ async def check_datapack_latest():
             bs = BeautifulSoup(res.text, 'lxml')
             latest_ver = bs.find(
                 string=re.compile(
-                    'SkyDataPack-v(\d+.\d+.\d+)')
+                    'SkyDataPack-v(\\d+.\\d+.\\d+)')
             ).strip('SkyDataPack-v')
             return latest_ver
     except Exception as e:

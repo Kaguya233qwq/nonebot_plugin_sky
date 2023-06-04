@@ -25,6 +25,6 @@ async def get_state():
             wait_time = content['wait_time']
             players = content['pos']
             return '当前排队人数：' + str(players) + \
-                '\n预计排队时间：' + str(wait_time)
+                   '\n预计排队时间：' + str(wait_time)
         else:
             return '服务器又炸啦！'  # 破土豆服务器（

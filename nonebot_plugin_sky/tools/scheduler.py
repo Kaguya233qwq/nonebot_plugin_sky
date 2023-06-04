@@ -1,3 +1,4 @@
+from nonebot_plugin_apscheduler import scheduler
 import os
 import random
 
@@ -9,7 +10,6 @@ from ..config.command import get_cmd_alias
 from ..config.helper_at_all import *
 
 require("nonebot_plugin_apscheduler")
-from nonebot_plugin_apscheduler import scheduler
 
 Scheduler = on_command("-sc", aliases=get_cmd_alias('helper_name'))
 
@@ -54,7 +54,10 @@ async def scheduler_handler(matcher: Matcher, args: Message = CommandArg()):
     if is_on:
         # 设定提前五分钟提醒
         # 国服雨林干饭时间：整点的8,10,12,16,18,20
-        @scheduler.scheduled_job("cron", hour="7,9,11,15,17,19", minute="55", id="job_0")
+        @scheduler.scheduled_job("cron",
+                                 hour="7,9,11,15,17,19",
+                                 minute="55",
+                                 id="job_0")
         async def auto_run():
             try:
                 bot = get_bot()
@@ -97,7 +100,8 @@ async def go():
     image_list = os.listdir(path)
     file = random.sample(image_list, 1)[0]
     if at_all():
-        results = MessageSegment.at("all") + text + MessageSegment.image('file:///' + path + file)
+        results = MessageSegment.at(
+            "all") + text + MessageSegment.image('file:///' + path + file)
     else:
         results = text + MessageSegment.image('file:///' + path + file)
     return results
