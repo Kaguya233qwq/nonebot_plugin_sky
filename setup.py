@@ -3,7 +3,7 @@ import os
 import setuptools
 
 
-def get_files(path):
+def get_files(path) -> list:
     """获取路径下所有文件相对路径"""
     file_list = []
     files = os.listdir(path)
@@ -37,6 +37,6 @@ setuptools.setup(
     include_package_data=True,
     platforms="any",
     install_requires=[
-        "bs4", 'lxml', 'httpx', 'nonebot2>=2.0.0-beta.1', 'nonebot-adapter-onebot>=2.0.0-beta.1',
-        'nonebot_plugin_apscheduler'
+        "bs4", 'lxml', 'httpx', 'nonebot2>=2.0.0', 'nonebot-adapter-onebot>=2.0.0-beta.1',
+        'nonebot_plugin_apscheduler', 'pydantic'
     ])

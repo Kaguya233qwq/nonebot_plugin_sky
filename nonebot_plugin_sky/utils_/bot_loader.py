@@ -34,6 +34,10 @@ try:
     logger.success('[雨林干饭小助手] 以下群组已启用：%s' % recv_id)
 except Exception as e:
     e.__str__()
+    CONFIG = Config(
+        NICKNAME='未命名',
+        RECV_GROUP_ID=[]
+    )
     logger.warning('您还未配置接收小助手消息的群id，这个功能无法正常工作')
 
 
