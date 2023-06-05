@@ -6,6 +6,39 @@ from typing import Union
 import httpx
 from nonebot.adapters.onebot.v11 import Bot, MessageEvent, MessageSegment
 from .chain_reply import chain_reply
+import threading
+import time
+
+clear_cache_time = 0
+lock = threading.Lock()
+CACHE_PATH = 'Sky/Cache'
+
+
+def clear_cache(before_day=30, force=False):
+    # 加锁
+    if not lock.acquire(False):
+        return 0
+    try:
+        now = time.time()
+        if not force:
+            global clear_cache_time
+            # 2天内清理过的暂时不清理
+            if clear_cache_time and now - clear_cache_time < 60 * 60 * 24 * 2:
+                return 0
+        file_name_list = os.listdir(CACHE_PATH)
+        cleared = 0
+        if file_name_list:
+            for file_name in file_name_list:
+                file_path = CACHE_PATH + '/' + file_name
+                ctime = os.path.getctime(file_path)
+                if (now - ctime) / 60 / 60 / 24 > before_day:
+                    os.remove(file_path)
+                    cleared = cleared + 1
+        return cleared
+    except Exception as e:
+        lock.release()
+        raise e
+
 
 
 def time_no_more(date, hour, minute):
@@ -62,16 +95,20 @@ async def weibo_image(url, file_name):
                   '-yT9jqnAOtRB6P_daaLXfdvYkPfvZhXy3bTeuLdBjWXF9;',
         'referer': 'https://weibo.com/'
     }
-    async with httpx.AsyncClient(timeout=10000) as client:
-        res = await client.get(
-            url=url,
-            headers=headers
-        )
-        data = res.content
-    if not os.path.exists('Sky/Cache'):
-        os.mkdir('Sky/Cache')
-    with open(f'Sky/Cache/{file_name}.jpg', 'wb') as f:
-        f.write(data)
-        f.close()
-    abspath = os.path.abspath(f'Sky/Cache/{file_name}.jpg')
+    file_path = f'{CACHE_PATH}/{file_name}.jpg'
+    if not os.path.exists(file_path):
+        async with httpx.AsyncClient(timeout=10000) as client:
+            res = await client.get(
+                url=url,
+                headers=headers
+            )
+            data = res.content
+        if not os.path.exists(CACHE_PATH):
+            os.mkdir(CACHE_PATH)
+        with open(file_path, 'wb') as f:
+            f.write(data)
+            f.close()
+    abspath = os.path.abspath(file_path)
+    # 创建清理线程异步执行
+    threading.Thread(target=clear_cache).start()
     return 'file:///' + abspath
