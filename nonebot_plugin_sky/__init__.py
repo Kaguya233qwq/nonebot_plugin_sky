@@ -233,8 +233,16 @@ async def remain_in():
 
 @Clear.handle()
 async def _(args: Message = CommandArg()):
-    # 包含f或者force则忽略上次清理时间间隔，直接清除
-    # 传入http方式参数 day=30&force
+    """
+    清理缓存
+
+    - 指令名: 清理缓存
+    - 可用参数:
+        - day: 指定清理缓存时间段x天前，默认为30
+        - f: 忽略上次清理时间间隔，强制执行清理
+    - 传参方式：http params形式
+        - 示例：day=30&force
+    """
     plain_text = args.extract_plain_text().strip()
     day = 30
     f = False
@@ -252,12 +260,12 @@ async def _(args: Message = CommandArg()):
             await Clear.finish("参数解析错误")
             return
     if f:
-        msg = f'开始强制清理前{day}天数据'
+        msg = f'开始强制清理{day}天前的数据'
     else:
-        msg = f'开始清理前{day}天数据'
+        msg = f'开始清理{day}天前的数据'
     await Clear.send(msg)
     num = clear_cache(day, f)
-    await Clear.finish(f"清理前{day}天缓存数据,共{num}条完成")
+    await Clear.finish(f"清理{day}天前的缓存数据,共{num}条完成")
 
 
 # nonebot的插件元数据标准
