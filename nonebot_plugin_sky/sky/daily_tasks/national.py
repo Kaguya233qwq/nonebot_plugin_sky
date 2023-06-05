@@ -1,4 +1,5 @@
 import json
+from typing import Union
 
 import httpx
 from nonebot import logger
@@ -26,7 +27,7 @@ class SkyDaily:
                            '--本插件仅做数据展示之用，著作权归原文作者所有。'
                            '转载或转发请附文章作者微博--')
 
-    async def get_mblog(self, today):
+    async def get_mblog(self, today) -> Union[dict,None]:
         """获取微博 @今天游离翻车了吗 今日攻略详情"""
 
         async with httpx.AsyncClient() as client:
@@ -40,7 +41,7 @@ class SkyDaily:
                     return log
             return None
 
-    async def get_longtext(self, mblog_id: str):
+    async def get_longtext(self, mblog_id: str) -> str:
         """获取微博 @今天游离翻车了吗 今日攻略长文本"""
 
         async with httpx.AsyncClient() as client:
@@ -51,7 +52,7 @@ class SkyDaily:
             longtext = content['data']['longTextContent']
             return longtext
 
-    async def get_data(self):
+    async def get_data(self) -> MessageSegment:
         """获取今日攻略数据"""
         results = MessageSegment.text('')
         today = await get_today()

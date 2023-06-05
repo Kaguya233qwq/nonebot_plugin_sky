@@ -6,6 +6,7 @@
 import asyncio
 import datetime
 
+from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed, Bot, MessageEvent
 from nonebot.permission import SUPERUSER
 
@@ -19,13 +20,14 @@ from .sky.travelling_spirit.international import get_data
 from .sky.travelling_spirit.national import Travelling as Travelling_cn
 from .tools.menu import get_menu
 from .tools.scheduler import *
+from .utils_.bot_loader import Config
 from .utils_ import send_forward_msg, clear_cache
 from .utils_.chain_reply import chain_reply
 from .utils_.check_update import *
 from .utils_.data_pack import *
 from .utils_.notice_board import *
 from .config.travelling_cache import *
-from .utils_.travel_cycle import download_img, is_exist, NormalTravel, bot_tips
+from .utils_.travel_cycle import is_exist, NormalTravel, bot_tips
 
 Menu = on_command("Sky", aliases=get_cmd_alias("sky_menu"))
 DailyCN = on_command("sky -cn", aliases=get_cmd_alias("sky_cn"))
@@ -256,3 +258,30 @@ async def _(args: Message = CommandArg()):
     await Clear.send(msg)
     num = clear_cache(day, f)
     await Clear.finish(f"清理前{day}天缓存数据,共{num}条完成")
+
+
+# nonebot的插件元数据标准
+__plugin_meta__ = PluginMetadata(
+    name="Sky光遇",
+    description="光遇的每日任务及活动相关查询插件",
+    usage="""
+    基本命令：
+    光遇菜单 -> 查看插件菜单图
+    今日国服 -> 查看今日国服任务
+    今日国际服 -> 查看今日国际服任务
+    国服复刻 -> 查询国服复刻先祖信息
+    国际服复刻 -> 查询国际服复刻先祖信息
+    
+    数据包命令：
+    安装数据包 -> 从gitee拉取可用的静态攻略资源包
+    菜单v2 -> 查看所有数据包命令
+    [命令起始符]-[命令] -> 执行数据包命令
+    """,
+    config=Config,
+    type='application',
+    extra={
+        "author": "Kaguya姬辉夜",
+        "qq": "1435608435",
+        "version": "2.2.10"
+    }
+)

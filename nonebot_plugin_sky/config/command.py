@@ -2,6 +2,7 @@ import os
 import json
 import re
 from pathlib import Path
+from typing import List
 
 from nonebot import on_command, logger
 from nonebot.adapters.onebot.v11 import Message
@@ -11,7 +12,7 @@ ConfigPath = 'Sky/cmd_setting.cfg'
 TemplatePath = 'Sky/cmd_template.txt'
 
 
-def create_template():
+def create_template() -> None:
     """
     生成命令模板文件
     """
@@ -62,7 +63,7 @@ def create_template():
         logger.success('命令模板生成成功')
 
 
-def from_template_import():
+def from_template_import() -> None:
     """
     从模板导入命令
     """
@@ -80,7 +81,7 @@ def from_template_import():
     logger.success('导入成功')
 
 
-def initialize():
+def initialize() -> List[str]:
     """
     初始化全局命令
     """
@@ -115,9 +116,8 @@ def get_cmd_alias(cmd: str) -> set:
 async def add_cmd_aliases(
         cmd: str,
         alias: str
-):
+) -> bool:
     """
-
     添加命令别名
     """
 

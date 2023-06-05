@@ -1,9 +1,9 @@
+import asyncio
 import os
 import zipfile
 import shutil
-from asyncio import sleep
-
 import httpx
+
 from nonebot import on_command, logger
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.params import CommandArg, ArgPlainText
@@ -41,22 +41,19 @@ class SkyDataPack:
                     chunk = 1024 * 1024 * 2  # 下载速度2Mb/s
                     total = int(stream.headers['content-length']) / 1024 / 1024
                     with open('SkyDataPack.zip', 'wb') as f:
-                        async for data in stream.aiter_bytes(
-                                chunk_size=chunk
-                        ):
+                        async for data in stream.aiter_bytes(chunk_size=chunk):
                             f.write(data)
                             size += len(data) / 1024 / 1024
                             print(
-                                '\r' + '[下载进度]: %0.2f MB/%0.2f MB' %
+                                '\r[下载进度]: %0.2f MB/%0.2f MB' %
                                 (size, total), end='')
-                            await sleep(1)
-                    f.close()
+                            await asyncio.sleep(1)
                     logger.success('文件下载完成！')
         except (httpx.HTTPError, httpx.NetworkError):
             logger.error('数据包下载失败，请检查网络后重试')
 
 
-async def install(path):
+async def install(path) -> None:
     """解压缩并移动到指定位置"""
 
     async def support_gbk(file: zipfile.ZipFile):
@@ -83,8 +80,11 @@ async def install(path):
     logger.success('文件安装完成')
 
 
-async def check():
-    """检查数据包"""
+async def check() -> bool:
+    """
+    检查数据包
+    存在返回True，不存在返回False
+    """
     try:
         if os.path.exists('SkyDataPack'):
             logger.info('数据包已安装')
@@ -95,7 +95,7 @@ async def check():
         logger.error('扫描数据包出现错误：%s' % e)
 
 
-async def load_image(cmd_path):
+async def load_image(cmd_path) -> Message:
     """
     扫描指定命令路径下所有图片
     返回一个图片组的MessageSegment

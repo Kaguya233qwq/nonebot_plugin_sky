@@ -8,7 +8,7 @@ from .command import get_cmd_alias
 cfg_path_ = cfg_path()
 
 
-def get_at_all():
+def get_at_all() -> bool:
     try:
         value = config().getboolean('Helper', 'at_all')
         return value
@@ -16,7 +16,7 @@ def get_at_all():
         str(e)
 
 
-def at_all_on():
+def at_all_on() -> None:
     global cfg_path_
     config().set('Helper', 'at_all', 'True')
 
@@ -24,7 +24,7 @@ def at_all_on():
     logger.success('小助手艾特全体：开启')
 
 
-def at_all_off():
+def at_all_off() -> None:
     global cfg_path_
     config().set('Helper', 'at_all', 'False')
 
@@ -64,7 +64,7 @@ async def off_handle(matcher: Matcher):
         await matcher.send('关闭失败！原因：%s' % str(e))
 
 
-def at_all():
+def at_all() -> bool:
     return At_all
 
 

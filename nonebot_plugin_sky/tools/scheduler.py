@@ -2,10 +2,12 @@ from nonebot_plugin_apscheduler import scheduler
 import os
 import random
 
-from nonebot import require, get_bot, get_driver, on_command, logger
+from nonebot import require, on_command, logger
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.internal.matcher import Matcher
 from nonebot.params import CommandArg
+
+from ..utils_.bot_loader import CONFIG, connect
 from ..config.command import get_cmd_alias
 from ..config.helper_at_all import *
 
@@ -13,18 +15,12 @@ require("nonebot_plugin_apscheduler")
 
 Scheduler = on_command("-sc", aliases=get_cmd_alias('helper_name'))
 
-try:
-    recv_group_id = get_driver().config.recv_group_id
-    logger.success('[雨林干饭小助手] 以下群组已启用：%s' % recv_group_id)
-except Exception as e:
-    str(e)
-    logger.warning('您还未配置接收小助手消息的群id')
-
 
 @Scheduler.handle()
 async def scheduler_handler(matcher: Matcher, args: Message = CommandArg()):
     plain_text = args.extract_plain_text()
     is_on = False
+    bot = await connect()
     try:
         if '启动' in plain_text:
             is_on = True
@@ -59,22 +55,17 @@ async def scheduler_handler(matcher: Matcher, args: Message = CommandArg()):
                                  minute="55",
                                  id="job_0")
         async def auto_run():
-            try:
-                bot = get_bot()
-            except Exception as p:
-                logger.error('您还未启动go-cqhttp | %s' % p)
-
             results_ = await go()
 
-            if isinstance(recv_group_id, list):
-                for group_id in recv_group_id:
+            if isinstance(CONFIG.RECV_GROUP_ID, list):
+                for group_id in CONFIG.RECV_GROUP_ID:
                     await bot.send_group_msg(
                         group_id=group_id,
                         message=results_
                     )
-            elif isinstance(recv_group_id, str):
+            elif isinstance(CONFIG.RECV_GROUP_ID, str):
                 await bot.send_group_msg(
-                    group_id=recv_group_id,
+                    group_id=CONFIG.RECV_GROUP_ID,
                     message=results_
                 )
             else:

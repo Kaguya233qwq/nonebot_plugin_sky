@@ -8,7 +8,7 @@ from ..config.load_config import cfg_path
 cfg_path_ = cfg_path()
 
 
-def get_is_forward():
+def get_is_forward() -> bool:
     try:
         value = config().getboolean('Message', 'forward')
         return value
@@ -16,7 +16,7 @@ def get_is_forward():
         str(e)
 
 
-def on():
+def on() -> None:
     global cfg_path_
     config().set('Message', 'forward', 'True')
 
@@ -24,7 +24,7 @@ def on():
     logger.success('消息转发：开启')
 
 
-def off():
+def off() -> None:
     global cfg_path_
     config().set('Message', 'forward', 'False')
 
@@ -64,7 +64,7 @@ async def off_handle(matcher: Matcher):
         await matcher.send('关闭失败！原因：%s' % str(e))
 
 
-def is_forward():
+def is_forward() -> bool:
     return Forward
 
 

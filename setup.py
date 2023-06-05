@@ -3,7 +3,7 @@ import os
 import setuptools
 
 
-def get_files(path):
+def get_files(path) -> list:
     """获取路径下所有文件相对路径"""
     file_list = []
     files = os.listdir(path)
@@ -19,7 +19,7 @@ with open("README.md", "r", encoding="utf-8", errors="ignore") as f:
     long_description = f.read()
 setuptools.setup(
     name='nonebot-plugin-sky',
-    version='v2.2.9.post1',
+    version='v2.2.10',
     author='Kaguya233qwq',
     author_email='1435608435@qq.com',
     keywords=["pip", "nonebot2", "nonebot", "sky光遇", "光遇"],
@@ -37,6 +37,6 @@ setuptools.setup(
     include_package_data=True,
     platforms="any",
     install_requires=[
-        "bs4", 'lxml', 'httpx', 'nonebot2>=2.0.0-beta.1', 'nonebot-adapter-onebot>=2.0.0-beta.1',
-        'nonebot_plugin_apscheduler'
+        "bs4", 'lxml', 'httpx', 'nonebot2>=2.0.0', 'nonebot-adapter-onebot>=2.0.0-beta.1',
+        'nonebot_plugin_apscheduler', 'pydantic'
     ])

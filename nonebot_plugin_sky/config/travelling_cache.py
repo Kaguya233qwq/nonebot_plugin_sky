@@ -6,7 +6,7 @@ from ..config.load_config import cfg_path
 cfg_path_ = cfg_path()
 
 
-def get_cache_state():
+def get_cache_state() -> bool:
     try:
         value = config().getboolean('Travelling', 'cache')
         return value
@@ -14,7 +14,7 @@ def get_cache_state():
         str(e)
 
 
-def cache_on():
+def cache_on() -> None:
     global cfg_path_
     config().set('Travelling', 'cache', 'True')
 
@@ -22,7 +22,7 @@ def cache_on():
     logger.success('先祖复刻缓存已开启')
 
 
-def cache_off():
+def cache_off() -> None:
     global cfg_path_
     config().set('Travelling', 'cache', 'False')
 
@@ -62,7 +62,7 @@ async def cache_off_handle():
         await CacheOff.send('开启失败！原因：%s' % str(e))
 
 
-def is_cache():
+def is_cache() -> bool:
     return Cache
 
 
