@@ -12,18 +12,19 @@ import time
 clear_cache_time = 0
 lock = threading.Lock()
 CACHE_PATH = 'Sky/Cache'
+day_second = 60 * 60 * 24
 
 
 def clear_cache(before_day=30, force=False):
     # 加锁
     if not lock.acquire(False):
         return 0
+    global clear_cache_time
     try:
         now = time.time()
         if not force:
-            global clear_cache_time
-            # 2天内清理过的暂时不清理
-            if clear_cache_time and now - clear_cache_time < 60 * 60 * 24 * 2:
+            # 1天内清理过的暂时不清理
+            if now - clear_cache_time < day_second:
                 return 0
         file_name_list = os.listdir(CACHE_PATH)
         cleared = 0
@@ -31,14 +32,14 @@ def clear_cache(before_day=30, force=False):
             for file_name in file_name_list:
                 file_path = CACHE_PATH + '/' + file_name
                 ctime = os.path.getctime(file_path)
-                if (now - ctime) / 60 / 60 / 24 > before_day:
+                if (now - ctime) / day_second > before_day:
                     os.remove(file_path)
                     cleared = cleared + 1
+        clear_cache_time = now
         return cleared
     except Exception as e:
         lock.release()
         raise e
-
 
 
 def time_no_more(date, hour, minute):
