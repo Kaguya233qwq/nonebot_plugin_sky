@@ -5,12 +5,12 @@ from pathlib import Path
 from nonebot import logger
 
 
-def cfg_path():
+def cfg_path() -> str:
     path = 'Sky/config.ini'
     return path
 
 
-def reset_config():
+def reset_config() -> None:
     """
     恢复默认配置
     """
@@ -20,7 +20,7 @@ def reset_config():
     logger.success('已恢复默认配置')
 
 
-def load():
+def load() -> dict:
     """
     载入配置项及初始化
     """
@@ -57,5 +57,6 @@ def get_config():
 __all__ = (
     "cfg_path",
     "load",
-    "get_config"
+    "get_config",
+    "CONFIG"
 )

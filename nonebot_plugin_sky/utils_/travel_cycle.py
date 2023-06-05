@@ -2,9 +2,6 @@ import datetime
 import os
 import random
 
-import httpx
-from nonebot import logger
-
 
 class NormalTravel:
     """
@@ -14,19 +11,25 @@ class NormalTravel:
     @staticmethod
     def __travel_status(date: str) -> dict:
         """
-        - 获取最近一次通常旅行先祖公布的时间点
-        - return: dict{
-            status :bool 是否在复刻周期内
-            current_release: str 本次复刻公布的时间
-            coming_at: str 本次复刻先祖到来时间
-            leaves_at: str 本次复刻先祖离开时间
-            next_release: str 下次复刻公布的时间
-        }
+        获取最近一次通常旅行先祖公布的时间点
+
+        - date: 之前任意一个复刻先祖公布的时间点
+        返回: dict :
+            - status :bool 是否在复刻周期内
+            - current_release: str 本次复刻公布的时间
+            - coming_at: str 本次复刻先祖到来时间
+            - leaves_at: str 本次复刻先祖离开时间
+            - next_release: str 下次复刻公布的时间
+
         """
-        start = date  # 之前任意一个复刻先祖公布的时间点
         now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        date_start = datetime.datetime.strptime(start, "%Y-%m-%d %H:%M:%S").date()
-        date_now = datetime.datetime.strptime(now, "%Y-%m-%d %H:%M:%S").date()
+        date_start = datetime.datetime.strptime(
+            date,
+            "%Y-%m-%d %H:%M:%S"
+        ).date()
+        date_now = datetime.datetime.strptime(
+            now, "%Y-%m-%d %H:%M:%S"
+        ).date()
         margin_days = (date_now - date_start).days
         if margin_days >= 14:
             change = -(margin_days % 14)
@@ -34,33 +37,39 @@ class NormalTravel:
             change = -margin_days
         results = datetime.datetime.now() + datetime.timedelta(days=change)
         #  判断当前时间是否在复刻期间
-        coming_at = (results + datetime.timedelta(days=2)).strftime('%Y-%m-%d')
-        leaves_at = (results + datetime.timedelta(days=6)).strftime('%Y-%m-%d')
-        next_at = (results + datetime.timedelta(days=14)).strftime('%Y-%m-%d')
+        coming_at = (
+                results + datetime.timedelta(days=2)
+        ).strftime('%Y-%m-%d 06:00:00')
+        leaves_at = (
+                results + datetime.timedelta(days=6)
+        ).strftime('%Y-%m-%d 12:00:00')
+        next_at = (
+                results + datetime.timedelta(days=14)
+        ).strftime('%Y-%m-%d 12:00:00')
         if now < leaves_at:
-            current_travel = results.strftime('%Y-%m-%d')
+            current_travel = results.strftime('%Y-%m-%d 12:00:00')
             return {
                 'status': True,
-                'current_release': f'{current_travel} 12:00:00',
-                'coming_at': f'{coming_at} 06:00:00',
-                'leaves_at': f'{leaves_at} 12:00:00'
+                'current_release': f'{current_travel}',
+                'coming_at': f'{coming_at}',
+                'leaves_at': f'{leaves_at}'
             }
         else:
             return {
                 'status': False,
-                'next_release': f'{next_at} 12:00:00'
-            }  # 这么写有点不太pydantic
+                'next_release': f'{next_at}'
+            }  # 这么写有点不太pythonic
 
-    def national(self):
+    def national(self) -> dict:
         """
-        国服
+        国服通常复刻周期计算函数
         """
         status = self.__travel_status('2023-05-16 12:00:00')
         return status
 
     # def international(self):
     #     """
-    #     国际服
+    #     国际服 国际服的时间比较混乱，暂时没有好的解决方案
     #     :return:
     #     """
     #     status = self.__travel_status('2023-05-10 2:00:00')
@@ -69,26 +78,8 @@ class NormalTravel:
 
 class ExtraTravel(object):
     """
-    加载复刻类 （逻辑过于复杂，暂时咕了）
+    加塞复刻类 （这个逻辑目前还不知怎么写，暂时咕了）
     """
-
-
-async def download_img(img_url: str, file_name: str):
-    """
-    下载复刻图片到本地
-    """
-    try:
-        path = f'Sky/Cache/{file_name}.jpg'
-        async with httpx.AsyncClient() as client:
-            res = await client.get(
-                url=img_url
-            ).content
-        with open(path, 'wb') as f:
-            f.write(res)
-        logger.success('复刻先祖图片保存成功')
-    except Exception as e:
-        e.__str__()
-        logger.error('下载图片失败')
 
 
 def is_exist(file_name: str):
@@ -112,9 +103,15 @@ def bot_tips(struct: dict) -> str:
         leaves_at = struct.get('leaves_at')
         now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         if now < coming_at:
-            now = datetime.datetime.strptime(now, "%Y-%m-%d %H:%M:%S").date()
-            coming_at = datetime.datetime.strptime(coming_at, "%Y-%m-%d %H:%M:%S").date()
-            days = (coming_at - now).days
+            now = datetime.datetime.strptime(
+                now,
+                "%Y-%m-%d %H:%M:%S"
+            ).timestamp()
+            coming_at = datetime.datetime.strptime(
+                coming_at,
+                "%Y-%m-%d %H:%M:%S"
+            ).timestamp()
+            days = int((coming_at - now)/60/60/24)
             if days > 1:
                 tips = [
                     f'还有{days}天先祖就来了哦,请耐心等待',
@@ -125,17 +122,25 @@ def bot_tips(struct: dict) -> str:
             else:
                 return '先祖明天就来啦，今晚安心睡个好觉吧！'
         elif coming_at < now < leaves_at:
-            now = datetime.datetime.strptime(now, "%Y-%m-%d %H:%M:%S").date()
-            leaves_at = datetime.datetime.strptime(leaves_at, "%Y-%m-%d %H:%M:%S").date()
-            days = (now - leaves_at).days
+            now = datetime.datetime.strptime(
+                now,
+                "%Y-%m-%d %H:%M:%S"
+            ).timestamp()
+            leaves_at = datetime.datetime.strptime(
+                leaves_at,
+                "%Y-%m-%d %H:%M:%S"
+            ).timestamp()
+            days = int((leaves_at - now) / 60 / 60 / 24)
+            hours = (leaves_at - now) / 60 / 60
             if days > 1:
                 return f'距离先祖离去还有{days}天'
             else:
+                heads = f'距离先祖离去害有%.1f小时\n' % hours
                 tips = [
-                    f'先祖就要离开了，他会想你们的！',
-                    f'本次旅行先祖即将离去，请各位想要兑换的旅人及时兑换',
-                    f'复刻临近尾声，结束是新的开始',
-                    f'这个老东西总算要走了！.....咳咳'
+                    f'{heads}先祖就要离开了，他会想你们的！',
+                    f'{heads}本次旅行先祖即将离去，请各位想要兑换的旅人及时兑换',
+                    f'{heads}复刻临近尾声，结束是新的开始',
+                    f'{heads}这个老东西总算要走了！.....咳咳'
                 ]
                 return random.choice(tips)
     else:

@@ -1,4 +1,6 @@
 import re
+from typing import Union
+
 import pip
 import httpx
 from bs4 import BeautifulSoup
@@ -9,10 +11,10 @@ from ..config.command import get_cmd_alias
 
 logging.captureWarnings(True)  # 去掉建议使用SSL验证的显示
 
-Version = '2.2.9.post1'  # 全局插件版本信息  （不用加v！）
+Version = '2.2.10'  # 全局插件版本信息  （不用加v！）
 
 
-async def get_datapack_ver():
+async def get_datapack_ver() -> str:
     """
     检查本地数据包版本
     """
@@ -26,7 +28,7 @@ async def get_datapack_ver():
         return '1.0.0'
 
 
-async def check_plugin_latest():
+async def check_plugin_latest() -> str:
     """
     检查最新发布的插件版本
     """
@@ -55,7 +57,7 @@ async def check_plugin_latest():
         logger.error('获取插件更新信息失败')
 
 
-async def check_datapack_latest():
+async def check_datapack_latest() -> str:
     """
     检查最新发布的数据包版本
     """
@@ -85,7 +87,7 @@ async def check_datapack_latest():
         logger.error('获取数据包更新信息失败')
 
 
-async def upgrade_plugin():
+async def upgrade_plugin() -> Union[bool, None]:
     latest = await check_plugin_latest()
     if latest:
         if latest == Version:
