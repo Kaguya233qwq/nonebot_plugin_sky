@@ -29,6 +29,7 @@ def create_template() -> None:
                 'remain_in=国际服季节剩余\n'
                 'sky_queue=排队\n'
                 'sky_notice=公告\n'
+                'sky_clear_cache=清理缓存\n'
 
                 # 精灵小工具命令
                 'save_sky_id=光遇绑定\n'

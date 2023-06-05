@@ -8,6 +8,7 @@ import datetime
 
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed, Bot, MessageEvent
+from nonebot.permission import SUPERUSER
 
 from .config.command import *
 from .config.msg_forward import *
@@ -19,8 +20,8 @@ from .sky.travelling_spirit.international import get_data
 from .sky.travelling_spirit.national import Travelling as Travelling_cn
 from .tools.menu import get_menu
 from .tools.scheduler import *
-from .utils_ import send_forward_msg
 from .utils_.bot_loader import Config
+from .utils_ import send_forward_msg, clear_cache
 from .utils_.chain_reply import chain_reply
 from .utils_.check_update import *
 from .utils_.data_pack import *
@@ -37,6 +38,7 @@ RemainCN = on_command("remain -cn", aliases=get_cmd_alias("remain_cn"))
 RemainIN = on_command("remain -in", aliases=get_cmd_alias("remain_in"))
 Queue = on_command("queue", aliases=get_cmd_alias("sky_queue"))
 Notice = on_command("notice", aliases=get_cmd_alias("sky_notice"))
+Clear = on_command("sky_clear_cache", aliases=get_cmd_alias("sky_clear_cache"), permission=SUPERUSER)
 
 
 @DailyCN.handle()
@@ -227,6 +229,35 @@ async def remain_cn():
 async def remain_in():
     results = remain("夜行季国际服", 2023, 6, 25, 15, 00, 00)
     await RemainIN.send(results)
+
+
+@Clear.handle()
+async def _(args: Message = CommandArg()):
+    # 包含f或者force则忽略上次清理时间间隔，直接清除
+    # 传入http方式参数 day=30&force
+    plain_text = args.extract_plain_text().strip()
+    day = 30
+    f = False
+    if plain_text:
+        try:
+            plain_text = plain_text.lower()
+            arg_list = plain_text.split('&')
+            for arg in arg_list:
+                if arg.startswith('day='):
+                    day = int(arg.strip()[4:])
+                elif arg == 'f' or arg == 'force':
+                    f = True
+        except Exception as exp:
+            logger.error(plain_text, Exception=exp)
+            await Clear.finish("参数解析错误")
+            return
+    if f:
+        msg = f'开始强制清理前{day}天数据'
+    else:
+        msg = f'开始清理前{day}天数据'
+    await Clear.send(msg)
+    num = clear_cache(day, f)
+    await Clear.finish(f"清理前{day}天缓存数据,共{num}条完成")
 
 
 # nonebot的插件元数据标准
