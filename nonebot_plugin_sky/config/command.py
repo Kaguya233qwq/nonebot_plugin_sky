@@ -2,6 +2,7 @@ import os
 import json
 import re
 from pathlib import Path
+from typing import List
 
 from nonebot import on_command, logger
 from nonebot.adapters.onebot.v11 import Message
@@ -79,7 +80,7 @@ def from_template_import() -> None:
     logger.success('导入成功')
 
 
-def initialize() -> list[str]:
+def initialize() -> List[str]:
     """
     初始化全局命令
     """

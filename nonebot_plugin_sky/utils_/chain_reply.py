@@ -3,7 +3,7 @@ from typing import Union
 from nonebot.adapters.onebot.v11 import MessageSegment
 from nonebot.adapters.onebot.v11.bot import Bot
 
-from ..utils_.bot_loader import CONFIG
+from .bot_loader import CONFIG
 
 
 async def chain_reply(
