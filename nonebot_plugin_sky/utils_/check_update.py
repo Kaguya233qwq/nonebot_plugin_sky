@@ -11,7 +11,7 @@ from ..config.command import get_cmd_alias
 
 logging.captureWarnings(True)  # 去掉建议使用SSL验证的显示
 
-Version = '2.2.10'  # 全局插件版本信息  （不用加v！）
+Version = '2.2.11'  # 全局插件版本信息  （不用加v！）
 
 
 async def get_datapack_ver() -> str:

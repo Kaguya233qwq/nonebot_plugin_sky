@@ -8,93 +8,124 @@ from nonebot import on_command, logger
 from nonebot.adapters.onebot.v11 import Message
 from nonebot.params import EventPlainText
 
-ConfigPath = 'Sky/cmd_setting.cfg'
-TemplatePath = 'Sky/cmd_template.txt'
+CONFIG_PATH = 'Sky/cmd_setting.cfg'
+TEMPLATE_PATH = 'Sky/cmd_template.txt'
+
+# 若添加了新的命令，请在这里为新命令注册变量名称
+CMD_LIST = [
+    # 主命令
+    'sky_menu=光遇菜单,sky菜单\n',
+    'sky_cn=今日国服\n',
+    'sky_in=今日国际服\n',
+    'travel_cn=国服复刻\n',
+    'travel_in=国际服复刻\n',
+    'remain_cn=国服季节剩余\n',
+    'remain_in=国际服季节剩余\n',
+    'sky_queue=排队\n',
+    'sky_notice=公告\n',
+    'sky_clear_cache=清理缓存\n',
+
+    # 更新相关命令
+    'check=检查更新\n',
+    'upgrade=更新插件\n',
+
+    # 数据包相关命令
+    'data_pack_install=安装数据包\n',
+    'menu_v2=菜单v2,数据包菜单\n',
+
+    # 配置命令
+    'at_all_on=开启艾特全体\n',
+    'at_all_off=关闭艾特全体\n',
+    'forward_on=开启转发模式\n',
+    'forward_off=关闭转发模式\n',
+    'cmd_add=添加命令\n',
+
+    # 雨林干饭小助手
+    'helper_name=小助手\n',
+
+    # 其他
+    'noticeboard=插件公告,插件公告板'
+]
 
 
 def create_template() -> None:
     """
     生成命令模板文件
     """
-    if not Path(TemplatePath).is_file():
-        with open(TemplatePath, 'a') as f:
-            f.write(
-                # 主要命令
-                'sky_menu=光遇菜单,sky菜单\n'
-                'sky_cn=今日国服\n'
-                'sky_in=今日国际服\n'
-                'travel_cn=国服复刻\n'
-                'travel_in=国际服复刻\n'
-                'remain_cn=国服季节剩余\n'
-                'remain_in=国际服季节剩余\n'
-                'sky_queue=排队\n'
-                'sky_notice=公告\n'
-                'sky_clear_cache=清理缓存\n'
+    if not Path(TEMPLATE_PATH).is_file():
+        with open(TEMPLATE_PATH, 'a') as f:
+            f.writelines(CMD_LIST)
 
-                # 精灵小工具命令
-                'save_sky_id=光遇绑定\n'
-                'qw=查询白蜡\n'
-                'qs=查询季蜡\n'
-                'qa=蜡烛,我的蜡烛\n'
-                'sky_weather=光遇天气预报,sky天气,光遇天气\n'
-                'sky_activities=活动日历,精灵日历\n'
 
-                # 更新相关命令
-                'check=检查更新\n'
-                'upgrade=更新插件\n'
+def check_template() -> None:
+    """
+    命令模板校验函数,用于检测现有的模板命令是否符合标准
 
-                # 数据包相关命令
-                'data_pack_install=安装数据包\n'
-                'menu_v2=菜单v2,数据包菜单\n'
-
-                # 配置命令
-                'at_all_on=开启艾特全体\n'
-                'at_all_off=关闭艾特全体\n'
-                'forward_on=开启转发模式\n'
-                'forward_off=关闭转发模式\n'
-                'cmd_add=添加命令\n'
-
-                # 雨林干饭小助手
-                'helper_name=小助手\n'
-
-                # 其他
-                'noticeboard=插件公告,插件公告板'
-            )
-        logger.success('命令模板生成成功')
+    """
+    current_cmd = []
+    original_cmd = []
+    with open(TEMPLATE_PATH, 'r') as f:
+        data = f.readlines()
+    for i in data:
+        current_cmd.append(i[0:i.rfind('=')])
+    for i in CMD_LIST:
+        original_cmd.append(i[0:i.rfind('=')])
+    # 新增的命令
+    new = set(original_cmd) - set(current_cmd)
+    # 废弃的命令
+    discard = set(current_cmd) - set(original_cmd)
+    if new:
+        # 若有新增的命令则：
+        for cmd in list(new):
+            for i in CMD_LIST:
+                if cmd in i:
+                    data.append(i)
+                    logger.info(f'当前版本新增命令:{cmd}')
+    if discard:
+        # 若有废弃的命令则
+        for cmd in list(discard):
+            for i in data:
+                if cmd in i:
+                    data.remove(i)
+                    logger.info(f'已移除过时的命令:{cmd}')
+    if new or discard:
+        # 将调整后的数据写入文件
+        with open(TEMPLATE_PATH, 'w') as f:
+            f.writelines(data)
 
 
 def from_template_import() -> None:
     """
     从模板导入命令
     """
-    with open(TemplatePath, 'r') as f:
+    with open(TEMPLATE_PATH, 'r') as f:
         lines = f.readlines()
-    f = open(ConfigPath, 'w')
+    f = open(CONFIG_PATH, 'w')
     f.close()
     for line in lines:
         cmd = re.findall('^(.+)=', line)[0]
         aliases: str = re.findall('=(.+)', line)[0]
         aliases_list: list = aliases.split(',')
         content = json.dumps({cmd: aliases_list}) + "\n"
-        with open(ConfigPath, 'a') as cfg:
+        with open(CONFIG_PATH, 'a') as cfg:
             cfg.write(content)
-    logger.success('导入成功')
+    logger.success('从模板导入命令成功')
 
 
 def initialize() -> List[str]:
     """
     初始化全局命令
     """
-    global CmdList
     if not Path('Sky').is_dir():
         os.mkdir('Sky')
-    if not Path(ConfigPath).is_file():
+    if not Path(CONFIG_PATH).is_file():
         create_template()  # 初始化命令模板
         logger.success("命令配置初始化成功")
+    check_template()  # 校验是否含有废弃命令或新增命令
     from_template_import()
-    with open(ConfigPath, 'r') as f:
+    with open(CONFIG_PATH, 'r') as f:
         lines = f.readlines()
-    logger.success('全局命令配置读取成功')
+    logger.success(f'全局命令配置读取成功，{len(lines)} 个命令已加载')
     return lines
 
 
@@ -141,13 +172,13 @@ async def add_cmd_aliases(
     #     logger.error("找不到命令")
     #     return False
     # return True
-    with open(TemplatePath, 'r') as f:
+    with open(TEMPLATE_PATH, 'r') as f:
         lines = f.readlines()
     for line in lines:
         if cmd in line:
             index = lines.index(line)
             lines[index] = line.strip('\n') + f',{alias}\n'
-            with open(TemplatePath, 'w') as f:
+            with open(TEMPLATE_PATH, 'w') as f:
                 f.writelines(lines)
             logger.success(
                 "命令别名添加成功，将在下次重启后生效"
