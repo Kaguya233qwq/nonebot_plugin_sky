@@ -22,7 +22,7 @@ try:
     recv_group_id = []
     __config = nonebot.get_driver().config
     if __config.nickname:
-        nickname = __config.nickname
+        nickname = list(__config.nickname)[0]
     if __config.recv_group_id:
         recv_group_id = __config.recv_group_id
     CONFIG = Config(
