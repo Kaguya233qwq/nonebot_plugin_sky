@@ -290,6 +290,6 @@ __plugin_meta__ = PluginMetadata(
     extra={
         "author": "Kaguya姬辉夜",
         "qq": "1435608435",
-        "version": "2.2.10"
+        "version": "2.2.11.post2"
     }
 )

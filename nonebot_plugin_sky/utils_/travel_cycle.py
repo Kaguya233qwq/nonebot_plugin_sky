@@ -112,7 +112,7 @@ def bot_tips(struct: dict) -> str:
                 "%Y-%m-%d %H:%M:%S"
             ).timestamp()
             days = int((coming_at - now)/60/60/24)
-            if days > 1:
+            if days < 1:
                 tips = [
                     f'还有{days}天先祖就来了哦,请耐心等待',
                     f'先祖已经在赶来的路上啦，还有{days}天',

@@ -1,4 +1,3 @@
-from nonebot_plugin_apscheduler import scheduler
 import os
 import random
 
@@ -7,11 +6,12 @@ from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.internal.matcher import Matcher
 from nonebot.params import CommandArg
 
+require("nonebot_plugin_apscheduler")
+from nonebot_plugin_apscheduler import scheduler
+
 from ..utils_.bot_loader import CONFIG, connect
 from ..config.command import get_cmd_alias
 from ..config.helper_at_all import *
-
-require("nonebot_plugin_apscheduler")
 
 Scheduler = on_command("-sc", aliases=get_cmd_alias('helper_name'))
 
