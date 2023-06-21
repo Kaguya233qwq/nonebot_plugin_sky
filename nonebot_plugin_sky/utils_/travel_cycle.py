@@ -133,7 +133,7 @@ def bot_tips(struct: dict) -> str:
             days = (leaves_at - now) / 60 / 60 / 24
             hours = (leaves_at - now) / 60 / 60
             if days > 1:
-                return f'距离先祖离去还有%1f天' % days
+                return f'距离先祖离去还有%.1f天' % days
             else:
                 heads = f'距离先祖离去害有%.1f小时\n' % hours
                 tips = [
