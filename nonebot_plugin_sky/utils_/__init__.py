@@ -36,6 +36,7 @@ def clear_cache(before_day=30, force=False):
                     os.remove(file_path)
                     cleared = cleared + 1
         clear_cache_time = now
+        lock.release()
         return cleared
     except Exception as e:
         lock.release()
