@@ -293,5 +293,5 @@ __plugin_meta__ = PluginMetadata(
         "version": "2.2.11.post3"
     },
     homepage='https://github.com/Kaguya233qwq/nonebot_plugin_sky',
-    supported_adapters={'Onebot V11'}
+    supported_adapters={'~onebot.v11'}
 )
