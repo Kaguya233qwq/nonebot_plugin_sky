@@ -64,7 +64,7 @@ class NormalTravel:
         """
         国服通常复刻周期计算函数
         """
-        status = self.__travel_status('2023-05-16 12:00:00')
+        status = self.__travel_status('2023-06-13 12:00:00')
         return status
 
     # def international(self):
@@ -114,9 +114,9 @@ def bot_tips(struct: dict) -> str:
             days = (coming_at - now)/60/60/24
             if days > 1:
                 tips = [
-                    f'还有{days}天先祖就来了哦,请耐心等待',
-                    f'先祖已经在赶来的路上啦，还有{days}天',
-                    f'我知道你很急但你先别急，再等{days}天先祖就来啦'
+                    f'还有%.1f天先祖就来了哦,请耐心等待' % days,
+                    f'先祖已经在赶来的路上啦，还有%.1f天' % days,
+                    f'我知道你很急但你先别急，再等%.1f天先祖就来啦' % days
                 ]
                 return random.choice(tips)
             else:
@@ -133,7 +133,7 @@ def bot_tips(struct: dict) -> str:
             days = (leaves_at - now) / 60 / 60 / 24
             hours = (leaves_at - now) / 60 / 60
             if days > 1:
-                return f'距离先祖离去还有{days}天'
+                return f'距离先祖离去还有%.1f天' % days
             else:
                 heads = f'距离先祖离去害有%.1f小时\n' % hours
                 tips = [
