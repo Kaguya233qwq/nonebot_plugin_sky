@@ -60,58 +60,26 @@ _“因光而遇”_
 
 之后根据文档中配置好env文件的地址、端口等内容
 
-交互端推荐[go-cqhttp的rc3版本](https://github.com/Mrs4s/go-cqhttp/releases/v1.0.0-rc3)
-
-（rc4版本存在无法发送图片的bug）
-
 需要配置和nb一样的IP地址和端口
 
 ...
 
+## 2.配置.env文件（雨林干饭小助手必要，若不配置会报错）
 
-## 2.检查前置插件依赖：
-
-### 一般情况下这个依赖是自动装好的
-
-apscheduler:
-[Github项目地址](https://github.com/nonebot/plugin-apscheduler)
-
-或 使用nb-cli：
-
-`nb plugin install nonebot_plugin_apscheduler`
-
-## 3.配置bot.py文件，配置群号（雨林干饭小助手必要的，如果不配置会报错）
-
-您必须确保您的bot.py配置中定时器默认关闭状态，即添加：
-
-`nonebot.init(apscheduler_autostart=False)`
-
-如果你不要求也可以忽略
-
-在.env.xxx文件中配置接收小助手消息的群号，如果.env中ENVIRONMENT=prod,
+在.env.xxx文件中配置定时器默认关闭与接收小助手消息的群号，如果.env中ENVIRONMENT=prod,
 则在.env.prod中添加以下内容：
 
-`recv_group_id="12345"`(单个)
+`apscheduler_autostart = False`(必要)
 
-`recv_group_id=["12345","66666",...]`(多个)
+`recv_group_id = ["12345","66666",...]`
 
-### _**在新版的nonebot2中nb create命令默认不再生成bot.py文件，需要手动使用nb命令生成：**_
+## 3.安装本插件
 
-`nb` 选择 `生成机器人的入口文件`
-
-## 4.安装本插件
-
-1.使用nb插件管理器安装(**推荐**)：
+使用nb插件管理器安装：
 
 先cd到你创建的项目文件夹内，再执行
 
-`nb plugin install nonebot-plugin-sky`即可完成安装
-
-或
-
-2.克隆本项目到本地，在bot.py中导入插件：（不推荐 可忽略）
-
-`nonebot.load_plugin(r"nonebot_plugin_sky")`
+`nb plugin install nonebot-plugin-sky`即可完成安装，开箱即用
 
 </details>
 
@@ -127,16 +95,11 @@ apscheduler:
 
 ###2.以下操作是为了使干饭小助手正常运行：
 
-您必须确保您的bot.py配置中定时器默认关闭状态，即添加：
+在.env.xxx文件中配置定时器默认关闭状态与接收小助手消息的群号:
 
-`nonebot.init(apscheduler_autostart=False)`
+`apscheduler_autostart = False`(必要)
 
-在.env.xxx文件中配置接收小助手消息的群号:
-
-`recv_group_id="12345"`(单个)
-
-`recv_group_id=["12345","66666",...]`(多个)
-
+`recv_group_id=["12345","66666",...]`
 
 
 </details>
@@ -269,6 +232,16 @@ Nonebot项目文件夹下的`sky/`目录
 新浪微博&哔哩哔哩@木易不高兴了啊 —> *国服攻略内容*
 
 ## ✨更新日志✨
+
+2023.8.29 v2.2.12
+
+1.更换国服复刻数据源为微博@陈陈爱吃小兔包
+
+2.修复nonebot的metadata中adapter版本
+
+3.移除必须配置bot.py的规则，需在.env中配置
+
+4.简化安装文档
 
 2023.6.21 v2.2.11.post3
 

@@ -12,7 +12,7 @@ class Travelling:
     """国服复刻类"""
 
     def __init__(self):
-        self.url = 'https://weibo.com/ajax/statuses/mymblog?uid=5685423899&feature=0'
+        self.url = 'https://weibo.com/ajax/statuses/mymblog?uid=5539106873&feature=0'
         self.longtext = 'https://weibo.com/ajax/statuses/longtext?id='
         self.headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) '
@@ -22,7 +22,7 @@ class Travelling:
                       '-yT9jqnAOtRB6P_daaLXfdvYkPfvZhXy3bTeuLdBjWXF9;'  # 未登录时的cookie直接写死 目前
         }
         self.copyright_ = ('------------'
-                           '\r【数据来源：微博@光遇包包1号】\n'
+                           '\r【数据来源：微博@陈陈爱吃小兔包】\n'
                            '--本插件仅做数据展示之用，著作权归原文作者所有。'
                            '转载或转发请附文章作者微博--')
 
