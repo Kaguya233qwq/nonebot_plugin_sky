@@ -70,7 +70,7 @@ async def send_forward_msg(
     chain = await chain_reply(bot, results)
     msg_type = event.message_type
     if msg_type == 'group':
-        group_id = re.findall('_(\d{5,})_', event.get_session_id())[0]
+        group_id = re.findall(r'_(\d{5,})_', event.get_session_id())[0]
         await bot.send_group_forward_msg(
             group_id=group_id,
             messages=chain
@@ -82,7 +82,7 @@ async def send_forward_msg(
         )
 
 
-async def weibo_image(url, file_name):
+async def parse_img_url(url: str, file_name):
     """
     将微博图片缓存到本地，返回绝对路径的file URI
     :param url: 图片链接
@@ -98,6 +98,9 @@ async def weibo_image(url, file_name):
         'referer': 'https://weibo.com/'
     }
     file_path = f'{CACHE_PATH}/{file_name}.jpg'
+    if url.endswith("gif"):
+        # gif文件过大无法发送，故排除
+        return ""
     if not os.path.exists(file_path):
         async with httpx.AsyncClient(timeout=10000) as client:
             res = await client.get(
@@ -109,7 +112,6 @@ async def weibo_image(url, file_name):
             os.mkdir(CACHE_PATH)
         with open(file_path, 'wb') as f:
             f.write(data)
-            f.close()
     abspath = os.path.abspath(file_path)
     # 创建清理线程异步执行
     threading.Thread(target=clear_cache).start()

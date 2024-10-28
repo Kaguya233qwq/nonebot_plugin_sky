@@ -5,7 +5,7 @@ import httpx
 from nonebot import logger
 
 from ...utils_.travel_cycle import NormalTravel
-from ...utils_ import time_no_more, weibo_image
+from ...utils_ import time_no_more, parse_img_url
 
 
 class Travelling:
@@ -70,7 +70,7 @@ class Travelling:
                 for pic in pic_infos:
                     large_url = pic_infos[pic]['largest']['url']
                     release_time = status.get('current_release').replace(' 12:00:00', '')
-                    path = await weibo_image(large_url, release_time)
+                    path = await parse_img_url(large_url, release_time)
                     results = path
             else:
                 results = None

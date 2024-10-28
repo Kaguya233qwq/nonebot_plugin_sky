@@ -47,7 +47,7 @@ async def daily_cn(bot: Bot, event: MessageEvent):
         sky = Task_cn()
         results = await sky.get_data()
         if is_forward():
-            await send_forward_msg(bot, event, results)
+            await send_forward_msg(bot, event, [results])
         else:
             await DailyCN.send(results)
 
@@ -64,7 +64,7 @@ async def daily_in(bot: Bot, event: MessageEvent):
         sky = Task_in()
         results = await sky.get_data()
         if is_forward():
-            await send_forward_msg(bot, event, results)
+            await send_forward_msg(bot, event, [results])
         else:
             await DailyIN.send(results)
 

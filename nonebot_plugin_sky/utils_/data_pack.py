@@ -38,7 +38,7 @@ class SkyDataPack:
                         follow_redirects=True
                 ) as stream:
                     size = 0
-                    chunk = 1024 * 1024 * 2  # 下载速度2Mb/s
+                    chunk = 1024 * 1024 * 1  # 下载速度1Mb/s
                     total = int(stream.headers['content-length']) / 1024 / 1024
                     with open('SkyDataPack.zip', 'wb') as f:
                         async for data in stream.aiter_bytes(chunk_size=chunk):
@@ -47,7 +47,6 @@ class SkyDataPack:
                             print(
                                 '\r[下载进度]: %0.2f MB/%0.2f MB' %
                                 (size, total), end='')
-                            await asyncio.sleep(1)
                     logger.success('文件下载完成！')
         except (httpx.HTTPError, httpx.NetworkError):
             logger.error('数据包下载失败，请检查网络后重试')

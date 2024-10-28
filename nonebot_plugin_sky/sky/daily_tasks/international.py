@@ -4,7 +4,7 @@ import httpx
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageSegment
 
-from ...utils_ import weibo_image
+from ...utils_ import parse_img_url
 
 
 class SkyDaily:
@@ -21,7 +21,7 @@ class SkyDaily:
                       '-yT9jqnAOtRB6P_daaLXfdvYkPfvZhXy3bTeuLdBjWXF9;'  # 未登录时的cookie直接写死
         }
         self.copyright_ = ('------------'
-                           '\r【数据来源：微博@旧日与春】\n'
+                           '\n【数据来源：微博@旧日与春】\n'
                            '--本插件仅做数据展示之用，著作权归原文作者所有。'
                            '转载或转发请附文章作者微博--')
 
@@ -52,7 +52,7 @@ class SkyDaily:
             pic_infos = overhead['pic_infos']
             for pic in pic_infos:
                 large_url = pic_infos[pic]['largest']['url']
-                path = await weibo_image(large_url, pic)
+                path = await parse_img_url(large_url, pic)
                 img = MessageSegment.image(path)
                 results += img
             results += self.copyright_  # 附加版权信息

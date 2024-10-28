@@ -4,7 +4,7 @@ from typing import Union
 import httpx
 from nonebot import logger
 from nonebot.adapters.onebot.v11 import MessageSegment
-from ...utils_ import time_no_more, weibo_image
+from ...utils_ import time_no_more, parse_img_url
 
 
 class Travelling:
@@ -70,7 +70,7 @@ async def get_data() -> Union[str, None]:
         if pic_infos:
             for pic in pic_infos:
                 large_url = pic_infos[pic]['largest']['url']
-                path = await weibo_image(large_url, pic)
+                path = await parse_img_url(large_url, pic)
                 results = path
         else:
             results = None
