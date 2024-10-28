@@ -22,7 +22,7 @@ _“因光而遇”_
 
 # ✨安装与部署✨
 
-##以下三种类型请选择适合自己的方案进行部署：
+## 以下三种类型请选择适合自己的方案进行部署：
 
 <details>
 
@@ -32,7 +32,7 @@ _“因光而遇”_
  不想太操心其他繁杂琐事的话，
  那么我推荐你加入我们的插件交流群获取：
 
-【Nonebot+go-cqhttp集成光遇插件一键部署包】↓ ↓ ↓
+【napcat+nonebot部署教程】↓ ↓ ↓
 
 <p align="center">
 <img src="https://gitee.com/Kaguyaaa/nonebot_plugin_sky/raw/main/.README_images/group.png" width="200" height="350" alt="sky"></a>
@@ -213,7 +213,6 @@ Nonebot项目文件夹下的`sky/`目录
 
 ## 扫码加入我们的qq群，在线答疑解惑
 
-(群文件有一键启动包)
 
 <p align="center">
 <img src="https://gitee.com/Kaguyaaa/nonebot_plugin_sky/raw/main/.README_images/group.png" width="200" height="350" alt="sky"></a>
@@ -232,6 +231,10 @@ Nonebot项目文件夹下的`sky/`目录
 新浪微博&哔哩哔哩@木易不高兴了啊 —> *国服攻略内容*
 
 ## ✨更新日志✨
+
+2024.10.28 v2.2.13
+
+修复gif图片导致的发送消息失败问题
 
 2023.8.29 v2.2.12
 
