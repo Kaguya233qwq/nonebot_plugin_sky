@@ -27,7 +27,7 @@ class SkyDaily:
                            '--本插件仅做数据展示之用，著作权归原文作者所有。'
                            '转载或转发请附文章作者微博--')
 
-    async def get_mblog(self, today) -> Union[dict,None]:
+    async def get_mblog(self, today_data: dict) -> Union[dict,None]:
         """获取微博 @今天游离翻车了吗 今日攻略详情"""
 
         async with httpx.AsyncClient() as client:
@@ -36,8 +36,11 @@ class SkyDaily:
                 headers=self.headers)
             content = json.loads(response.text)
             overhead = content['data']['list']
+            # print(overhead)
+            month = today_data.get("month")
+            day = today_data.get("day")
             for log in overhead:
-                if today in log['text_raw']:
+                if f'{month}.{day}' in log['text_raw'] or f'{month}.{day.zfill(2)}' in log['text_raw']:
                     return log
             return None
 
