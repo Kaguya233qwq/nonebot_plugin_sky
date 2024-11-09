@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import re
 from datetime import datetime
 from typing import Union
@@ -33,7 +34,7 @@ def clear_cache(before_day=30, force=False):
                 file_path = CACHE_PATH + '/' + file_name
                 ctime = os.path.getctime(file_path)
                 if (now - ctime) / day_second > before_day:
-                    os.remove(file_path)
+                    Path(file_path).unlink()
                     cleared = cleared + 1
         clear_cache_time = now
         lock.release()

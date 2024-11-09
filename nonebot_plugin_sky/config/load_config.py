@@ -15,7 +15,7 @@ def reset_config() -> None:
     恢复默认配置
     """
     cfg_path_ = cfg_path()
-    os.remove(cfg_path_)
+    Path(cfg_path_).unlink()
     load()
     logger.success('已恢复默认配置')
 

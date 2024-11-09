@@ -1,5 +1,6 @@
 import asyncio
 import os
+from pathlib import Path
 import zipfile
 import shutil
 import httpx
@@ -75,7 +76,7 @@ async def install(path) -> None:
         zip_.extract(names, file_name)
     zip_.close()
     logger.info('解压缩完成')
-    os.remove('SkyDataPack.zip')
+    Path('SkyDataPack.zip').unlink()
     logger.success('文件安装完成')
 
 
