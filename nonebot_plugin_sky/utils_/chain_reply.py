@@ -3,7 +3,7 @@ from typing import List, Union
 from nonebot.adapters.onebot.v11 import MessageSegment
 from nonebot.adapters.onebot.v11.bot import Bot
 
-from .bot_loader import CONFIG
+from .bot_loader import Config
 
 
 async def chain_reply(
@@ -22,7 +22,7 @@ async def chain_reply(
         data = {
             "type": "node",
             "data": {
-                "name": CONFIG.NICKNAME,
+                "name": Config.NICKNAME,
                 "uin": f"{bot.self_id}",
                 "content": msg
             },

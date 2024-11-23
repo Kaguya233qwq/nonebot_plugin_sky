@@ -290,7 +290,7 @@ __plugin_meta__ = PluginMetadata(
     extra={
         "author": "Kaguya姬辉夜",
         "qq": "1435608435",
-        "version": "2.2.12"
+        "version": "2.2.16"
     },
     homepage='https://github.com/Kaguya233qwq/nonebot_plugin_sky',
     supported_adapters={'~onebot.v11'}
