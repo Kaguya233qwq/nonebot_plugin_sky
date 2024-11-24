@@ -27,6 +27,7 @@ from .utils_.check_update import *
 from .utils_.data_pack import *
 from .utils_.notice_board import *
 from .config.travelling_cache import *
+
 from .utils_.travel_cycle import is_exist, NormalTravel, bot_tips
 
 Menu = on_command("Sky", aliases=get_cmd_alias("sky_menu"))
@@ -290,7 +291,7 @@ __plugin_meta__ = PluginMetadata(
     extra={
         "author": "Kaguya姬辉夜",
         "qq": "1435608435",
-        "version": "2.2.16"
+        "version": "2.3.0"
     },
     homepage='https://github.com/Kaguya233qwq/nonebot_plugin_sky',
     supported_adapters={'~onebot.v11'}
