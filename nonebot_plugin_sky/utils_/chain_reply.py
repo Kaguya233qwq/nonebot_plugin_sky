@@ -1,15 +1,13 @@
 from typing import List, Union
 
+from nonebot import get_plugin_config
 from nonebot.adapters.onebot.v11 import MessageSegment
 from nonebot.adapters.onebot.v11.bot import Bot
 
 from .bot_loader import Config
 
 
-async def chain_reply(
-        bot: Bot,
-        msg_list: List[Union[str, MessageSegment]]
-) -> list:
+async def chain_reply(bot: Bot, msg_list: List[Union[str, MessageSegment]]) -> list:
     """
     构造聊天记录转发消息
 
@@ -17,15 +15,12 @@ async def chain_reply(
     :param msg:
     :return:
     """
+    nick = get_plugin_config(Config).nickname
     chain = []
     for msg in msg_list:
         data = {
             "type": "node",
-            "data": {
-                "name": Config.NICKNAME,
-                "uin": f"{bot.self_id}",
-                "content": msg
-            },
+            "data": {"name": nick[0], "uin": f"{bot.self_id}", "content": msg},
         }
         chain.append(data)
     return chain

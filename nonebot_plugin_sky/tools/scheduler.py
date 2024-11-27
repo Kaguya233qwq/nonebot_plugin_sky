@@ -1,21 +1,21 @@
-import os
-import random
-from datetime import datetime
-from typing import List
-
-from nonebot import require, on_command, logger
-from nonebot.adapters.onebot.v11 import Message, MessageSegment
-from nonebot.internal.matcher import Matcher
-from nonebot.params import CommandArg
-
-require("nonebot_plugin_apscheduler")
-from nonebot_plugin_apscheduler import scheduler
-
 from ..utils_.bot_loader import Config, get_the_bot
 from ..config.command import get_cmd_alias
 from ..config.helper_at_all import *
+from nonebot.params import CommandArg
+from nonebot.internal.matcher import Matcher
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
+import os
+import random
+from datetime import datetime, timedelta
+from typing import List
 
-LunchScheduler = on_command("lunch_helper", aliases=get_cmd_alias("lunch_helper"))
+from nonebot import require, on_command, logger, get_plugin_config
+require("nonebot_plugin_apscheduler")
+from nonebot_plugin_apscheduler import scheduler
+
+
+LunchScheduler = on_command(
+    "lunch_helper", aliases=get_cmd_alias("lunch_helper"))
 Rockfall = on_command("rockfall", aliases=get_cmd_alias("rockfall"))
 RockfallScheduler = on_command(
     "rockfall_helper", aliases=get_cmd_alias("rockfall_helper")
@@ -70,13 +70,7 @@ async def _task_lunch():
     干饭任务
     """
     results = await _have_a_lunch()
-    if isinstance(Config.RECV_GROUP_ID, list):
-        # 向所有群组发送消息
-        bot = await get_the_bot()
-        for group_id in Config.RECV_GROUP_ID:
-            await bot.send_group_msg(group_id=group_id, message=results)
-    else:
-        logger.error("群id配置错误，请检查您的配置")
+    await _send_msg_to_groups(results)
 
 
 async def _have_a_lunch():
@@ -106,10 +100,10 @@ async def _have_a_lunch():
         results = text + MessageSegment.image("file:///" + path + file)
     return results
 
-
-@Rockfall.handle()
-async def RockfallHandler(matcher: Matcher):
-    """今日落石事件handler"""
+async def get_rockfall_event_results():
+    """
+    获取落石事件描述
+    """
     event = await _get_rockfall_event(datetime.now())
     rock_type = event.get("rock_type")
     if rock_type == "black":
@@ -124,7 +118,13 @@ async def RockfallHandler(matcher: Matcher):
             results += t.strftime("%H:%M:%S\n")
     else:
         results = "今日没有落石事件"
+    return results
 
+
+@Rockfall.handle()
+async def RockfallHandler(matcher: Matcher):
+    """今日落石事件handler"""
+    results = await get_rockfall_event_results()
     await matcher.send(results.strip("\n"))
 
 
@@ -147,10 +147,10 @@ async def RockfallSchedulerHandler(matcher: Matcher, args: Message = CommandArg(
         else:
             await matcher.send("落石提醒小助手已经在运行中啦~")
     elif plain_text in ["status", "状态", "运行状态"]:
-            if scheduler.get_job("rockfall_helper"):
-                await matcher.send("落石小助手服务状态：运行中")
-            else:
-                await matcher.send("落石小助手服务状态：未启动")
+        if scheduler.get_job("rockfall_helper"):
+            await matcher.send("落石小助手服务状态：运行中")
+        else:
+            await matcher.send("落石小助手服务状态：未启动")
     elif plain_text in ["stop", "关闭", "停止"]:
         if scheduler.get_job("rockfall_helper"):
             # 移除定时任务
@@ -159,19 +159,42 @@ async def RockfallSchedulerHandler(matcher: Matcher, args: Message = CommandArg(
         else:
             await matcher.send("落石提醒小助手未运行哦~")
     elif plain_text in ["test", "测试"]:
-        event = await _get_rockfall_event(datetime.now())
-        rock_type = event.get("rock_type")
-        if rock_type == "black":
-            results = "黑石已落地！伊甸黑暗能量正在影响着主世界，清理落石可得白色蜡烛"
-        elif rock_type == "red":
-            results = "红石已落地！伊甸黑暗能量正在影响着主世界，清理落石可得升华蜡烛"
-        else:
-            results = "今日没有落石事件。"
-        await matcher.send("[testing mode]\n" + results)
+        check_time = datetime.now() + timedelta(seconds=10)
+        if not scheduler.get_job("rockfall_helper"):
+            scheduler.add_job(
+                _add_rockfall_task_test,
+                "cron",
+                hour=f"{check_time.hour}",
+                minute=f"{check_time.minute}",
+                second=f"{check_time.second}",
+                id="rockfall_helper",
+            )
+            await matcher.send("[testing mode]\n已启动落石提醒小助手")
     else:
         await matcher.send(
             "指令参数错误，用法：rockfall_helper [start|status|stop|test]"
         )
+
+
+async def _add_rockfall_task_test() -> None:
+    """test rockfall adding task
+    """
+    # 如果已经注册了定时器任务则先移除
+    if scheduler.get_job("task_rockfall"):
+        scheduler.remove_job("task_rockfall")
+    args = ["[testing mode]\nxx石已落地！伊甸黑暗能量正在影响着主世界，..."]
+    check_time = datetime.now() + timedelta(seconds=10)
+    scheduler.add_job(
+        _send_msg_to_groups,
+        "cron",
+        hour=f"{check_time.hour}",
+        minute=f"{check_time.minute}",
+        second=f"{check_time.second}",
+        args=args,
+        id="task_rockfall",
+    )
+    # 如果已经注册了定时器任务则先移除
+    await Matcher.send("[testing mode]\n落石提醒的定时任务注册成功")
 
 
 async def _add_rockfall_task() -> None:
@@ -183,36 +206,39 @@ async def _add_rockfall_task() -> None:
         scheduler.remove_job("task_rockfall")
     event = await _get_rockfall_event(datetime.now())
     rock_type = event.get("rock_type")
+    start_time: List[datetime] = event.get("start_time")
     if rock_type == "black":
-        start_time: List[datetime] = event.get("start_time")
-        args = ["黑石已落地！伊甸黑暗能量正在影响着主世界，清理落石可得白色蜡烛"]
+        args = [
+            "黑石已落地！伊甸黑暗能量正在影响着主世界，清理落石可得白色蜡烛"
+        ]
     elif rock_type == "red":
-        start_time: List[datetime] = event.get("start_time")
-        args = ["红石已落地！伊甸黑暗能量正在影响着主世界，清理落石可得升华蜡烛"]
+        args = [
+            "红石已落地！伊甸黑暗能量正在影响着主世界，清理落石可得升华蜡烛"
+        ]
     else:
         return
     scheduler.add_job(
-        _send_rockfall_notice,
+        _send_msg_to_groups,
         "cron",
-        hour=",".join([t.hour for t in start_time]),
+        hour=",".join([str(t.hour) for t in start_time]),
         minute="8",
         args=args,
         id="task_rockfall",
     )
     logger.info("落石定时任务已更新")
+    results = await get_rockfall_event_results()
+    await _send_msg_to_groups(results.strip("\n"))
 
 
-async def _send_rockfall_notice(msg: str):
+async def _send_msg_to_groups(msg: str):
     """
-    发送落石提醒的处理逻辑
+    向所有已配置群组发送消息
     """
-    if isinstance(Config.RECV_GROUP_ID, list):
-        # 向所有群组发送消息
-        bot = await get_the_bot()
-        for group_id in Config.RECV_GROUP_ID:
-            await bot.send_group_msg(group_id=group_id, message=msg)
-    else:
-        logger.error("群id配置错误，请检查您的配置")
+    config = get_plugin_config(Config)
+    # 向所有群组发送消息
+    bot = await get_the_bot()
+    for group_id in config.recv_group_id:
+        await bot.send_group_msg(group_id=group_id, message=msg)
 
 
 async def _get_rockfall_event(input_date: datetime):

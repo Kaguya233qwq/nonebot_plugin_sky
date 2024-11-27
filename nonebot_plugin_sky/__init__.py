@@ -6,8 +6,10 @@
 import asyncio
 import datetime
 
+from nonebot import logger, on_command
 from nonebot.plugin import PluginMetadata
-from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed, Bot, MessageEvent
+from nonebot.params import CommandArg
+from nonebot.adapters.onebot.v11 import NetworkError, ActionFailed, Bot, MessageEvent,Message,MessageSegment
 from nonebot.permission import SUPERUSER
 
 from .config.command import *
@@ -19,7 +21,6 @@ from .sky.queue import get_state
 from .sky.travelling_spirit.international import get_data
 from .sky.travelling_spirit.national import Travelling as Travelling_cn
 from .tools.menu import get_menu
-from .tools.scheduler import *
 from .utils_.bot_loader import Config
 from .utils_ import send_forward_msg, clear_cache
 from .utils_.chain_reply import chain_reply
@@ -27,6 +28,8 @@ from .utils_.check_update import *
 from .utils_.data_pack import *
 from .utils_.notice_board import *
 from .config.travelling_cache import *
+from .tools.scheduler import *
+
 
 from .utils_.travel_cycle import is_exist, NormalTravel, bot_tips
 

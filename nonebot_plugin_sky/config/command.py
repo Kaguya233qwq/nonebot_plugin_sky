@@ -1,5 +1,4 @@
 import os
-import json
 import re
 from pathlib import Path
 from typing import List
@@ -41,7 +40,7 @@ CMD_LIST = [
     # 落石小助手
     "rockfall_helper=落石小助手",
     # 其他
-    "noticeboard=插件公告,插件公告板"
+    "noticeboard=插件公告,插件公告板",
 ]
 
 
@@ -95,7 +94,7 @@ def check_template() -> None:
     new_cmds = []
 
     # 读取用户本地的命令模板
-    with open(TEMPLATE_PATH, "r") as f:
+    with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
         data = f.readlines()
         # 将其转为命令字典并只取其key的列表
         old_cmds = list(parse_cmd_list(data).keys())
@@ -121,7 +120,7 @@ def check_template() -> None:
                 logger.info(f"已移除过时的命令:{cmd}")
     if new or discard:
         # 将调整后的数据写入文件
-        with open(TEMPLATE_PATH, "w") as f:
+        with open(TEMPLATE_PATH, "w", encoding="utf-8") as f:
             f.writelines(data)
 
 
@@ -131,8 +130,8 @@ def initialize() -> dict:
     """
     if not Path("Sky").is_dir():
         os.mkdir("Sky")
-    check_template()  # 校验是否含有废弃命令或新增命令
-    with open(TEMPLATE_PATH, "r") as f:
+    check_template()  # 校验是否含有废弃命令或新增命令,或是否需要新建模板
+    with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
         data = f.readlines()
     logger.success(f"全局命令配置读取成功，{len(data)} 个命令已加载")
     return parse_cmd_list(data)
@@ -158,13 +157,33 @@ async def add_cmd_aliases(cmd: str, alias: str) -> bool:
     添加命令别名
     """
 
-    with open(TEMPLATE_PATH, "r") as f:
+    # with open(ConfigPath, 'r') as f:
+    #     lines = f.readlines()
+    # for line in lines:
+    #     cmd_line: dict = json.loads(line)
+    #     if cmd_line.get(cmd):
+    #         index = lines.index(line)
+    #         aliases: list = cmd_line.get(cmd)
+    #         aliases.append(alias)
+    #         line = json.dumps({cmd: aliases})
+    #         lines[index] = line + '\n'
+    #         with open(ConfigPath, 'w') as f:
+    #             f.writelines(lines)
+    #         logger.success(
+    #             "命令别名添加成功，将在下次重启后生效"
+    #         )
+    #         break
+    # else:
+    #     logger.error("找不到命令")
+    #     return False
+    # return True
+    with open(TEMPLATE_PATH, "r",encoding="utf-8") as f:
         lines = f.readlines()
     for line in lines:
         if cmd in line:
             index = lines.index(line)
             lines[index] = line.strip("\n") + f",{alias}\n"
-            with open(TEMPLATE_PATH, "w") as f:
+            with open(TEMPLATE_PATH, "w", encoding="utf-8") as f:
                 f.writelines(lines)
             logger.success("命令别名添加成功，将在下次重启后生效")
             break
@@ -196,5 +215,4 @@ async def add_cmd_aliases_handle(args: Message = EventPlainText()):
             await AddCmdAliases.send("Command not found：找不到命令")
 
 
-__all__ = ("add_cmd_aliases_handle", "get_cmd_alias",
-           "initialize", "CmdConfig")
+__all__ = ("add_cmd_aliases_handle", "get_cmd_alias", "initialize", "CmdConfig")
