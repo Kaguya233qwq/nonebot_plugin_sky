@@ -1,5 +1,5 @@
 import datetime
-import os
+from pathlib import Path
 import random
 
 
@@ -87,10 +87,9 @@ def is_exist(file_name: str):
     本地是否存在复刻缓存
     :return:
     """
-    path = f'Sky/Cache/{file_name}.jpg'
-    if os.path.isfile(path):
-        abs_path = os.path.abspath(path)
-        return f'file:///{abs_path}'
+    path = Path(f'Sky/Cache/{file_name}.jpg')
+    if path.exists():
+        return path.resolve().as_uri()
     return False
 
 

@@ -1,3 +1,4 @@
+from pathlib import Path
 from ..utils_.bot_loader import Config, get_the_bot
 from ..config.command import get_cmd_alias
 from ..config.helper_at_all import *
@@ -10,12 +11,12 @@ from datetime import datetime, timedelta
 from typing import List
 
 from nonebot import require, on_command, logger, get_plugin_config
+
 require("nonebot_plugin_apscheduler")
 from nonebot_plugin_apscheduler import scheduler
 
 
-LunchScheduler = on_command(
-    "lunch_helper", aliases=get_cmd_alias("lunch_helper"))
+LunchScheduler = on_command("lunch_helper", aliases=get_cmd_alias("lunch_helper"))
 Rockfall = on_command("rockfall", aliases=get_cmd_alias("rockfall"))
 RockfallScheduler = on_command(
     "rockfall_helper", aliases=get_cmd_alias("rockfall_helper")
@@ -85,20 +86,20 @@ async def _have_a_lunch():
         "快到饭点了崽崽们，准备准备出发吧~",
         "我是要励志把小陈吃破产的人！",
     ]
-    text = random.sample(texts, 1)[0]
-    abspath_ = os.path.abspath(__file__).strip("scheduler.py")
-    path = abspath_ + "helper_image/"
-    image_list = os.listdir(path)
-    file = random.sample(image_list, 1)[0]
+    text = random.choice[texts]
+    path = Path(__file__.strip("scheduler.py")) / "helper_image"
+    image_list: List[str] = [i for i in path.glob("*")]
+    image: Path = path / random.choice(image_list)
     if at_all():
         results = (
             text
-            + MessageSegment.image("file:///" + path + file)
+            + MessageSegment.image(image.resolve().as_uri())
             + MessageSegment.at("all")
         )
     else:
-        results = text + MessageSegment.image("file:///" + path + file)
+        results = text + MessageSegment.image(image.resolve().as_uri())
     return results
+
 
 async def get_rockfall_event_results():
     """
@@ -140,7 +141,7 @@ async def RockfallSchedulerHandler(matcher: Matcher, args: Message = CommandArg(
                 "cron",
                 hour="0",
                 minute="0",
-                second="1",
+                second="10",
                 id="rockfall_helper",
             )
             await matcher.send("已启动落石提醒小助手")
@@ -170,15 +171,16 @@ async def RockfallSchedulerHandler(matcher: Matcher, args: Message = CommandArg(
                 id="rockfall_helper",
             )
             await matcher.send("[testing mode]\n已启动落石提醒小助手")
+        else:
+            await matcher.send("落石提醒小助手已经在运行中啦~")
     else:
         await matcher.send(
             "指令参数错误，用法：rockfall_helper [start|status|stop|test]"
         )
 
 
-async def _add_rockfall_task_test() -> None:
-    """test rockfall adding task
-    """
+async def _add_rockfall_task_test(matcher: Matcher) -> None:
+    """test rockfall adding task"""
     # 如果已经注册了定时器任务则先移除
     if scheduler.get_job("task_rockfall"):
         scheduler.remove_job("task_rockfall")
@@ -194,7 +196,7 @@ async def _add_rockfall_task_test() -> None:
         id="task_rockfall",
     )
     # 如果已经注册了定时器任务则先移除
-    await Matcher.send("[testing mode]\n落石提醒的定时任务注册成功")
+    await matcher.send("[testing mode]\n落石提醒的定时任务注册成功")
 
 
 async def _add_rockfall_task() -> None:
@@ -207,14 +209,12 @@ async def _add_rockfall_task() -> None:
     event = await _get_rockfall_event(datetime.now())
     rock_type = event.get("rock_type")
     start_time: List[datetime] = event.get("start_time")
+    results = await get_rockfall_event_results()
+    await _send_msg_to_groups(results.strip("\n"))
     if rock_type == "black":
-        args = [
-            "黑石已落地！伊甸黑暗能量正在影响着主世界，清理落石可得白色蜡烛"
-        ]
+        args = ["黑石已落地！伊甸黑暗能量正在影响着主世界，清理落石可得白色蜡烛"]
     elif rock_type == "red":
-        args = [
-            "红石已落地！伊甸黑暗能量正在影响着主世界，清理落石可得升华蜡烛"
-        ]
+        args = ["红石已落地！伊甸黑暗能量正在影响着主世界，清理落石可得升华蜡烛"]
     else:
         return
     scheduler.add_job(
@@ -226,8 +226,7 @@ async def _add_rockfall_task() -> None:
         id="task_rockfall",
     )
     logger.info("落石定时任务已更新")
-    results = await get_rockfall_event_results()
-    await _send_msg_to_groups(results.strip("\n"))
+    await _send_msg_to_groups("已添加各个落石时间点的定时任务")
 
 
 async def _send_msg_to_groups(msg: str):

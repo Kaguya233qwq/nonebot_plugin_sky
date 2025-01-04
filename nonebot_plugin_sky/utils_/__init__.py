@@ -92,28 +92,27 @@ async def parse_img_url(url: str, file_name):
     """
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
-                      ' AppleWebKit/537.36 (KHTML, like Gecko) '
-                      'Chrome/74.0.3729.169 Safari/537.36',
+        ' AppleWebKit/537.36 (KHTML, like Gecko) '
+        'Chrome/74.0.3729.169 Safari/537.36',
         'cookie': 'SUB=_2AkMUd3SHf8NxqwFRmP8Ty2Pna4VwywzEieKiK4VcJRMxHRl'
-                  '-yT9jqnAOtRB6P_daaLXfdvYkPfvZhXy3bTeuLdBjWXF9;',
+        '-yT9jqnAOtRB6P_daaLXfdvYkPfvZhXy3bTeuLdBjWXF9;',
         'referer': 'https://weibo.com/'
     }
-    file_path = f'{CACHE_PATH}/{file_name}.jpg'
+    file_path: Path = Path(CACHE_PATH) / f'{file_name}.jpg'
     if url.endswith("gif"):
         # gif文件过大无法发送，故排除
         return ""
-    if not os.path.exists(file_path):
+    if not file_path.exists():
         async with httpx.AsyncClient(timeout=10000) as client:
             res = await client.get(
                 url=url,
                 headers=headers
             )
             data = res.content
-        if not os.path.exists(CACHE_PATH):
-            os.mkdir(CACHE_PATH)
+        if not Path(CACHE_PATH).exists():
+            Path(CACHE_PATH).mkdir()
         with open(file_path, 'wb') as f:
             f.write(data)
-    abspath = os.path.abspath(file_path)
     # 创建清理线程异步执行
     threading.Thread(target=clear_cache).start()
-    return 'file:///' + abspath
+    return file_path.resolve().as_uri()

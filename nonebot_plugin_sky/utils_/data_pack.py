@@ -21,8 +21,8 @@ class SkyDataPack:
         self.url = f'https://gitee.com/Kaguyaaa/nonebot_plugin_sky/releases/download/SkyDataPack-v'
         self.headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) '
-                          'AppleWebKit/537.36 (KHTML, like Gecko) Chrome'
-                          '/62.0.3202.9 Safari/537.36',
+            'AppleWebKit/537.36 (KHTML, like Gecko) Chrome'
+            '/62.0.3202.9 Safari/537.36',
         }
 
     async def download(self):
@@ -85,27 +85,20 @@ async def check() -> bool:
     检查数据包
     存在返回True，不存在返回False
     """
-    try:
-        if os.path.exists('SkyDataPack'):
-            logger.info('数据包已安装')
-            return True
-        else:
-            return False
-    except Exception as e:
-        logger.error('扫描数据包出现错误：%s' % e)
+    return Path('SkyDataPack').exists()
 
 
-async def load_image(cmd_path) -> Message:
+async def load_image(cmd_path: str) -> Message:
     """
     扫描指定命令路径下所有图片
     返回一个图片组的MessageSegment
     """
     love = MessageSegment.face(66)
     results = love + MessageSegment.text(cmd_path) + love
-    image_list = os.listdir('SkyDataPack/' + cmd_path)
-    abs_path = os.path.abspath('SkyDataPack/' + cmd_path)
+    path = Path('SkyDataPack') / cmd_path
+    image_list = path.glob("**/*")
     for image in image_list:
-        results += MessageSegment.image('file:///' + abs_path + "/" + image)
+        results += MessageSegment.image(image.resolve().as_uri())
     return results
 
 
