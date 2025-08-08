@@ -157,26 +157,6 @@ async def add_cmd_aliases(cmd: str, alias: str) -> bool:
     添加命令别名
     """
 
-    # with open(ConfigPath, 'r') as f:
-    #     lines = f.readlines()
-    # for line in lines:
-    #     cmd_line: dict = json.loads(line)
-    #     if cmd_line.get(cmd):
-    #         index = lines.index(line)
-    #         aliases: list = cmd_line.get(cmd)
-    #         aliases.append(alias)
-    #         line = json.dumps({cmd: aliases})
-    #         lines[index] = line + '\n'
-    #         with open(ConfigPath, 'w') as f:
-    #             f.writelines(lines)
-    #         logger.success(
-    #             "命令别名添加成功，将在下次重启后生效"
-    #         )
-    #         break
-    # else:
-    #     logger.error("找不到命令")
-    #     return False
-    # return True
     with open(TEMPLATE_PATH, "r",encoding="utf-8") as f:
         lines = f.readlines()
     for line in lines:

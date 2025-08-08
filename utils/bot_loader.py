@@ -17,7 +17,7 @@ class Config(BaseModel):
 
 
 try:
-    config = nonebot.get_driver().config
+    config: Config = nonebot.get_driver().config
     logger.success(f"Hi~ [Bot]{config.nickname} loaded successfully.")
     logger.success(f"[sky插件推送服务] 以下群组已启用：{config.recv_group_id}")
 except Exception:

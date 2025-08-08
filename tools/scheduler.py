@@ -1,11 +1,10 @@
 from pathlib import Path
-from ..utils_.bot_loader import Config, get_the_bot
+from ..utils.bot_loader import Config, get_the_bot
 from ..config.command import get_cmd_alias
 from ..config.helper_at_all import *
 from nonebot.params import CommandArg
 from nonebot.internal.matcher import Matcher
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
-import os
 import random
 from datetime import datetime, timedelta
 from typing import List
