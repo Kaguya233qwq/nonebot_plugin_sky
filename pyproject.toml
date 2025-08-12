@@ -1,6 +1,6 @@
 [project]
 name = "nonebot-plugin-sky"
-version = "3.0.0"
+version = "2.4.0"
 description = "基于Nonebot2的sky光遇攻略插件"
 readme = "README.md"
 requires-python = ">=3.10"
