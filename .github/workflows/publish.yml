@@ -1,0 +1,60 @@
+name: Publish Python Package to PyPI and GitHub Releases
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    name: Build and Publish with uv
+    runs-on: ubuntu-latest
+    permissions:
+      # 允许工作流从 GitHub 获取 OIDC token
+      id-token: write
+      # 允许工作流创建 GitHub Release 并上传构建产物
+      contents: write
+
+    steps:
+      # 检出代码
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # 必需：拉取所有 Git 历史记录。
+          # 这是 setuptools-scm 能够根据 tag 准确计算出版本号的前提。
+          fetch-depth: 0
+
+      # 设置 Python 环境
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 安装 uv
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        shell: bash
+
+      # 使用 uv 构建项目
+      - name: Build with uv
+        run: uv build --sdist --wheel --no-sources
+        shell: bash
+        env:
+          SETUPTOOLS_SCM_PRETEND_VERSION: ${{ github.ref_name }}
+
+      # 创建 GitHub Release
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ github.ref_name }}
+          tag_name: ${{ github.ref }}
+          files: dist/*
+          draft: false
+          prerelease: false
+
+      # 使用 uv 将包发布到 PyPI
+      - name: Publish to PyPI with uv
+        run: uv publish dist/*
+        shell: bash
