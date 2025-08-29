@@ -10,6 +10,9 @@ from .chain_reply import chain_reply
 import threading
 import time
 
+# 确保配置项被加载
+from . import bot_loader as bot_loader
+
 clear_cache_time = 0
 lock = threading.Lock()
 CACHE_PATH = "Sky/Cache"

@@ -10,14 +10,24 @@ class Config(BaseModel):
     """Sky的.env配置项"""
 
     """bot的昵称"""
-    nickname: List[str]
+    nickname: List[str] | str
 
     """欲开启所有推送功能的群号列表"""
-    recv_group_id: List[str]
+    recv_group_id: List[str] = []
 
 
 try:
     config: Config = nonebot.get_plugin_config(Config)
+    if isinstance(config.nickname, list):
+        if len(config.nickname) == 0 or config.nickname[0] == "":
+            config.nickname = "Sky"
+        else:
+            config.nickname = config.nickname[0]
+    elif isinstance(config.nickname, str):
+        if config.nickname == "":
+            config.nickname = "Sky"
+    else:
+        config.nickname = "Sky"
     logger.success(f"Hi~ [Bot]{config.nickname} loaded successfully.")
     logger.success(f"[sky插件推送服务] 以下群组已启用：{config.recv_group_id}")
 except Exception:

@@ -8,4 +8,4 @@ class Config:
     IMAGES_PATH = RESOURCE_PATH / "images"
     
     CONFIG_FILE = SKY_ROOT_PATH / "config.ini"
-    TEMPLATE_FILE = SKY_ROOT_PATH / "/cmd_template.txt"
+    TEMPLATE_FILE = SKY_ROOT_PATH / "cmd_template.txt"
