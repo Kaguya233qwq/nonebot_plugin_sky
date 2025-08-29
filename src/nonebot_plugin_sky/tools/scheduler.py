@@ -1,7 +1,9 @@
 from pathlib import Path
-from ..utils.bot_loader import Config, get_the_bot
-from ..config.command import get_cmd_alias
-from ..config.helper_at_all import *
+
+from ..config import Config
+from ..config.helper_at_all import at_all
+from ..utils.bot_loader import get_the_bot
+from nonebot.config import Config as NBConfig
 from nonebot.params import CommandArg
 from nonebot.internal.matcher import Matcher
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
@@ -9,21 +11,23 @@ import random
 from datetime import datetime, timedelta
 from typing import List
 
-from nonebot import require, on_command, logger, get_plugin_config
+from nonebot import require, logger, get_plugin_config
 
 require("nonebot_plugin_apscheduler")
-from nonebot_plugin_apscheduler import scheduler
+from nonebot_plugin_apscheduler import scheduler  # noqa: E402
 
 
-LunchScheduler = on_command("lunch_helper", aliases=get_cmd_alias("lunch_helper"))
-Rockfall = on_command("rockfall", aliases=get_cmd_alias("rockfall"))
-RockfallScheduler = on_command(
-    "rockfall_helper", aliases=get_cmd_alias("rockfall_helper")
-)
+class RockfallEvent:
+    """
+    落石事件返回结构
+    """
+
+    def __init__(self, rock_type: str, start_time: List[datetime] | None = None):
+        self.rock_type = rock_type
+        self.start_time = start_time
 
 
-@LunchScheduler.handle()
-async def scheduler_handler(matcher: Matcher, args: Message = CommandArg()):
+async def lunch_helper_handler(matcher: Matcher, args: Message = CommandArg()):
     plain_text = args.extract_plain_text()
     try:
         if plain_text in ["start", "启动"]:
@@ -73,21 +77,22 @@ async def _task_lunch():
     await _send_msg_to_groups(results)
 
 
-async def _have_a_lunch():
+async def _have_a_lunch() -> Message:
     """
     干饭函数主体
     """
+    results = ""
     texts = [
         "干饭人干饭魂,冲鸭！",
         "还有五分钟就要开饭了哦~快叫上你的朋友一起去叭",
-        "让我看看是哪个小可爱干饭不带盆~," "上号！干饭人",
+        "让我看看是哪个小可爱干饭不带盆~,上号！干饭人",
         "干饭不积极思想有问题~今天我要吃三碗饭！",
         "快到饭点了崽崽们，准备准备出发吧~",
         "我是要励志把小陈吃破产的人！",
     ]
-    text = random.choice[texts]
-    path = Path(__file__.strip("scheduler.py")) / "helper_image"
-    image_list: List[str] = [i for i in path.glob("*")]
+    text = random.choice(texts)
+    path = Config.IMAGES_PATH
+    image_list: List[Path] = [i for i in path.glob("*")]
     image: Path = path / random.choice(image_list)
     if at_all():
         results = (
@@ -105,14 +110,15 @@ async def get_rockfall_event_results():
     获取落石事件描述
     """
     event = await _get_rockfall_event(datetime.now())
-    rock_type = event.get("rock_type")
+    rock_type = event.rock_type
+    start_time = event.start_time
+    if start_time is None:
+        return "今日没有落石事件"
     if rock_type == "black":
-        start_time: List[datetime] = event.get("start_time")
         results = "今日伊甸落石：黑石\n开始时间：\n"
         for t in start_time:
             results += t.strftime("%H:%M:%S\n")
     elif rock_type == "red":
-        start_time: List[datetime] = event.get("start_time")
         results = "今日伊甸落石：红石\n开始时间：\n"
         for t in start_time:
             results += t.strftime("%H:%M:%S\n")
@@ -121,15 +127,13 @@ async def get_rockfall_event_results():
     return results
 
 
-@Rockfall.handle()
-async def RockfallHandler(matcher: Matcher):
+async def rockfall_handler(matcher: Matcher):
     """今日落石事件handler"""
     results = await get_rockfall_event_results()
     await matcher.send(results.strip("\n"))
 
 
-@RockfallScheduler.handle()
-async def RockfallSchedulerHandler(matcher: Matcher, args: Message = CommandArg()):
+async def rockfall_scheduler_handler(matcher: Matcher, args: Message = CommandArg()):
     """落石小助手handler"""
     plain_text = args.extract_plain_text()
     if plain_text in ["start", "启动"]:
@@ -169,8 +173,10 @@ async def RockfallSchedulerHandler(matcher: Matcher, args: Message = CommandArg(
                 second=f"{check_time.second}",
                 id="rockfall_helper",
             )
+            logger.info("已启动落石提醒小助手[test mode]")
             await matcher.send("[testing mode]\n已启动落石提醒小助手")
         else:
+            logger.info("落石提醒小助手已经在运行中啦~[test mode]")
             await matcher.send("落石提醒小助手已经在运行中啦~")
     else:
         await matcher.send(
@@ -206,8 +212,10 @@ async def _add_rockfall_task() -> None:
     if scheduler.get_job("task_rockfall"):
         scheduler.remove_job("task_rockfall")
     event = await _get_rockfall_event(datetime.now())
-    rock_type = event.get("rock_type")
-    start_time: List[datetime] = event.get("start_time")
+    rock_type = event.rock_type
+    start_time = event.start_time
+    if start_time is None:
+        return
     results = await get_rockfall_event_results()
     await _send_msg_to_groups(results.strip("\n"))
     if rock_type == "black":
@@ -228,18 +236,18 @@ async def _add_rockfall_task() -> None:
     await _send_msg_to_groups("已添加各个落石时间点的定时任务")
 
 
-async def _send_msg_to_groups(msg: str):
+async def _send_msg_to_groups(msg: Message | str) -> None:
     """
     向所有已配置群组发送消息
     """
-    config = get_plugin_config(Config)
+    config = get_plugin_config(NBConfig)
     # 向所有群组发送消息
     bot = await get_the_bot()
     for group_id in config.recv_group_id:
         await bot.send_group_msg(group_id=group_id, message=msg)
 
 
-async def _get_rockfall_event(input_date: datetime):
+async def _get_rockfall_event(input_date: datetime) -> RockfallEvent:
     """
     落石事件判定逻辑
     """
@@ -259,25 +267,38 @@ async def _get_rockfall_event(input_date: datetime):
 
     if 1 <= input_date.day <= 15:
         if input_date.weekday() == 1:  # 星期二
-            return {
-                "rock_type": "black",
-                "start_time": create_start_times([8, 14, 19]),
-            }
+            return RockfallEvent(
+                rock_type="black",
+                start_time=create_start_times([8, 14, 19]),
+            )
         elif input_date.weekday() == 5:  # 星期六
-            return {"rock_type": "red", "start_time": create_start_times([10, 14, 22])}
+            return RockfallEvent(
+                rock_type="red",
+                start_time=create_start_times([10, 14, 22]),
+            )
         elif input_date.weekday() == 6:  # 星期日
-            return {"rock_type": "red", "start_time": create_start_times([7, 13, 19])}
+            return RockfallEvent(
+                rock_type="red",
+                start_time=create_start_times([7, 13, 19]),
+            )
         else:  # 其他时候没有事件
-            return {"rock_type": ""}
+            return RockfallEvent(rock_type="")
     if 16 <= input_date.day <= 31:
         if input_date.weekday() == 2:  # 星期三
-            return {
-                "rock_type": "black",
-                "start_time": create_start_times([9, 15, 21]),
-            }
+            return RockfallEvent(
+                rock_type="black",
+                start_time=create_start_times([9, 15, 21]),
+            )
         elif input_date.weekday() == 4:  # 星期五
-            return {"rock_type": "red", "start_time": create_start_times([11, 17, 23])}
+            return RockfallEvent(
+                rock_type="red",
+                start_time=create_start_times([11, 17, 23]),
+            )
         elif input_date.weekday() == 6:  # 星期日
-            return {"rock_type": "red", "start_time": create_start_times([7, 13, 19])}
+            return RockfallEvent(
+                rock_type="red",
+                start_time=create_start_times([7, 13, 19]),
+            )
         else:  # 其他时候没有事件
-            return {"rock_type": ""}
+            return RockfallEvent(rock_type="")
+    return RockfallEvent(rock_type="")

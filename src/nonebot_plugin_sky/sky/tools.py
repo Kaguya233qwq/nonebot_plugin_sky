@@ -20,7 +20,7 @@ class Tools:
     """
 
     @staticmethod
-    def _travelling_spirit_status(date: str) -> dict:
+    def _travelling_spirit_status(date: str) -> TravellingSpiritStatus:
         """
         获取最近一次通常旅行先祖公布的时间点
 
@@ -76,7 +76,7 @@ class Tools:
         return None
 
     @staticmethod
-    def get_bot_tips(tss: TravellingSpiritStatus) -> str:
+    def get_bot_tips(tss: TravellingSpiritStatus) -> str | None:
         """
         根据传入的TravellingSpiritStatus自动生成温馨提示语
         """
@@ -92,9 +92,9 @@ class Tools:
                 days = (coming_at - now) / 60 / 60 / 24
                 if days > 1:
                     tips = [
-                        f"还有%.1f天先祖就来了哦,请耐心等待" % days,
-                        f"先祖已经在赶来的路上啦，还有%.1f天" % days,
-                        f"我知道你很急但你先别急，再等%.1f天先祖就来啦" % days,
+                        f"还有{days:.1f}天先祖就来了哦,请耐心等待",
+                        f"先祖已经在赶来的路上啦，还有{days:.1f}天",
+                        f"我知道你很急但你先别急，再等{days:.1f}天先祖就来啦",
                     ]
                     return random.choice(tips)
                 else:
@@ -107,9 +107,9 @@ class Tools:
                 days = (leaves_at - now) / 60 / 60 / 24
                 hours = (leaves_at - now) / 60 / 60
                 if days > 1:
-                    return f"距离先祖离去还有%.1f天" % days
+                    return f"距离先祖离去还有{days:.1f}天"
                 else:
-                    heads = f"距离先祖离去害有%.1f小时\n" % hours
+                    heads = f"距离先祖离去害有{hours:.1f}小时\n"
                     tips = [
                         f"{heads}先祖就要离开了，他会想你们的！",
                         f"{heads}本次旅行先祖即将离去，请各位想要兑换的旅人及时兑换",
@@ -119,27 +119,27 @@ class Tools:
                     return random.choice(tips)
         else:
             tips = [
-                f"下次会是什么呢？很期待哦",
-                f"希望国服不要再让我们捡破烂了",
-                f"风平浪静，没有任何事情发生。",
-                f"武士裤复刻全是我的功劳！",
-                f"时间还长着呢，先看看书吧",
-                f"我认为作者是个大天才。",
-                f"和朋友在一起玩的时间越来越少了。相遇不易，希望各位旅人能珍惜",
-                f"这年头谁还跑图啊",
-                f"昨天少拿一根季蜡，好亏",
-                f"当初带你入坑光遇的那个人，ta还好吗？",
-                f"请不要忘记，那天陪你一起看的景色",
-                f"我们都曾拥有，我们从未失去",
-                f"啥？这游戏不是单机游戏吗？那些小黑不是npc吗？",
+                "下次会是什么呢？很期待哦",
+                "希望国服不要再让我们捡破烂了",
+                "风平浪静，没有任何事情发生。",
+                "武士裤复刻全是我的功劳！",
+                "时间还长着呢，先看看书吧",
+                "我认为作者是个大天才。",
+                "和朋友在一起玩的时间越来越少了。相遇不易，希望各位旅人能珍惜",
+                "这年头谁还跑图啊",
+                "昨天少拿一根季蜡，好亏",
+                "当初带你入坑光遇的那个人，ta还好吗？",
+                "请不要忘记，那天陪你一起看的景色",
+                "我们都曾拥有，我们从未失去",
+                "啥？这游戏不是单机游戏吗？那些小黑不是npc吗？",
             ]
             bonus_tips = [
-                f"不会吧不会吧，不会真有人为了看我说什么在这一直发吧",
-                f"不是，你指望着我一个光遇插件给你讲笑话听吗",
-                f"好玩吗?",
-                f"你猜猜我下次会说什么",
+                "不会吧不会吧，不会真有人为了看我说什么在这一直发吧",
+                "不是，你指望着我一个光遇插件给你讲笑话听吗",
+                "好玩吗?",
+                "你猜猜我下次会说什么",
             ]
-            extra_tips = f"恭喜你中了大奖。我发送这段文字的概率只有1%，快去买彩票吧= ="
+            extra_tips = "恭喜你中了大奖。我发送这段文字的概率只有1%，快去买彩票吧= ="
             choice = random.randint(0, 99)
             if choice == 0:
                 return extra_tips

@@ -88,12 +88,12 @@ class Sky:
         # 没有在复刻周期内
         return (f"当前无复刻先祖信息，下次复刻公布时间：\n{tss.next_release}", [], tips)
 
-    @staticmethod
-    async def get_international_server_travelling_spirit():
-        """获取国际服旅行先祖信息"""
+    # @staticmethod
+    # async def get_international_server_travelling_spirit():
+    #     """获取国际服旅行先祖信息"""
 
-        # 光遇搬运工beta的微博uid
-        spider = Spider(7555312647)
+    #     # 光遇Beta搬运工的微博uid
+    #     spider = Spider(7555312647)
 
     @staticmethod
     async def get_sky_notice():
@@ -133,5 +133,6 @@ class Sky:
             else:
                 return "服务器又炸啦！"  # 破土豆服务器（
 
+    @staticmethod
     def _generate_copywright(user: str, url: str):
         return "------------\n" f"【数据来源：微博@{user}】\n" f"原文链接：{url}"

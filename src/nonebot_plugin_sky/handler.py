@@ -1,5 +1,4 @@
 import asyncio
-from pathlib import Path
 from nonebot.adapters.onebot.v11 import (
     Bot,
     MessageEvent,
@@ -11,12 +10,12 @@ from nonebot import logger
 from nonebot.matcher import Matcher
 
 from .config.msg_forward import is_forward
+from .config import Config
 from .utils import send_forward_msg
 from .sky import Sky
 
 
 class Handler:
-
     @staticmethod
     async def chinese_server_daily_handler(event: MessageEvent, bot: Bot):
         """国服每日任务的handler"""
@@ -28,7 +27,10 @@ class Handler:
             if is_forward():
                 await send_forward_msg(bot, event, messages)
             else:
-                await bot.send(event, messages)
+                message = MessageSegment.text(text)
+                for image in images:
+                    message += MessageSegment.image(image)
+                await bot.send(event, message)
 
         except (NetworkError, ActionFailed):
             logger.error("网络环境较差，调用发送信息接口超时")
@@ -45,12 +47,16 @@ class Handler:
             if is_forward():
                 await send_forward_msg(bot, event, messages)
             else:
-                await bot.send(event, messages)
+                message = MessageSegment.text(text)
+                for image in images:
+                    message += MessageSegment.image(image)
+                await bot.send(event, message)
 
         except (NetworkError, ActionFailed):
             logger.error("网络环境较差，调用发送信息接口超时")
             await bot.send(event, message="网络环境较差，调用发送信息接口超时")
 
+    @staticmethod
     async def chinese_server_travelling_spirit_handler(matcher: Matcher):
         """获取国服旅行先祖的Handler"""
         try:
@@ -91,11 +97,12 @@ class Handler:
             logger.error("NetworkError: 网络环境较差，调用发送信息接口超时")
             await matcher.send(message="网络环境较差，调用发送信息接口超时")
 
+    @staticmethod
     async def menu_handler(matcher: Matcher):
         """获取菜单的Handler"""
 
         def get_menu_image_path() -> str:
-            path = Path(__file__).parent / "tools" / "menu_image" / "menu.png"
+            path = Config.RESOURCE_PATH / "menu.png"
             return path.absolute().as_uri()
 
         try:

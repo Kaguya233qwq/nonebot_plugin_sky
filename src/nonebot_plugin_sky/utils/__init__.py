@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import re
 from datetime import datetime
-from typing import List, Union
+from typing import Sequence
 
 import httpx
 from nonebot.adapters.onebot.v11 import Bot, MessageEvent, MessageSegment
@@ -56,7 +56,7 @@ def time_no_more(date, hour, minute):
 
 
 async def send_forward_msg(
-    bot: Bot, event: MessageEvent, messages: List[Union[str, MessageSegment]]
+    bot: Bot, event: MessageEvent, messages: Sequence[str | MessageSegment]
 ):
     """
     自动判断消息类型发送对应转发消息

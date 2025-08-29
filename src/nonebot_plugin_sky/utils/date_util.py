@@ -15,6 +15,6 @@ async def get_today():
     return today_format
 
 
-__all__ = (
+__all__ = [
     "get_today"
-)
+]

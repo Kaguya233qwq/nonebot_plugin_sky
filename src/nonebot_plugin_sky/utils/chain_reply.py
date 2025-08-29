@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Sequence
 
 from nonebot import get_plugin_config
 from nonebot.adapters.onebot.v11 import MessageSegment
@@ -7,7 +7,7 @@ from nonebot.adapters.onebot.v11.bot import Bot
 from .bot_loader import Config
 
 
-async def chain_reply(bot: Bot, msg_list: List[Union[str, MessageSegment]]) -> list:
+async def chain_reply(bot: Bot, msg_list: Sequence[str | MessageSegment]) -> list:
     """
     构造聊天记录转发消息
 

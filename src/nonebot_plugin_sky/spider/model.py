@@ -84,7 +84,7 @@ class Urls:
     original: str
     thumbnail: str
 
-    def get_preferred_url(self, preference: List[str] = None) -> str:
+    def get_preferred_url(self, preference: List[str] | None = None) -> str:
         """
         获取首选图片URL
 
@@ -125,7 +125,7 @@ class Picture:
     size: Optional[Dict[str, int]] = None
     type: str = "jpg"
 
-    def get_url(self, preference: List[str] = None) -> str:
+    def get_url(self, preference: List[str] | None = None) -> str:
         """获取首选图片URL"""
         return self.urls.get_preferred_url(preference)
 
@@ -165,13 +165,18 @@ class Picture:
         """图片高度（如有尺寸信息）"""
         return self.size["height"] if self.size and "height" in self.size else None
 
-    async def save(self, rename_as: str = None, parent: str = "weibo_images") -> Path:
+    async def save(
+        self, rename_as: str | None = None, parent: str = "weibo_images"
+    ) -> Path:
         """将图片异步保存至本地"""
         root = Path(parent)
         if not root.exists():
             root.mkdir()
         url = self.get_url()
-        filename, content = await self.get_binary(url)
+        result = await self.get_binary(url)
+        if result is None:
+            raise UnknownError("图片数据获取异常")
+        filename, content = result
         extension = "." + filename.split(".")[-1]
         if rename_as is not None:
             filename = rename_as + extension
@@ -183,11 +188,14 @@ class Picture:
         """将图片转为base64"""
 
         url = self.get_url()
-        _, data = await self.get_binary(url)
+        result = await self.get_binary(url)
+        if result is None:
+            raise UnknownError("图片数据获取异常")
+        _, data = result
         return base64.b64encode(data).decode()
 
 
-@dataclass(frozen=True)
+@dataclass
 class Blog:
     """
     微博条目
@@ -254,6 +262,7 @@ class Blog:
         return cls(
             mblogid=data["mblogid"],
             text_raw=data.get("text_raw", data.get("text", "")),
+            url=data.get("url", ""),
             pic_list=pic_list,
             created_at=data.get("created_at", ""),
         )
@@ -314,7 +323,7 @@ class Blog:
             return self.text_raw
         return self.text_raw[: max_length - 2] + "..."
 
-    def get_preferred_pictures(self, preference: List[str] = None) -> List[str]:
+    def get_preferred_pictures(self, preference: List[str] | None = None) -> List[str]:
         """
         获取首选图片URL列表
 
@@ -326,7 +335,9 @@ class Blog:
         """
         return [pic.get_url(preference) for pic in self.pic_list]
 
-    async def fetch_long_text(self, client: Optional[httpx.AsyncClient] = None) -> str:
+    async def fetch_long_text(
+        self, client: Optional[httpx.AsyncClient] = None
+    ) -> str | None:
         """
         获取长文本内容
 
@@ -385,7 +396,7 @@ class Blog:
             asyncio.create_task(pic.get_binary(pic.get_url())) for pic in self.pic_list
         ]
         results = await asyncio.gather(*tasks)
-        results = [i[1] for i in results]
+        results = [i[1] for i in results if i is not None]
         return results
 
     async def fetch_images_base64_list(self) -> List[str]:

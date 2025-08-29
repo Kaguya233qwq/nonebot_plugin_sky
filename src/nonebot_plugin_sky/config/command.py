@@ -4,10 +4,9 @@ from pathlib import Path
 from typing import List
 
 from nonebot import on_command, logger
-from nonebot.adapters.onebot.v11 import Message
 from nonebot.params import EventPlainText
 
-TEMPLATE_PATH = "Sky/cmd_template.txt"
+from . import Config
 
 # 若添加了新的命令，请在这里为新命令注册变量名称
 CMD_LIST = [
@@ -83,8 +82,8 @@ def check_template() -> None:
     """
     global CMD_LIST
 
-    if not Path(TEMPLATE_PATH).exists():
-        with open(TEMPLATE_PATH, "w", encoding="utf-8") as f:
+    if not Path(Config.TEMPLATE_FILE).exists():
+        with open(Config.TEMPLATE_FILE, "w", encoding="utf-8") as f:
             CMD_LIST = [cmd + "\n" for cmd in CMD_LIST]
             f.writelines(CMD_LIST)
         logger.info("命令模板初始化成功")
@@ -94,7 +93,7 @@ def check_template() -> None:
     new_cmds = []
 
     # 读取用户本地的命令模板
-    with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
+    with open(Config.TEMPLATE_FILE, "r", encoding="utf-8") as f:
         data = f.readlines()
         # 将其转为命令字典并只取其key的列表
         old_cmds = list(parse_cmd_list(data).keys())
@@ -120,7 +119,7 @@ def check_template() -> None:
                 logger.info(f"已移除过时的命令:{cmd}")
     if new or discard:
         # 将调整后的数据写入文件
-        with open(TEMPLATE_PATH, "w", encoding="utf-8") as f:
+        with open(Config.TEMPLATE_FILE, "w", encoding="utf-8") as f:
             f.writelines(data)
 
 
@@ -131,7 +130,7 @@ def initialize() -> dict:
     if not Path("Sky").is_dir():
         os.mkdir("Sky")
     check_template()  # 校验是否含有废弃命令或新增命令,或是否需要新建模板
-    with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
+    with open(Config.TEMPLATE_FILE, "r", encoding="utf-8") as f:
         data = f.readlines()
     logger.success(f"全局命令配置读取成功，{len(data)} 个命令已加载")
     return parse_cmd_list(data)
@@ -145,11 +144,9 @@ def get_cmd_alias(cmd: str) -> set:
     根据命令获取命令别名
     """
     global CmdConfig
-    if CmdConfig.get(cmd):
-        alias = set(CmdConfig.get(cmd))
-        return alias
-    else:
-        return set()
+    alias_list = CmdConfig.get(cmd, [])
+    alias = set(alias_list)
+    return alias
 
 
 async def add_cmd_aliases(cmd: str, alias: str) -> bool:
@@ -157,13 +154,13 @@ async def add_cmd_aliases(cmd: str, alias: str) -> bool:
     添加命令别名
     """
 
-    with open(TEMPLATE_PATH, "r",encoding="utf-8") as f:
+    with open(Config.TEMPLATE_FILE, "r", encoding="utf-8") as f:
         lines = f.readlines()
     for line in lines:
         if cmd in line:
             index = lines.index(line)
             lines[index] = line.strip("\n") + f",{alias}\n"
-            with open(TEMPLATE_PATH, "w", encoding="utf-8") as f:
+            with open(Config.TEMPLATE_FILE, "w", encoding="utf-8") as f:
                 f.writelines(lines)
             logger.success("命令别名添加成功，将在下次重启后生效")
             break
@@ -177,12 +174,9 @@ AddCmdAliases = on_command("cmd -add", aliases=get_cmd_alias("cmd_add"))
 
 
 @AddCmdAliases.handle()
-async def add_cmd_aliases_handle(args: Message = EventPlainText()):
-    msg = str(args)
+async def add_cmd_aliases_handle(msg: str = EventPlainText()):
     if not re.findall("cmd -add (.+) (.+)", msg):
-        await AddCmdAliases.send(
-            "您输入的命令格式有误。用法：\n" "cmd -add [cmd] [alias]"
-        )
+        await AddCmdAliases.send("您输入的命令格式有误。用法：\ncmd -add [cmd] [alias]")
     else:
         cmd = re.findall("cmd -add (.+) (.+)", msg)[0][0]
         alias = re.findall("cmd -add (.+) (.+)", msg)[0][1]

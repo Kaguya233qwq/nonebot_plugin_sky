@@ -5,13 +5,17 @@ import pip
 import httpx
 from bs4 import BeautifulSoup
 import logging
+from importlib import metadata
 
-from nonebot import on_command, logger
-from ..config.command import get_cmd_alias
+from nonebot import logger
+from nonebot.matcher import Matcher
 
 logging.captureWarnings(True)  # 去掉建议使用SSL验证的显示
 
-Version = "2.3.2"  # 全局插件版本信息  （不用加v！）
+try:
+    __version__ = metadata.version("nonebot-plugin-sky")
+except metadata.PackageNotFoundError:
+    __version__ = "0.0.0-dev"
 
 
 async def get_datapack_ver() -> str:
@@ -24,7 +28,7 @@ async def get_datapack_ver() -> str:
             f.close()
             return datapack_ver
     except Exception as e:
-        str(e)
+        logger.error("获取本地数据包版本失败，原因：%s" % str(e))
         return "1.0.0"
 
 
@@ -32,23 +36,22 @@ async def check_plugin_latest() -> str:
     """
     检查最新发布的插件版本
     """
-    url = "https://pypi.org/project/nonebot-plugin-sky/"
+    url = "https://github.com/Kaguya233qwq/nonebot_plugin_sky/"
     headers = {
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome"
         "/62.0.3202.9 Safari/537.36"
     }
-    try:
-        async with httpx.AsyncClient(verify=False, timeout=None) as client:
-            res = await client.get(url=url, headers=headers)
-            bs = BeautifulSoup(res.text, "lxml")
-            results = bs.find(class_="package-header__name").text
-            latest_ver = results.strip("\n").strip(" ").replace("\n", "")
-            latest_ver = latest_ver.replace("nonebot-plugin-sky ", "")
-            return latest_ver
-    except Exception as e:
-        str(e)
-        logger.error("获取插件更新信息失败")
+    async with httpx.AsyncClient(verify=False, timeout=10) as client:
+        res = await client.get(url=url, headers=headers)
+        bs = BeautifulSoup(res.text, "lxml")
+        tag = bs.find(class_="package-header__name")
+        if not tag:
+            return ""
+        results = tag.get_text()
+        latest_ver = results.strip("\n").strip(" ").replace("\n", "")
+        latest_ver = latest_ver.replace("nonebot-plugin-sky ", "")
+        return latest_ver
 
 
 async def check_datapack_latest() -> str:
@@ -64,20 +67,20 @@ async def check_datapack_latest() -> str:
     try:
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             res = await client.get(url=url, headers=headers)
-            bs = BeautifulSoup(res.text, "lxml")
-            latest_ver = bs.find(
-                string=re.compile("SkyDataPack-v(\\d+.\\d+.\\d+)")
-            ).strip("SkyDataPack-v")
+            comp = re.compile("SkyDataPack-v(\\d+.\\d+.\\d+)")
+            if not comp:
+                return ""
+            latest_ver = comp.findall(res.text)[0]
             return latest_ver
-    except Exception as e:
-        str(e)
+    except Exception:
         logger.error("获取数据包更新信息失败")
+        return ""
 
 
 async def upgrade_plugin() -> Union[bool, None]:
     latest = await check_plugin_latest()
     if latest:
-        if latest == Version:
+        if latest == __version__:
             logger.info("已是最新版本，无需更新")
             return False
         else:
@@ -87,22 +90,17 @@ async def upgrade_plugin() -> Union[bool, None]:
         return None
 
 
-Check = on_command("check", aliases=get_cmd_alias("check"))
-Upgrade = on_command("upgrade", aliases=get_cmd_alias("upgrade"))
-
-
-@Check.handle()
-async def check_handle():
-    await Check.send("正在检查更新，请稍候")
+async def check_handle(matcher: Matcher):
+    await matcher.send("正在检查更新，请稍候")
     results = ""
     plugin_latest = await check_plugin_latest()
 
     if plugin_latest:
-        if plugin_latest == Version:
-            results += "-当前插件已是最新版本(v%s)\n" % Version
-            logger.info("当前插件已是最新版本(v%s)" % Version)
+        if plugin_latest == __version__:
+            results += "-当前插件已是最新版本(v%s)\n" % __version__
+            logger.info("当前插件已是最新版本(v%s)" % __version__)
         else:
-            results += f"-[New]发现新版本插件：v{Version} -> v{plugin_latest}\n"
+            results += f"-[New]发现新版本插件：v{__version__} -> v{plugin_latest}\n"
             logger.warning("发现新版本插件：v%s" % plugin_latest)
     else:
         results += "-[Error]插件检查更新失败，请稍后重试"
@@ -121,22 +119,21 @@ async def check_handle():
     else:
         results += "-[Error]数据包检查更新失败，请稍后重试"
 
-    await Check.send(results)
+    await matcher.send(results)
 
 
-@Upgrade.handle()
-async def upgrade_handle():
-    await Upgrade.send("检查插件是否有更新..")
+async def upgrade_handle(matcher: Matcher):
+    await matcher.send("检查插件是否有更新..")
     upgrade = await upgrade_plugin()
     if upgrade is None:
-        await Upgrade.send("检查更新失败")
+        await matcher.send("检查更新失败")
         logger.error("检查更新失败")
     elif upgrade is True:
-        await Upgrade.send("正在下载更新，请稍候..")
+        await matcher.send("正在下载更新，请稍候..")
         pip.main(["install", "nonebot-plugin-sky", "--upgrade"])
-        await Upgrade.send("插件更新完成，请重新启动Nonebot")
+        await matcher.send("插件更新完成，请重新启动Nonebot")
     else:
-        await Upgrade.send("插件已是最新版，无需更新")
+        await matcher.send("插件已是最新版，无需更新")
 
 
 __all__ = ("check_handle", "upgrade_handle", "check_datapack_latest")

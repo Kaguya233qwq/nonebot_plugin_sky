@@ -153,7 +153,7 @@ _“因光而遇”_
 
 ## 全局缓存目录：
 
-Nonebot项目文件夹下的`sky/`目录
+Nonebot项目文件夹下的`Sky/`目录
 
 ## --全局命令管理--
 
@@ -203,6 +203,14 @@ Nonebot项目文件夹下的`sky/`目录
 
 </details>
 
+## 🔧构建（开发者）
+
+使用uv:
+
+同步依赖: `uv sync`
+
+构建：`uv build`
+
 
 ## ✨TODO？✨
 
@@ -241,6 +249,10 @@ Nonebot项目文件夹下的`sky/`目录
 新浪微博&哔哩哔哩@木易不高兴了啊 —> *国服攻略内容*
 
 ## ✨更新日志✨
+
+<details>
+
+<summary>>点击展开<</summary>
 
 2025.1.4 v2.3.2
 
@@ -371,10 +383,6 @@ Nonebot项目文件夹下的`sky/`目录
 3.修复lxml警告问题
 
 4.蜡烛查询增加对应异常捕获处理
-
-<details>
-
-<summary>更早的记录（2023.3.1之前）</summary>
 
 2023.3.1 v2.2
 
@@ -623,8 +631,4 @@ Nonebot项目文件夹下的`sky/`目录
 </code></pre>
 
 </details>
-
-## 已通过墨菲安全检测：
-
-[![Security Status](https://www.murphysec.com/platform3/v3/badge/1614390303725748224.svg?t=1)](https://www.murphysec.com/accept?code=42caa007865facda50ed119894201320&type=1&from=2&t=2)
 

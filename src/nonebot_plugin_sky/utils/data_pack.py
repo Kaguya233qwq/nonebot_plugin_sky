@@ -1,4 +1,3 @@
-import asyncio
 import os
 from pathlib import Path
 import zipfile
@@ -9,7 +8,7 @@ from nonebot import on_command, logger
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.params import CommandArg, ArgPlainText
 
-from .check_update import check_datapack_latest
+from ..tools.update import check_datapack_latest
 from ..config.command import get_cmd_alias
 
 
@@ -18,7 +17,7 @@ class SkyDataPack:
 
     def __init__(self):
 
-        self.url = f'https://gitee.com/Kaguyaaa/nonebot_plugin_sky/releases/download/SkyDataPack-v'
+        self.url = 'https://gitee.com/Kaguyaaa/nonebot_plugin_sky/releases/download/SkyDataPack-v'
         self.headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) '
             'AppleWebKit/537.36 (KHTML, like Gecko) Chrome'

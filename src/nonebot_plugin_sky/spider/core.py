@@ -70,7 +70,7 @@ class Spider:
                     raise GetMblogsFailedError(f"获取微博列表失败: {error_msg}")
                 if not content.get("data"):
                     raise GetMblogsFailedError(
-                        f"获取微博列表失败, 超出最大能获取的索引"
+                        "获取微博列表失败, 超出最大能获取的索引"
                     )
                 self._parse_mblogs(content["data"]["list"])
                 return self
@@ -322,11 +322,17 @@ async def main():
     pattern = r"^#[^#]*光遇[^#]*超话]#\s*\d{1,2}\.\d{1,2}\s*"
     blog = fetcher.filter_by_regex(pattern).filter_by_time().one()
     print(blog)
-    text = await blog.fetch_long_text()
-    print(text)
+    if blog is not None:
+        text = await blog.fetch_long_text()
+        print(text)
+    else:
+        print("No matching blog found.")
     # for pic in blog.pic_list:
     #     await pic.save()
-    print(await blog.save_all_images())
+    if blog is not None:
+        print(await blog.save_all_images())
+    else:
+        print("No images to save.")
 
 
 if __name__ == "__main__":
