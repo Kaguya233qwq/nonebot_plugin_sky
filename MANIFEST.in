@@ -1,0 +1,7 @@
+# MANIFEST.in
+
+include README.md
+include LICENSE
+
+# 递归包含资源目录下的所有文件
+recursive-include src/nonebot_plugin_sky/resources *
