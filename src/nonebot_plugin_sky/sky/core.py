@@ -24,6 +24,8 @@ class Sky:
             return ("【国服】今日任务还未更新", [])
         text = await blog.fetch_long_text()
         binary_images = await blog.fetch_images_binary_list()
+        if not text:
+            text = "【国服】今日任务还未更新"
         return (
             text + Sky._generate_copywright("今天游离翻车了吗", blog.url),
             binary_images,
@@ -49,6 +51,8 @@ class Sky:
         if not blog:
             return ("【国际服】今日任务还未更新", [])
         text = await blog.fetch_long_text()
+        if not text:
+            text = "【国际服】今日任务还未更新"
         binary_images = await blog.fetch_images_binary_list()
         return (text + Sky._generate_copywright("旧日与春", blog.url), binary_images)
 

@@ -67,7 +67,8 @@ class Handler:
                 # 只发提示语
                 await matcher.send(message=MessageSegment.text(text))
             await asyncio.sleep(2)
-            await matcher.send(tips)
+            if tips is not None:
+                await matcher.send(message=tips)
         except (NetworkError, ActionFailed):
             logger.error("网络环境较差，调用发送信息接口超时")
             await matcher.send(message="网络环境较差，调用发送信息接口超时")
