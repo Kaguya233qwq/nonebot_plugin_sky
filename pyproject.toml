@@ -46,3 +46,6 @@ include-package-data = true
 where = ["src"]
 
 [tool.setuptools_scm]
+
+[project.entry-points."nb_cli"]
+sky = "nonebot_plugin_sky.cli:sky"

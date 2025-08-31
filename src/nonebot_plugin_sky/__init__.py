@@ -26,6 +26,9 @@ Clear = on_command(
     "sky_clear_cache", aliases=get_cmd_alias("sky_clear_cache"), permission=SUPERUSER
 )
 
+# 注册脚手架命令
+from . import cli as cli
+
 # 注册tools中的所有消息处理器
 register_all_handlers()
 
