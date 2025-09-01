@@ -203,7 +203,9 @@ Nonebot项目文件夹下的`Sky/`目录
 
 </details>
 
-## 🔧构建（开发者）
+## 🔧构建与测试（开发者）
+
+### 构建插件本体与cli
 
 使用uv:
 
@@ -211,6 +213,22 @@ Nonebot项目文件夹下的`Sky/`目录
 
 构建：`uv build`
 
+### 本地测试插件本体和cli
+
+build成功后将whl安装至nonebot的开发环境：
+
+`uv pip install xxxxx.whl`
+
+并在pyproject中包含插件：
+
+```toml
+[tool.nonebot]
+plugins = ["nonebot_plugin_sky"]
+```
+
+测试和使用脚手架：
+
+`sky run`
 
 ## ✨TODO？✨
 
