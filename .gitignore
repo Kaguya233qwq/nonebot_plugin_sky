@@ -164,4 +164,7 @@ cython_debug/
 
 .vscode/
 
+run.ps1
+run.sh
+
 

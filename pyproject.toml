@@ -20,12 +20,13 @@ classifiers = [
 dependencies = [
     "aiofiles>=24.1.0",
     "bs4>=0.0.2",
+    "click",
     "httpx>=0.28.1",
     "lxml>=6.0.0",
+    "nb-cli>=1.4.2",
     "nonebot-adapter-onebot>=2.4.6",
     "nonebot-plugin-apscheduler>=0.5.0",
     "nonebot2>=2.4.2",
-    "pip>=25.2",
     "setuptools>=80.9.0",
 ]
 
@@ -44,8 +45,10 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["nonebot_plugin_sky*", "sky_cli*"]
 
 [tool.setuptools_scm]
 
-[project.entry-points."nb_cli"]
-sky = "nonebot_plugin_sky.cli:sky"
+# 附加脚手架组件
+[project.scripts]
+sky = "sky_cli.cli:sky"
