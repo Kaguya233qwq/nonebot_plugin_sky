@@ -85,7 +85,7 @@ Read-Host "Press Enter to exit."
 """
 
 BASH_SCRIPT_CONTENT = r"""
-#!/bin/bash
+#!/bin/sh
 
 # =======================================================
 # ==      NoneBot Guardian & Restarter for Linux/macOS    ==
@@ -165,6 +165,7 @@ def sky(ctx: click.Context):
     if ctx.invoked_subcommand is None:
         ctx.invoke(run)
 
+
 def _install_script():
     """
     为 nonebot-plugin-sky 安装或更新推荐的守护脚本。
@@ -175,7 +176,7 @@ def _install_script():
     dest_path = Path.cwd() / script_name
 
     try:
-        dest_path.write_text(script_content, encoding="utf-8")
+        dest_path.write_text(script_content, encoding="utf-8", newline="\n")
         if not is_windows:
             dest_path.chmod(0o755)
         click.secho(
