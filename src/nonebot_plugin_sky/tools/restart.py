@@ -144,3 +144,5 @@ async def trigger_signal(bot: Bot):
         await bot.send_private_msg(user_id=signal.user_id, message=signal.message)
     elif signal.action == Action.SEND_GROUP_MSG:
         await bot.send_group_msg(group_id=signal.group_id, message=signal.message)
+    # 触发后删除
+    SIGNAL_PATH.unlink()
