@@ -115,11 +115,11 @@ VENV_PYTHON=$(find_local_python)
 
 if [ $? -eq 0 ]; then
     echo "✅ Automatically detected Python virtual environment at './${VENV_PYTHON#./}'"
-    RUN_CMD=("$VENV_PYTHON" -m nb_cli run)
+    RUN_CMD="'$VENV_PYTHON' -m nb_cli run"
 # 如果虚拟环境不存在，则检测全局的 'nb' 命令
 elif command -v nb >/dev/null 2>&1; then
     echo "ℹ️  No local virtual environment found. Falling back to system-level 'nb' command."
-    RUN_CMD=(nb run)
+    RUN_CMD="nb run"
 else
     echo "❌ Error: Could not find a local virtual environment (e.g., ./.venv/bin/python) or a system-level 'nb' command in your PATH." >&2
     echo "Please ensure NoneBot is installed correctly either in a local venv or globally." >&2
@@ -131,7 +131,7 @@ while true; do
     echo ""
     echo "[$(date +'%Y-%m-%d %H:%M:%S')] Starting NoneBot process..."
     
-    "${RUN_CMD[@]}"
+    eval "$RUN_CMD"
     
     EXIT_CODE=$?
     
