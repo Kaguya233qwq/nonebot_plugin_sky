@@ -29,7 +29,8 @@ def register_all_handlers():
 
     from .update import check_handle, upgrade_handle
     from .restart import restart_handle
+    from . import data_pack as data_pack
 
     on_command("check", aliases=get_cmd_alias("check"), handlers=[check_handle])
     on_command("upgrade", aliases=get_cmd_alias("upgrade"), handlers=[upgrade_handle])
-    on_command("restart",aliases={"重启"},handlers=[restart_handle])
+    on_command("restart", aliases={"重启"}, handlers=[restart_handle])
