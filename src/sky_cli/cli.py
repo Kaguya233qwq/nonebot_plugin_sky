@@ -84,8 +84,7 @@ Write-Host "Script has finished." -ForegroundColor Green
 Read-Host "Press Enter to exit."
 """
 
-BASH_SCRIPT_CONTENT = r"""
-#!/bin/sh
+BASH_SCRIPT_CONTENT = r"""#!/bin/sh
 
 # =======================================================
 # ==      NoneBot Guardian & Restarter for Linux/macOS    ==
@@ -176,7 +175,8 @@ def _install_script():
     dest_path = Path.cwd() / script_name
 
     try:
-        dest_path.write_text(script_content, encoding="utf-8", newline="\n")
+        content_to_write = script_content.lstrip() 
+        dest_path.write_text(content_to_write, encoding="utf-8", newline="\n")
         if not is_windows:
             dest_path.chmod(0o755)
         click.secho(
