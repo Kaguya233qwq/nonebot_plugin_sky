@@ -3,6 +3,7 @@ import re
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional, Tuple, overload
 import httpx
+from nonebot import logger
 
 from .exception import GetMblogsFailedError, UnknownError
 from .model import Auth, Blog, Picture, Urls
@@ -22,6 +23,7 @@ class Spider:
         """
         self.uid = uid
         self._results: List[Blog] = []
+        self._search_results: List[Blog] = []
         self._setup_headers()
         self._setup_apis()
 
@@ -69,9 +71,7 @@ class Spider:
                     error_msg = content.get("msg", "数据加载失败")
                     raise GetMblogsFailedError(f"获取微博列表失败: {error_msg}")
                 if not content.get("data"):
-                    raise GetMblogsFailedError(
-                        "获取微博列表失败, 超出最大能获取的索引"
-                    )
+                    raise GetMblogsFailedError("获取微博列表失败, 超出最大能获取的索引")
                 self._parse_mblogs(content["data"]["list"])
                 return self
 
@@ -81,6 +81,34 @@ class Spider:
             raise GetMblogsFailedError("网络连接异常") from e
         except Exception as e:
             raise UnknownError("数据处理异常") from e
+
+    async def search(self, query: str, num: int = 1, start_page: int = 1) -> "Spider":
+        """
+        循环获取内容，直到收集到 num 条包含 query 的内容。
+        """
+        current_page = start_page
+
+        # 使用循环代替递归
+        while len(self._search_results) < num:
+            try:
+                await self.fetch(page=current_page)
+                filtered = self.filter_by_regex(query)
+                blog = filtered.all()
+                if blog:
+                    # 只有当这个 blog 之前没加过（去重）才加，不过翻页通常自带去重
+                    self._search_results.extend(blog)
+
+                current_page += 1
+
+            except GetMblogsFailedError as e:
+                logger.error(f"搜索结束: {e}")
+                break
+            except Exception as e:
+                logger.error(f"发生未知错误: {e}")
+                break
+
+        self._results = self._search_results[:num]
+        return self
 
     def _parse_mblogs(self, mblogs: List[Dict[str, Any]]) -> None:
         """解析微博数据
@@ -140,14 +168,14 @@ class Spider:
             过滤后的实例（支持链式调用）
 
         Examples:
-            ### 获取今天的微博
+            - 获取今天的微博
             spider.filter_by_time()
 
-            ### 获取最近7天的微博
+            - 获取最近7天的微博
             week_ago = datetime.now() - timedelta(days=7)
             spider.filter_by_time(week_ago)
 
-            ### 获取特定日期范围的微博
+            - 获取特定日期范围的微博
             start_date = datetime(2023, 1, 1)
             end_date = datetime(2023, 1, 31)
             spider.filter_by_time(start_date, end_date)

@@ -36,7 +36,6 @@ class Auth:
                 "/119.0.0.0 Safari/537.36 Edg/119.0.0.0"
             ),
             "cookie": cls._get_default_cookie(),
-            "x-xsrf-token": "yoHntMwEp_Nwul4lctsonLLJ",
             "referer": "https://www.weibo.com",
             "sec-ch-ua": '"Microsoft Edge";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
             "sec-ch-ua-platform": '"Windows"',
@@ -50,15 +49,7 @@ class Auth:
         Returns:
             cookie字符串
         """
-        return (
-            "SUB=_2AkMfBEKCf8NxqwFRmvkQymnrZYhwzgrEieKpWLNZJRMxHRl"
-            "-yT8XqmoptRB6NIRsbUYKStWNRVDbSkWVT6ByjPY2gF2l; SUBP=00"
-            "33WrSXqPxfM72-Ws9jqgMF55529P9D9WhAWRX1pEqCQewafgijL__J;"
-            "PC_TOKEN=cd531433e8; XSRF-TOKEN=yoHntMwEp_Nwul4lctsonLLJ;"
-            " WBPSESS=LKUy5Npwn5zVNZX-hrYAMDC-_JmTtrq1e0li9PYZQdLN-OD7R"
-            "Hn7EeEY89R6X2zer35IRApL3G6AO1L9F3DUiC3iWig9pLCNF5QuzvQyCKBm7"
-            "nDttWFSBam4EUIBuIgfXBpPZ1c_DbWzrCOoLgsqTZQp_L9vdsxEtbi4oPnpt7U="
-        )
+        return "XSRF-TOKEN=VGRMWAWWnqPRQOpiwaB6LhOO; SUB=_2AkMeDrKVf8NxqwFRmv8TzWPmb45yyw3EieKoUkNOJRMxHRl-yT9xqm0GtRB6NY6cemIl_ZU7KL2sks8K-KAtPokzzFnP; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9WFyulOCYp-MxBc3AKYbqDI2; WBPSESS=PDVUzjtcUt2fIitQvMR4oRHUCeiVV-tSypB852MWl1DH-z_vQiKEaFOUKES3nmIKgcJG7BsYGqIMuzf4ZVfSt0L18A7NLqsBiZ_96CRDjA3oQbBRZY8Dpii2kFLxIGvibuyn62GPKl7exNK7T_hvvdlXD65baybj2V2LDpQVNqE="
 
 
 @dataclass(frozen=True)

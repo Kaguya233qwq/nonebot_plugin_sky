@@ -63,7 +63,7 @@ class Sky:
         # 陈陈努力不鸽的微博uid
         spider = Spider(5539106873)
 
-        await spider.fetch()
+        await spider.search("#光遇复刻#")
         pattern = r"复刻"
         # 根据复刻周期函数的时间进行筛选
         tss = Tools.get_chinese_server_travelling_spirit_cycle()
@@ -79,9 +79,9 @@ class Sky:
                 start_time = datetime.strptime(tss.current_release, "%Y-%m-%d %H:%M:%S")
                 blogs = spider.filter_by_time(start_time).filter_by_regex(pattern).all()
                 # 如果作者当天发了其他的东西，也会被匹配到
-                # 但是通常的复刻先祖有且只有一张图片，所以再根据图片数量筛选
+                # 但是通常的复刻先祖有且只有一到两张图片，所以再根据图片数量筛选
                 for blog in blogs:
-                    if len(blog.pic_list) == 1:
+                    if len(blog.pic_list) <= 2:
                         path = await blog.pic_list[0].save(
                             rename_as=release_time, parent="Sky/Cache"
                         )
