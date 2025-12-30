@@ -14,6 +14,8 @@ class Config(BaseModel):
 
     """欲开启所有推送功能的群号列表"""
     recv_group_id: List[str] = []
+    
+    weibo_cookie: str = ""
 
 
 try:

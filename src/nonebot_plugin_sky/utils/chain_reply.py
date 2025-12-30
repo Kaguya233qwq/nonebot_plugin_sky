@@ -6,7 +6,7 @@ from nonebot.adapters.onebot.v11.bot import Bot
 from .bot_loader import config
 
 
-async def chain_reply(bot: Bot, msg_list: Sequence[str | MessageSegment]) -> list:
+async def chain_reply(bot: Bot, msg_list: Sequence[str | MessageSegment]):
     """
     构造聊天记录转发消息
 

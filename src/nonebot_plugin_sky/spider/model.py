@@ -10,6 +10,8 @@ from typing import Any, Dict, List, Optional
 import httpx
 import aiofiles
 
+from ..utils.bot_loader import config
+
 from .exception import GetMblogsFailedError, UnknownError
 
 
@@ -35,7 +37,9 @@ class Auth:
                 "AppleWebKit/537.36 (KHTML, like Gecko) Chrome"
                 "/119.0.0.0 Safari/537.36 Edg/119.0.0.0"
             ),
-            "cookie": cls._get_default_cookie(),
+            "cookie": config.weibo_cookie
+            if config.weibo_cookie
+            else cls._get_default_cookie(),
             "referer": "https://www.weibo.com",
             "sec-ch-ua": '"Microsoft Edge";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
             "sec-ch-ua-platform": '"Windows"',
