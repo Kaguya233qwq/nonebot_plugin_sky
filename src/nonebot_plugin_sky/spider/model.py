@@ -40,6 +40,7 @@ class Auth:
             "cookie": config.weibo_cookie
             if config.weibo_cookie
             else cls._get_default_cookie(),
+            "client-version":"3.0.0",
             "referer": "https://www.weibo.com",
             "sec-ch-ua": '"Microsoft Edge";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
             "sec-ch-ua-platform": '"Windows"',

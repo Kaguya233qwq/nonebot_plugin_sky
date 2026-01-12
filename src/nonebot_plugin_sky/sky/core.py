@@ -9,7 +9,7 @@ from .tools import Tools
 class Sky:
 
     @staticmethod
-    async def get_chinese_server_daily():
+    async def get_chinese_server_daily() -> tuple[str, list[bytes]]:
         """
         获取国服每日任务信息
         """
@@ -17,7 +17,9 @@ class Sky:
         # @今天游离翻车了吗 微博uid
         spider = Spider(7360748659)
 
-        await spider.fetch()
+        result = await spider.fetch()
+        if not result:
+            return("获取数据时发生错误，请查看nonebot日志并上报给开发者",[])
         pattern = r"^#[^#]*光遇[^#]*超话]#\s*\d{1,2}\.\d{1,2}\s*"
         blog = spider.filter_by_time().filter_by_regex(pattern).one()
         if not blog:

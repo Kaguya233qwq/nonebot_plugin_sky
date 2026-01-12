@@ -1,11 +1,12 @@
 import asyncio
+import json
 import re
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional, Tuple, overload
 import httpx
 from nonebot import logger
 
-from .exception import GetMblogsFailedError, UnknownError
+from .exception import GetMblogsFailedError
 from .model import Auth, Blog, Picture, Urls
 
 
@@ -42,7 +43,7 @@ class Spider:
 
     """ ===== 核心数据获取 ===== """
 
-    async def fetch(self, page: int = 0) -> "Spider":
+    async def fetch(self, page: int = 0) -> "Spider | None":
         """获取指定页码的微博数据
 
         Args:
@@ -57,15 +58,33 @@ class Spider:
         try:
             params = {"uid": self.uid, "page": page, "feature": 0}
 
-            async with httpx.AsyncClient() as client:
+            async with httpx.AsyncClient(follow_redirects=True) as client:
                 response = await client.get(
                     self._api["mblogs"],
                     headers=self.headers,
                     params=params,
                     timeout=10.0,
                 )
-                response.raise_for_status()
-                content = response.json()
+                if response.status_code != 200:
+                    raise GetMblogsFailedError(
+                        f"HTTP状态码异常: {response.status_code}"
+                    )
+
+                try:
+                    text_content = response.content.decode("utf-8")
+                except UnicodeDecodeError:
+                    try:
+                        text_content = response.content.decode("gb18030")
+                    except UnicodeDecodeError:
+                        text_content = response.content.decode("utf-8", errors="ignore")
+                        logger.warning("微博数据解码严重异常，已忽略部分字符")
+
+                try:
+                    content = json.loads(text_content)
+                except json.JSONDecodeError:
+                    if "新浪通行证" in text_content[:100]:
+                        raise GetMblogsFailedError("登录失效，请重新获取token")
+                    raise GetMblogsFailedError("返回了非json数据，可能是触发反爬机制")
 
                 if content.get("ok") != 1:
                     error_msg = content.get("msg", "数据加载失败")
@@ -73,14 +92,16 @@ class Spider:
                 if not content.get("data"):
                     raise GetMblogsFailedError("获取微博列表失败, 超出最大能获取的索引")
                 self._parse_mblogs(content["data"]["list"])
-                return self
 
         except httpx.HTTPStatusError as e:
-            raise GetMblogsFailedError(f"HTTP请求失败: {e.response.status_code}") from e
+            logger.error(f"HTTP请求失败: {e.response.status_code}")
         except (httpx.TimeoutException, httpx.NetworkError) as e:
-            raise GetMblogsFailedError("网络连接异常") from e
+            logger.error(f"网络连接异常: {e}")
         except Exception as e:
-            raise UnknownError("数据处理异常") from e
+            logger.error(f"数据处理异常: {e}")
+            return None
+
+        return self
 
     async def search(self, query: str, num: int = 1, start_page: int = 1) -> "Spider":
         """
